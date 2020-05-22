@@ -4,7 +4,7 @@ FlucomaUnitTest : UnitTest {
 
 	setUp {
 		server = Server(this.class.name);
-		this.bootServer(server);
+		this.bootSync(server);
 	}
 
 	tearDown {
