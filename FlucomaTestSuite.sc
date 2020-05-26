@@ -6,12 +6,15 @@ FlucomaTestSuite {
 	*runAll {
 		var flucomaTestClasses = FlucomaUnitTest.allSubclasses;
 		var numberOfTests = flucomaTestClasses.size;
-		var threadCounter = 0;
+
+		//are variables thread safe in sclang? can i do atomic increment and comparison?
+		//otherwise, a solution here would be to have an array of booleans
+		var testsCounter = 0;
 
 		flucomaTestClasses.do({
 			arg testClass;
 
-			//forking is already implemented in .run
+			//run the test. it's already forked in there.
 			testClass.run(true, true);
 
 			//Check the completion of the test
@@ -21,7 +24,7 @@ FlucomaTestSuite {
 					0.2.wait;
 					testCompleted = testClass.completed;
 					if(testCompleted, {
-						threadCounter = threadCounter + 1;
+						testsCounter = testsCounter + 1;
 					});
 				});
 			}
@@ -29,10 +32,10 @@ FlucomaTestSuite {
 
 		//Check completion of all tests
 		forkIfNeeded {
-			var testsCompleted = threadCounter == numberOfTests;
+			var testsCompleted = testsCounter == numberOfTests;
 			while ({testsCompleted == false}, {
 				0.2.wait;
-				testsCompleted = threadCounter == numberOfTests;
+				testsCompleted = testsCounter == numberOfTests;
 				if(testsCompleted, {
 					"Finished all Flucoma tests".postln;
 				});
