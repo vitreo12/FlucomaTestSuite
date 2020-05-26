@@ -1,11 +1,13 @@
-//This will run the tests for all classes inheriting from FlucomaUnitTest,
-//and output the result to a log text file
 FlucomaTestSuite {
+	classvar logFile;
 
 	//Should conditions be used here instead?
 	*runAll {
+		arg logFileFolderPath = "~/FlucomaTests/";
+
 		var flucomaTestClasses = FlucomaUnitTest.allSubclasses;
 		var numberOfTests = flucomaTestClasses.size;
+		var logFilePath = logFileFolderPath.standardizePath ++ "test_" ++ Date.getDate.format("%d%m%C_%H%M%S");
 
 		//are variables thread safe in sclang? can i do atomic increment and comparison?
 		//otherwise, a solution here would be to have an array of booleans

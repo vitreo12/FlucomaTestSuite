@@ -1,4 +1,3 @@
-//Basic setup / teardown
 FlucomaUnitTest : UnitTest {
 	classvar <completed = false;
 
