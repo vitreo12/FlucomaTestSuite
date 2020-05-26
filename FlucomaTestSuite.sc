@@ -9,8 +9,8 @@ FlucomaTestSuite {
 		var numberOfTests = flucomaTestClasses.size;
 		var logFilePath = logFileFolderPath.standardizePath ++ "test_" ++ Date.getDate.format("%d%m%C_%H%M%S");
 
-		//are variables thread safe in sclang? can i do atomic increment and comparison?
-		//otherwise, a solution here would be to have an array of booleans
+		//sclang implement only one thread, so access to this variable are thread-safe:
+		//https://scsynth.org/t/are-variables-thread-safe-in-sclang/2224
 		var testsCounter = 0;
 
 		flucomaTestClasses.do({
