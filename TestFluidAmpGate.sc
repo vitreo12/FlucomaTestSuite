@@ -7,10 +7,12 @@ TestFluidAmpGate : FlucomaUnitTest {
 			[source, env];
 		};
 
+		/*
 		func.loadToFloatArray(0.1, server, {
 			arg data;
-			{data.plot(numChannels:2)}.defer;
+			//{data.plot(numChannels:2)}.defer;
 			assertEquals(this, 0, 1);
 		});
+		*/
 	}
 }
