@@ -1,16 +1,17 @@
 FlucomaUnitTest : UnitTest {
-	classvar <completed = false;
+	classvar <>logFile;
+	var <completed = false;
 
 	var server;
 
 	*reset {
 		this.superclass.reset;
-		completed = false;
+		this.completed = false;
 	}
 
 	*report {
 		this.superclass.report;
-		completed = true;
+		this.completed = true;
 	}
 
 	setUp {

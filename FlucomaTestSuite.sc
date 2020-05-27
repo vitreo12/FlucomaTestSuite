@@ -1,5 +1,4 @@
 FlucomaTestSuite {
-	classvar logFile;
 
 	//Should conditions be used here instead?
 	*runAll {
@@ -9,7 +8,7 @@ FlucomaTestSuite {
 		var numberOfTests = flucomaTestClasses.size;
 		var logFilePath = logFileFolderPath.standardizePath ++ "test_" ++ Date.getDate.format("%d%m%C_%H%M%S");
 
-		//sclang implement only one thread, so access to this variable are thread-safe:
+		//sclang implements only one non-preempted thread, so access to this variable are thread-safe:
 		//https://scsynth.org/t/are-variables-thread-safe-in-sclang/2224
 		var testsCounter = 0;
 
@@ -20,26 +19,34 @@ FlucomaTestSuite {
 			testClass.run(true, true);
 
 			//Check the completion of the test
-			forkIfNeeded {
+			fork {
 				var testCompleted = testClass.completed;
-				while ({testCompleted == false}, {
-					0.1.wait;
-					testCompleted = testClass.completed;
-					if(testCompleted, {
-						testsCounter = testsCounter + 1;
+				if(testCompleted, {
+					testsCounter = testsCounter + 1;
+				}, {
+					while ({testCompleted.not}, {
+						0.1.wait;
+						testCompleted = testClass.completed;
+						if(testCompleted, {
+							testsCounter = testsCounter + 1;
+						});
 					});
 				});
 			}
 		});
 
 		//Check completion of all tests
-		forkIfNeeded {
+		fork {
 			var testsCompleted = testsCounter == numberOfTests;
-			while ({testsCompleted == false}, {
-				0.1.wait;
-				testsCompleted = testsCounter == numberOfTests;
-				if(testsCompleted, {
-					"Finished all Flucoma tests".postln;
+			if(testsCompleted, {
+				"Finished all FluCoMa tests".postln;
+			}, {
+				while ({testsCompleted.not}, {
+					0.1.wait;
+					testsCompleted = testsCounter == numberOfTests;
+					if(testsCompleted, {
+						"Finished all FluCoMa tests".postln;
+					});
 				});
 			});
 		};
@@ -48,4 +55,10 @@ FlucomaTestSuite {
 	*outputLogFile {
 
 	}
+}
+
+//Holds a Dictionary of Dictionaries representing FluidClass -> Dictionary(test_methods)
+FlucomaTestsState {
+	classvar
+
 }
