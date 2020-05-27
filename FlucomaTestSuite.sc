@@ -15,8 +15,12 @@ FlucomaTestSuite {
 		flucomaTestClasses.do({
 			arg testClass;
 
-			//run the test. it's already forked in there.
-			testClass.run(true, true);
+			//Force fork so that forkIfNeeded won't be run
+			fork {
+				testClass.reset;
+				testClass.run(false, false);
+				testClass.report;
+			};
 
 			//Check the completion of the test
 			fork {
@@ -57,8 +61,25 @@ FlucomaTestSuite {
 	}
 }
 
-//Holds a Dictionary of Dictionaries representing FluidClass -> Dictionary(test_methods)
-FlucomaTestsState {
-	classvar
+//FlucomaTestClass -> Condition
+FlucomaTestsStateDict {
+	classvar <classesDict;
 
+	*initClass {
+		this.reset;
+	}
+
+	*reset {
+		var flucomaTestClasses = FlucomaUnitTest.allSubclasses;
+		var flucomaTestClassesSize = flucomaTestClasses.size;
+		classesDict = Dictionary.new(flucomaTestClassesSize);
+
+		flucomaTestClasses.do({
+			arg testClass;
+			var testClassMethods = testClass.findTestMethods;
+
+
+			//classesDict[testClass] = testClass;
+		});
+	}
 }

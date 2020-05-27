@@ -1,6 +1,5 @@
 FlucomaUnitTest : UnitTest {
-	classvar <>logFile;
-	var <completed = false;
+	classvar <>logFile, <>completed = false;
 
 	var server;
 
@@ -10,13 +9,22 @@ FlucomaUnitTest : UnitTest {
 	}
 
 	*report {
-		this.superclass.report;
+		Post.nl;
+		if(failures.size > 0, {
+			"There were failures:".inform;
+			failures.do { arg results;
+				results.report(true);
+			};
+		},  {
+			"There were no failures".inform;
+		});
+
 		this.completed = true;
 	}
 
 	setUp {
-		server = Server(this.class.name);
-		bootSync(server);
+		server = Server(this.class.name ++ UniqueID.next);
+		server.bootSync;
 	}
 
 	tearDown {
