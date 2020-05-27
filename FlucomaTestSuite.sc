@@ -23,7 +23,7 @@ FlucomaTestSuite {
 			forkIfNeeded {
 				var testCompleted = testClass.completed;
 				while ({testCompleted == false}, {
-					0.2.wait;
+					0.1.wait;
 					testCompleted = testClass.completed;
 					if(testCompleted, {
 						testsCounter = testsCounter + 1;
@@ -36,7 +36,7 @@ FlucomaTestSuite {
 		forkIfNeeded {
 			var testsCompleted = testsCounter == numberOfTests;
 			while ({testsCompleted == false}, {
-				0.2.wait;
+				0.1.wait;
 				testsCompleted = testsCounter == numberOfTests;
 				if(testsCompleted, {
 					"Finished all Flucoma tests".postln;
