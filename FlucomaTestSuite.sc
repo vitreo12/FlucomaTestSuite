@@ -1,4 +1,6 @@
 FlucomaTestSuite {
+	classvar <result = "";
+	classvar <completed = false;
 	classvar <classesDict;
 
 	*initClass {
@@ -17,8 +19,13 @@ FlucomaTestSuite {
 	}
 
 	*runAll {
+		//Reset result string
+		result = "";
+		completed = false;
+
 		classesDict.keysValuesDo({ | class, methodsArray |
 			methodsArray.do({ | method |
+				var testResult;
 				var classInstance = class.runTest(method);
 
 				fork {
@@ -27,7 +34,14 @@ FlucomaTestSuite {
 						0.01.wait;
 					});
 
-					(class.asString ++ " -> " ++ (method.asString) ++ ": done.").postln;
+					testResult = (
+						method.asString ++
+						"-> done.\n"
+					);
+
+					//Variables are thread safe in sclang, so this is fine:
+					//https://scsynth.org/t/are-variables-thread-safe-in-sclang/2224/11
+					result = result ++ testResult;
 				}
 			});
 		});
