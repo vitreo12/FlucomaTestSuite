@@ -1,33 +1,33 @@
 FlucomaUnitTest : UnitTest {
-	classvar <>logFile, <>completed = false;
-
+	var <completed = false;
+	var <result;
 	var server;
 
-	*reset {
-		this.superclass.reset;
-		this.completed = false;
+	*runTest { | method |
+		var class, classInstance;
+		# class, method = method.asString.split($:);
+		class = class.asSymbol.asClass;
+		method = class.findMethod(method.asSymbol);
+		if(method.isNil) {
+			Error(class.asString ++ ": test method not found: " ++ method).throw;
+		};
+		classInstance = class.new;
+		classInstance.runTestMethod(method, false);
+		^classInstance;
 	}
 
-	*report {
-		Post.nl;
-		if(failures.size > 0, {
-			"There were failures:".inform;
-			failures.do { arg results;
-				results.report(true);
-			};
-		},  {
-			"There were no failures".inform;
-		});
-
-		this.completed = true;
-	}
-
+	//completed works on a per-method basis
 	setUp {
-		server = Server(this.class.name ++ UniqueID.next);
+		completed = false;
+		server = Server(
+			this.class.name ++ UniqueID.next,
+			NetAddr("127.0.0.1", 57110 + UniqueID.next)
+		);
 		server.bootSync;
 	}
 
 	tearDown {
 		server.quit.remove;
+		completed = true;
 	}
 }
