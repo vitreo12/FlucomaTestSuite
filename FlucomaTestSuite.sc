@@ -34,12 +34,7 @@ FlucomaTestSuite {
 				var testResult;
 				var classInstance = class.runTest(method);
 
-				fork {
-					//Spinlock to wait for completion of test
-					while( {classInstance.completed.not}, {
-						0.01.wait;
-					});
-
+				SpinRoutine.waitFor( {classInstance.completed}, {
 					testResult = (
 						method.asString ++
 						"-> done.\n"
@@ -49,24 +44,21 @@ FlucomaTestSuite {
 					//https://scsynth.org/t/are-variables-thread-safe-in-sclang/2224/11
 					result = result ++ testResult;
 					testCounter = testCounter + 1;
-				}
+				});
 			});
 		});
 
-		//Wait for all tests to be completed
-		fork {
-			while ( {testCounter < totalSize}, {
-				0.01.wait;
-			});
-
+		SpinRoutine.waitFor( {testCounter >= totalSize}, {
 			completed = true;
 
 			//Wait just in order to print this thing last, as
 			//some of the servers are still quitting, and they will post in the console.
 			//the actual completion is already done
 			0.5.wait;
-			"DONE ALL TESTS:".postln;
+
+			"All FluCoMa tests completed:".postln;
+
 			result.postln;
-		}
+		});
 	}
 }
