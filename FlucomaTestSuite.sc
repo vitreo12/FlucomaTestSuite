@@ -1,8 +1,9 @@
 FlucomaTestSuite {
 	classvar <result = "";
+	classvar <testCounter = 0;
 	classvar <completed = false;
 
-	classvar <classesDict, <totalSize;
+	classvar <classesDict, <totalNumTests;
 
 	*initClass {
 		this.reset;
@@ -13,7 +14,7 @@ FlucomaTestSuite {
 		var flucomaTestClassesSize = flucomaTestClasses.size;
 
 		classesDict = Dictionary.new(flucomaTestClassesSize);
-		totalSize = 0;
+		totalNumTests = 0;
 
 		flucomaTestClasses.do({ | testClass |
 			var testClassMethods = testClass.findTestMethods;
@@ -22,33 +23,50 @@ FlucomaTestSuite {
 		});
 	}
 
-	*runAll {
-		var testCounter = 0;
+	*runTestClass { | class, interpretClass = true, countTests = false |
+		var methodsArray;
 
-		//Reset result string
-		result = "";
-		completed = false;
+		if(interpretClass, {
+			var classString = class.asString;
 
-		classesDict.keysValuesDo({ | class, methodsArray |
-			methodsArray.do({ | method |
-				var testResult;
-				var classInstance = class.runTest(method);
-
-				SpinRoutine.waitFor( {classInstance.completed}, {
-					testResult = (
-						method.asString ++
-						"-> done.\n"
-					);
-
-					//Variables are thread safe in sclang, so this is fine:
-					//https://scsynth.org/t/are-variables-thread-safe-in-sclang/2224/11
-					result = result ++ testResult;
-					testCounter = testCounter + 1;
-				});
+			//Accepts both TestFluidAmpGate and FluidAmpGate.
+			//Will return Class not found if error.
+			if(classString.beginsWith("Test").not, {
+				class = ("Test" ++ classString).interpret;
 			});
 		});
 
-		SpinRoutine.waitFor( {testCounter >= totalSize}, {
+		methodsArray = classesDict[class];
+
+		methodsArray.do({ | method |
+			var classInstance = class.runTest(method);
+			SpinRoutine.waitFor( {classInstance.completed}, {
+				var testResult = (
+					method.asString ++
+					"-> done.\n"
+				);
+
+				//Variables are thread safe in sclang, so this is fine:
+				//https://scsynth.org/t/are-variables-thread-safe-in-sclang/2224/11
+				result = result ++ testResult;
+
+				if(countTests, { testCounter = testCounter + 1; });
+			});
+		});
+	}
+
+	*runAll {
+		//Reset global vars
+		result = "";
+		completed = false;
+		testCounter = 0;
+
+		classesDict.keys.do({ | class |
+			class.postln;
+			this.runTestClass(class, false, true);
+		});
+
+		SpinRoutine.waitFor( {testCounter >= totalNumTests}, {
 			completed = true;
 
 			//Wait just in order to print this thing last, as
