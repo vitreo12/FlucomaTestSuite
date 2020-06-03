@@ -1,8 +1,8 @@
 FlucomaTestSuite {
-	classvar <result = "";
 	classvar <testCounter = 0;
 	classvar <completed = false;
 
+	classvar <resultsDict;
 	classvar <classesDict, <totalNumTests;
 
 	*initClass {
@@ -14,6 +14,7 @@ FlucomaTestSuite {
 		var flucomaTestClassesSize = flucomaTestClasses.size;
 
 		classesDict = Dictionary.new(flucomaTestClassesSize);
+		resultsDict = Dictionary.new(flucomaTestClassesSize);
 		totalNumTests = 0;
 
 		flucomaTestClasses.do({ | testClass |
@@ -24,31 +25,35 @@ FlucomaTestSuite {
 	}
 
 	*runTestClass { | class, interpretClass = true, countTests = false |
-		var methodsArray;
+		var classStringWithoutTest, resultDict, methodsArray;
+		var classString = class.asString;
 
-		if(interpretClass, {
-			var classString = class.asString;
-
-			//Accepts both TestFluidAmpGate and FluidAmpGate.
-			//Will return Class not found if error.
-			if(classString.beginsWith("Test").not, {
-				class = ("Test" ++ classString).interpret;
-			});
+		//Accepts both TestFluidAmpGate and FluidAmpGate.
+		//Will return Class not found if error.
+		if(classString.beginsWith("Test").not, {
+			classStringWithoutTest = classString;
+			class = ("Test" ++ classString).interpret;
+		}, {
+			classStringWithoutTest = classString[4..];
 		});
 
 		methodsArray = classesDict[class];
+		resultDict = Dictionary.new(methodsArray.size);
+
+		//Add to global results dict
+		resultsDict[classStringWithoutTest] = resultDict;
 
 		methodsArray.do({ | method |
 			var classInstance = class.runTest(method);
 			SpinRoutine.waitFor( {classInstance.completed}, {
-				var testResult = (
-					method.asString ++
-					"-> done.\n"
-				);
+
+				var methodString = method.name.asString;
+
+				//Here there will be the return code from individual methods
+				resultDict[methodString] = "success";
 
 				//Variables are thread safe in sclang, so this is fine:
 				//https://scsynth.org/t/are-variables-thread-safe-in-sclang/2224/11
-				result = result ++ testResult;
 				if(countTests, { testCounter = testCounter + 1; });
 			});
 		});
@@ -56,7 +61,7 @@ FlucomaTestSuite {
 
 	*runAll {
 		//Reset global vars
-		result = "";
+		resultsDict.clear;
 		completed = false;
 		testCounter = 0;
 
@@ -75,7 +80,7 @@ FlucomaTestSuite {
 
 			"All FluCoMa tests completed:".postln;
 
-			result.postln;
+			resultsDict.postln;
 		});
 	}
 }
