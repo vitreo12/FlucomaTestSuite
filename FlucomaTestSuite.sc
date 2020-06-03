@@ -77,9 +77,7 @@ FlucomaTestSuite {
 			//some of the servers are still quitting, and they will post in the console.
 			//the actual completion is already done
 			0.5.wait;
-
-			"All FluCoMa tests completed:".postln;
-
+			"\nAll FluCoMa tests completed:".postln;
 			resultsDict.postln;
 		});
 	}
