@@ -17,16 +17,18 @@ FlucomaUnitTest : UnitTest {
 		^classInstance;
 	}
 
-	//completed works on a per-method basis
+	//per-method
 	setUp {
+		var uniqueId = UniqueID.next;
 		completed = false;
 		server = Server(
-			this.class.name ++ UniqueID.next,
-			NetAddr("127.0.0.1", 57110 + UniqueID.next)
+			this.class.name ++ uniqueId,
+			NetAddr("127.0.0.1", 57110 + uniqueId)
 		);
 		server.bootSync;
 	}
 
+	//per-method
 	tearDown {
 		server.quit.remove;
 		completed = true;

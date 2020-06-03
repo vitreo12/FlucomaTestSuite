@@ -19,7 +19,7 @@ FlucomaTestSuite {
 		flucomaTestClasses.do({ | testClass |
 			var testClassMethods = testClass.findTestMethods;
 			classesDict[testClass] = testClassMethods;
-			totalSize = totalSize + testClassMethods.size;
+			totalNumTests = totalNumTests + testClassMethods.size;
 		});
 	}
 
