@@ -3,6 +3,7 @@ FlucomaUnitTest : UnitTest {
 	var <result;
 	var server;
 
+	//Individual method test run
 	*runTest { | method |
 		var class, classInstance;
 		# class, method = method.asString.split($:);

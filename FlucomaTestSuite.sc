@@ -49,7 +49,6 @@ FlucomaTestSuite {
 				//Variables are thread safe in sclang, so this is fine:
 				//https://scsynth.org/t/are-variables-thread-safe-in-sclang/2224/11
 				result = result ++ testResult;
-
 				if(countTests, { testCounter = testCounter + 1; });
 			});
 		});
