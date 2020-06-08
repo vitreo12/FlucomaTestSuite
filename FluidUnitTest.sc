@@ -1,4 +1,4 @@
-FlucomaUnitTest : UnitTest {
+FluidUnitTest : UnitTest {
 	var <completed = false;
 	var <result;
 	var server;

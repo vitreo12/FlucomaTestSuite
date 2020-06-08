@@ -1,4 +1,4 @@
-TestFluidAmpGate : FlucomaUnitTest {
+TestFluidAmpGate : FluidUnitTest {
 	test_one {
 		//("AmpSlice: test_one " ++ this.completed).postln;
 
