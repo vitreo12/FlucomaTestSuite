@@ -10,7 +10,7 @@ FlucomaTestSuite {
 	}
 
 	*reset {
-		var flucomaTestClasses = FlucomaUnitTest.allSubclasses;
+		var flucomaTestClasses = FluidUnitTest.allSubclasses;
 		var flucomaTestClassesSize = flucomaTestClasses.size;
 
 		classesDict = Dictionary.new(flucomaTestClassesSize);
@@ -24,7 +24,7 @@ FlucomaTestSuite {
 		});
 	}
 
-	*runTestClass { | class, interpretClass = true, countTests = false |
+	*runTestClass { | class, countTest = false |
 		var classStringWithoutTest, resultDict, methodsArray;
 		var classString = class.asString;
 
@@ -45,16 +45,16 @@ FlucomaTestSuite {
 
 		methodsArray.do({ | method |
 			var classInstance = class.runTest(method);
-			SpinRoutine.waitFor( {classInstance.completed}, {
+			SpinRoutine.waitFor( { classInstance.completed }, {
 
 				var methodString = method.name.asString;
 
 				//Here there will be the return code from individual methods
-				resultDict[methodString] = "success";
+				resultDict[methodString] = classInstance.result;
 
 				//Variables are thread safe in sclang, so this is fine:
 				//https://scsynth.org/t/are-variables-thread-safe-in-sclang/2224/11
-				if(countTests, { testCounter = testCounter + 1; });
+				if(countTest, { testCounter = testCounter + 1; });
 			});
 		});
 	}
@@ -67,10 +67,10 @@ FlucomaTestSuite {
 
 		classesDict.keys.do({ | class |
 			class.postln;
-			this.runTestClass(class, false, true);
+			this.runTestClass(class, true);
 		});
 
-		SpinRoutine.waitFor( {testCounter >= totalNumTests}, {
+		SpinRoutine.waitFor( { testCounter >= totalNumTests }, {
 			completed = true;
 
 			//Wait just in order to print this thing last, as

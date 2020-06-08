@@ -1,6 +1,6 @@
 FluidUnitTest : UnitTest {
 	var <completed = false;
-	var <result;
+	var <>result = "";
 	var server;
 
 	//Individual method test run
@@ -21,6 +21,7 @@ FluidUnitTest : UnitTest {
 	setUp {
 		var uniqueId = UniqueID.next;
 		completed = false;
+		result = "";
 		server = Server(
 			this.class.name ++ uniqueId,
 			NetAddr("127.0.0.1", 57110 + uniqueId)
