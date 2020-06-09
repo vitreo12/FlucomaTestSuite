@@ -8,6 +8,7 @@ FluidUnitTest : UnitTest {
 	//Per-method
 	var <completed = false;
 	var <>result = "";
+	var <>execTime;
 	var <impulsesBuffer, <smoothSineBuffer;
 	var <resultBuffer;
 	var server;
@@ -33,6 +34,13 @@ FluidUnitTest : UnitTest {
 		^classInstance;
 	}
 
+	//Initialize all needed buffers. This will be moved to the individual
+	//Slice / Layer / etc subclasses, together with the corresponding classvar Arrays
+	initBuffers {
+		smoothSineBuffer = Buffer.sendCollection(server, smoothSineArray);
+		resultBuffer = Buffer(server);
+	}
+
 	//per-method... server should perhaps be booted per-class.
 	//This is run in a Routine, so wait / sync can be used
 	setUp {
@@ -40,6 +48,7 @@ FluidUnitTest : UnitTest {
 		var serverOptions = ServerOptions.new;
 		completed = false;
 		result = "";
+		execTime = 0;
 		serverOptions.sampleRate = serverSampleRate;
 		server = Server(
 			this.class.name ++ uniqueId,
@@ -47,8 +56,20 @@ FluidUnitTest : UnitTest {
 			serverOptions
 		);
 		server.bootSync;
-		smoothSineBuffer = Buffer.sendCollection(server, smoothSineArray);
-		resultBuffer = Buffer(server);
+		this.initBuffers;
+	}
+
+	//Add execution time as a parameter output
+	runTestMethod { | method |
+		fork {
+			var t;
+			this.setUp;
+			currentMethod = method;
+			t = Main.elapsedTime;
+			this.perform(method.name);
+			execTime = Main.elapsedTime - t;
+			this.tearDown;
+		}
 	}
 
 	//per-method
@@ -56,4 +77,24 @@ FluidUnitTest : UnitTest {
 		server.quit.remove;
 		completed = true;
 	}
+}
+
+//Move all slice related stuff here
+FluidSliceUnitTest : FluidUnitTest {
+
+}
+
+//Move all layer related stuff here
+FluidLayerUnitTest : FluidUnitTest {
+
+}
+
+//Move all descriptor related stuff here
+FluidDescriptorUnitTest : FluidUnitTest {
+
+}
+
+//Move all object related stuff here (it's just NMF anyway)
+FluidObjectUnitTest : FluidUnitTest {
+
 }

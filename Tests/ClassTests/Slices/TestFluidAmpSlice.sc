@@ -12,7 +12,8 @@ TestFluidAmpSlice : FluidUnitTest {
 			offThreshold: 10,
 			floor: -60,
 			action: {
-				resultBuffer.query;
-		});
+				result = resultBuffer.query;
+			}
+		);
 	}
 }

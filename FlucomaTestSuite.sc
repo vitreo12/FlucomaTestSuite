@@ -50,7 +50,10 @@ FlucomaTestSuite {
 				var methodString = method.name.asString;
 
 				//Here there will be the return code from individual methods
-				resultDict[methodString] = classInstance.result;
+				resultDict[methodString] = [
+					("result" -> classInstance.result),
+					("execTime" -> classInstance.execTime)
+				];
 
 				//Variables are thread safe in sclang, so this is fine:
 				//https://scsynth.org/t/are-variables-thread-safe-in-sclang/2224/11
