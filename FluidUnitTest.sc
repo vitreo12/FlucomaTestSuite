@@ -47,7 +47,7 @@ FluidUnitTest : UnitTest {
 		var uniqueId = UniqueID.next;
 		var serverOptions = ServerOptions.new;
 		completed = false;
-		result = "";
+		result = Dictionary.new;
 		execTime = 0;
 		serverOptions.sampleRate = serverSampleRate;
 		server = Server(
