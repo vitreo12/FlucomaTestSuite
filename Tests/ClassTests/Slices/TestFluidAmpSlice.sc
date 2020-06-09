@@ -1,11 +1,18 @@
 TestFluidAmpSlice : FluidUnitTest {
-	test_one {
-		//("AmpSlice: test_one " ++ this.completed).postln;
-
-	}
-
-	test_two {
-		//("AmpSlice: test_two " ++ this.completed).postln;
-
+	test_sine_slice {
+		FluidBufAmpSlice.process(
+			server,
+			smoothSineBuffer,
+			indices: resultBuffer,
+			fastRampUp: 5,
+			fastRampDown: 50,
+			slowRampUp: 220,
+			slowRampDown: 220,
+			onThreshold: 10,
+			offThreshold: 10,
+			floor: -60,
+			action: {
+				resultBuffer.query;
+		});
 	}
 }
