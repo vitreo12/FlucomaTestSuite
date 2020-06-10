@@ -69,14 +69,16 @@ FluidUnitTest : UnitTest {
 			serverOptions
 		);
 		server.bootSync;
-		this.initBuffers;
+		server.initTree; //make sure to init the default group!
 	}
 
 	//Add execution time as a parameter output
 	runTestMethod { | method |
 		fork {
-			var t, tAvg = 5;
+			var t, tAvg = 5; //run 5 times to average execution time
 			this.setUp;
+			this.initBuffers;
+			server.sync;
 			currentMethod = method;
 			tAvg.do({
 				t = Main.elapsedTime;
