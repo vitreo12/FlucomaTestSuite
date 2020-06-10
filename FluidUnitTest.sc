@@ -3,13 +3,13 @@ FluidUnitTest : UnitTest {
 	classvar serverSampleRate = 44100;
 
 	//Shared across all tests
-	classvar <impulsesArray, <smoothSineArray;
+	classvar <impulsesArray, <sharpSineArray;
 
 	//Per-method
 	var <completed = false;
 	var <>result = "";
 	var <>execTime;
-	var <impulsesBuffer, <smoothSineBuffer;
+	var <impulsesBuffer, <sharpSineBuffer;
 	var <resultBuffer;
 	var server;
 
@@ -19,8 +19,14 @@ FluidUnitTest : UnitTest {
 
 		});
 
-		smoothSineArray = Array.fill(serverSampleRate, { | i |
-			sin(i*pi/ (serverSampleRate/640)) * ((((79000-i) % (serverSampleRate*0.5)).abs / 28000.0) + 0.2)
+		//four sine impulses
+		sharpSineArray = Array.fill(serverSampleRate, { | i |
+			var freq = 640;
+			var numOfImpulses = 4;
+			var sampleRateOverImpulses = serverSampleRate / 4;
+
+			sin(i * pi / (serverSampleRate / freq)) *
+			(((serverSampleRate -1 - i) % sampleRateOverImpulses) / sampleRateOverImpulses)
 		});
 	}
 
@@ -41,8 +47,8 @@ FluidUnitTest : UnitTest {
 	//Initialize all needed buffers. This will be moved to the individual
 	//Slice / Layer / etc subclasses, together with the corresponding classvar Arrays
 	initBuffers {
-		impulsesBuffer = Buffer.sendCollection(server, imulsesArray);
-		smoothSineBuffer = Buffer.sendCollection(server, smoothSineArray);
+		impulsesBuffer = Buffer.sendCollection(server, impulsesArray);
+		sharpSineBuffer = Buffer.sendCollection(server, sharpSineArray);
 		resultBuffer = Buffer(server);
 	}
 

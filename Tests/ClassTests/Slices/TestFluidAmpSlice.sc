@@ -2,7 +2,7 @@ TestFluidAmpSlice : FluidUnitTest {
 	test_sine_slice {
 		FluidBufAmpSlice.process(
 			server,
-			smoothSineBuffer,
+			sharpSineBuffer,
 			indices: resultBuffer,
 			fastRampUp: 5,
 			fastRampDown: 50,
