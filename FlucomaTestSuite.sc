@@ -80,8 +80,22 @@ FlucomaTestSuite {
 			//some of the servers are still quitting, and they will post in the console.
 			//the actual completion is already done
 			0.5.wait;
-			"\nAll FluCoMa tests completed:".postln;
-			resultsDict.postln;
+			"\n*** All FluCoMa tests completed ***".postln;
+			resultsDict.postFlucomaResultsDict;
+		});
+	}
+}
+
++Dictionary {
+	postFlucomaResultsDict {
+		this.keysValuesDo({ | key, entry |
+			("\n" ++ key ++ ":").postln;
+			if(entry.class == Dictionary, {
+				entry.keysValuesDo({ | methodName, methodResult |
+					("\t" ++ methodName ++ ":").postln;
+					("\t\t" ++ methodResult ++ ":").postln;
+				});
+			});
 		});
 	}
 }

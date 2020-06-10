@@ -15,10 +15,10 @@ FluidUnitTest : UnitTest {
 
 	//Global init of all the Arrays
 	*initClass {
-		//Five impulses at indices [ 1000.0, 9820.0, 18640.0, 27460.0, 36280.0 ] @ 44.1k
-		var impulesIndices = (0..4) * (serverSampleRate / 5) + 1000;
+		//Fout impulses at indices [ 1000.0, 12025.0, 23050.0, 34075.0  ] @ 44.1k
+		var impulsesIndices = (0..3) * (serverSampleRate / 4) + 1000;
 		impulsesArray = Array.fill(serverSampleRate,{ | i |
-			if(impulesIndices.includes(i.asFloat), { 1.0 }, { 0.0 });
+			if(impulsesIndices.includes(i.asFloat), { 1.0 }, { 0.0 });
 		});
 
 		//four sine impulses
