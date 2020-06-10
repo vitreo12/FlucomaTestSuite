@@ -62,7 +62,7 @@ FluidUnitTest : UnitTest {
 	//Add execution time as a parameter output
 	runTestMethod { | method |
 		fork {
-			var t, tAvg = 3;
+			var t, tAvg = 5;
 			this.setUp;
 			currentMethod = method;
 			tAvg.do({
