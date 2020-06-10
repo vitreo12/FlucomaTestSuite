@@ -19,7 +19,7 @@ FluidUnitTest : UnitTest {
 		var impulesIndices = (0..4) * (serverSampleRate / 5) + 1000;
 		impulesIndices.postln;
 		impulsesArray = Array.fill(serverSampleRate,{ | i |
-			if(impulesIndices.indexOf(i.asFloat) != nil, { 1.0 }, { 0.0 });
+			if(impulesIndices.includes(i.asFloat), { 1.0 }, { 0.0 });
 		});
 
 		//four sine impulses
