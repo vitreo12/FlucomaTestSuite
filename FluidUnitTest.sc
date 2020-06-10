@@ -15,7 +15,11 @@ FluidUnitTest : UnitTest {
 
 	//Global init of all the Arrays
 	*initClass {
-		smoothSineArray = Array.fill(serverSampleRate, {|i|
+		impulsesArray = Array.fill(serverSampleRate, { | i |
+
+		});
+
+		smoothSineArray = Array.fill(serverSampleRate, { | i |
 			sin(i*pi/ (serverSampleRate/640)) * ((((79000-i) % (serverSampleRate*0.5)).abs / 28000.0) + 0.2)
 		});
 	}
@@ -37,6 +41,7 @@ FluidUnitTest : UnitTest {
 	//Initialize all needed buffers. This will be moved to the individual
 	//Slice / Layer / etc subclasses, together with the corresponding classvar Arrays
 	initBuffers {
+		impulsesBuffer = Buffer.sendCollection(server, imulsesArray);
 		smoothSineBuffer = Buffer.sendCollection(server, smoothSineArray);
 		resultBuffer = Buffer(server);
 	}

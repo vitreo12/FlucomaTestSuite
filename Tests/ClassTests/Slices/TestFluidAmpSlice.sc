@@ -12,7 +12,7 @@ TestFluidAmpSlice : FluidUnitTest {
 			offThreshold: 10,
 			floor: -60,
 			action: {
-				result[\numFrames] = TestResult(resultBuffer.numFrames == 9);
+				result[\numFrames] = TestResult(resultBuffer.numFrames, 9);
 			}
 		);
 	}

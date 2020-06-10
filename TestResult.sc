@@ -1,7 +1,9 @@
 TestResult {
-	*new { | condition |
+	*new { | value, expected |
 		var result;
-		if(condition, { result = "success"}, { result = "failure" });
+		if(value == expected, { result = "success"}, {
+			result = "failure: got " ++ value ++ ", expected " ++ expected;
+		});
 		^result;
 	}
 }
