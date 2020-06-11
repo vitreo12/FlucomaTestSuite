@@ -52,7 +52,7 @@ FlucomaTestSuite {
 				//Here there will be the return code from individual methods
 				resultDict[methodString] = [
 					("result" -> classInstance.result),
-					("execTime" -> classInstance.execTime)
+					("time" -> classInstance.execTime)
 				];
 
 				//Variables are thread safe in sclang, so this is fine:
