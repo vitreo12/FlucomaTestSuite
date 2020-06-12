@@ -15,7 +15,7 @@ FluidUnitTest : UnitTest {
 
 	//Global init of all the Arrays
 	*initClass {
-		//Fout impulses at indices [ 1000.0, 12025.0, 23050.0, 34075.0  ] @ 44.1k
+		//Four impulses at indices [ 1000.0, 12025.0, 23050.0, 34075.0  ] @ 44.1k
 		var impulsesIndices = (0..3) * (serverSampleRate / 4) + 1000;
 		impulsesArray = Array.fill(serverSampleRate,{ | i |
 			if(impulsesIndices.includes(i.asFloat), { 1.0 }, { 0.0 });
