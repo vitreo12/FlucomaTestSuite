@@ -7,8 +7,9 @@ FluidUnitTest : UnitTest {
 
 	//Per-method
 	var <completed = false;
-	var <>result = "";
-	var <>execTime;
+	var <>result = "";       //This is the result on every iteration
+	var <>firstResult = ""; //This is the true result of the test: the one from first iteration
+	var <>execTime = 0;
 	var <impulsesBuffer, <sharpSineBuffer;
 	var <resultBuffer;
 	var server;
@@ -60,7 +61,8 @@ FluidUnitTest : UnitTest {
 		var uniqueId = UniqueID.next;
 		var serverOptions = ServerOptions.new;
 		completed = false;
-		result = Dictionary.new;
+		result = "";
+		firstResult = "";
 		execTime = 0;
 		serverOptions.sampleRate = serverSampleRate;
 		server = Server(
@@ -80,11 +82,12 @@ FluidUnitTest : UnitTest {
 			this.initBuffers;
 			server.sync;
 			currentMethod = method;
-			tAvg.do({
+			tAvg.do({ | i |
 				t = Main.elapsedTime;
 				this.perform(method.name);
 				t = Main.elapsedTime - t;
 				execTime = t + execTime;
+				if(i == 0, { firstResult = result }); //Only consider the first result
 			});
 			execTime = execTime / tAvg;
 			this.tearDown;

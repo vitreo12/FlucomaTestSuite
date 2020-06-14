@@ -51,7 +51,7 @@ FlucomaTestSuite {
 
 				//Here there will be the return code from individual methods
 				resultDict[methodString] = [
-					("result" -> classInstance.result),
+					("result" -> classInstance.firstResult), //only consider the first result
 					("time" -> classInstance.execTime)
 				];
 
