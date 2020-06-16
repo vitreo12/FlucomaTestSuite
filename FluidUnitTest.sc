@@ -1,6 +1,6 @@
 FluidUnitTest : UnitTest {
 	//Run all tests at serverSamplerate
-	classvar <>serverSampleRate = 44100;
+	classvar <serverSampleRate = 44100;
 
 	//Shared across all tests
 	classvar <oneImpulseArray, <impulsesArray, <sharpSineArray;
@@ -12,7 +12,14 @@ FluidUnitTest : UnitTest {
 	var <>execTime = 0;
 	var <oneImpulseBuffer, <impulsesBuffer, <sharpSineBuffer;
 	var <resultBuffer;
+	var <tolerance = 1; //Percentage of tolerance
 	var server;
+
+	//Recalculate arrays if changing sample rate
+	*serverSampleRate_ { | sampleRate |
+		serverSampleRate = sampleRate;
+		this.initClass;
+	}
 
 	//Global init of all the Arrays
 	*initClass {
@@ -31,12 +38,17 @@ FluidUnitTest : UnitTest {
 
 		//four sine impulses
 		sharpSineArray = Array.fill(serverSampleRate, { | i |
-			var freq = 640;
-			var numOfImpulses = 4;
-			var sampleRateOverImpulses = serverSampleRate / 4;
+			//Skip first 1000 samples
+			if( i > 1000, {
+				var freq = 640;
+				var numOfImpulses = 4;
+				var sampleRateOverImpulses = serverSampleRate / 4;
 
-			sin(i * pi / (serverSampleRate / freq)) *
-			(((serverSampleRate -1 - i) % sampleRateOverImpulses) / sampleRateOverImpulses)
+				sin(i * pi / (serverSampleRate / freq)) *
+				(((serverSampleRate -1 - i) % sampleRateOverImpulses) / sampleRateOverImpulses);
+			}, {
+				0.0;
+			});
 		});
 	}
 
@@ -57,6 +69,7 @@ FluidUnitTest : UnitTest {
 	//Initialize all needed buffers. This will be moved to the individual
 	//Slice / Layer / etc subclasses, together with the corresponding classvar Arrays
 	initBuffers {
+		oneImpulseBuffer = Buffer.sendCollection(server, oneImpulseArray);
 		impulsesBuffer = Buffer.sendCollection(server, impulsesArray);
 		sharpSineBuffer = Buffer.sendCollection(server, sharpSineArray);
 		resultBuffer = Buffer(server);

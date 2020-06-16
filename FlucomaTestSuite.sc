@@ -8,7 +8,7 @@ FlucomaTestSuite {
 
 	*serverSampleRate_ { | sampleRate |
 		serverSampleRate = sampleRate;
-		FluidUnitTest.serverSampleRate = sampleRate;
+		FluidUnitTest.serverSampleRate_(sampleRate);
 	}
 
 	*initClass {
