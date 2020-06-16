@@ -76,7 +76,6 @@ FluidUnitTest : UnitTest {
 		sharpSineBuffer = Buffer.sendCollection(server, sharpSineArray);
 		resultBuffer = Buffer.new(server, 0, 0);
 		server.sendBundle(nil, resultBuffer.allocMsg); //Make sure to send the bundle to the correct server!
-		server.sync;
 	}
 
 	//per-method... server should perhaps be booted per-class.
@@ -111,6 +110,7 @@ FluidUnitTest : UnitTest {
 				this.perform(method.name);
 				t = Main.elapsedTime - t;
 				execTime = t + execTime; //accumulate exec time
+				server.sync; //This is essential in order for the query for resultBuffer to work
 				if(i == 0, { firstResult = result }); //Only consider the first result
 			});
 			execTime = execTime / tAvg;

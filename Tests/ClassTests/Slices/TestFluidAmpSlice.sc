@@ -13,6 +13,7 @@ TestFluidAmpSlice : FluidUnitTest {
 			offThreshold: 7,
 			floor: -60,
 			action: {
+				/*
 				var sampleReturn;
 				var samplePositionTolerance = (oneImpulseBuffer.numFrames / 100) * tolerance;
 
@@ -21,7 +22,8 @@ TestFluidAmpSlice : FluidUnitTest {
 
 				resultBuffer.getn(0, resultBuffer.numFrames, {|sample| sampleReturn = sample});
 
-				result[\indexSample] = samplePositionTolerance;
+				result[\indexSample] = sampleReturn;
+				*/
 			}
 		);
 	}
@@ -38,9 +40,10 @@ TestFluidAmpSlice : FluidUnitTest {
 			offThreshold: 7,
 			floor: -60,
 			action: {
-				result = TestResult(resultBuffer.numFrames, 4);
-				resultBuffer.query;
-				//resultBuffer.getn(0, resultBuffer.numFrames, {|i| i.postln});
+				//query from the server, not lang!
+				resultBuffer.query({ | addr, bufnum, numFrames, numChannels, sampleRate |
+					result = TestResult(numFrames, 4);
+				});
 			}
 		);
 	}
@@ -59,9 +62,10 @@ TestFluidAmpSlice : FluidUnitTest {
 			floor: -60,
 			minSliceLength: 800,
 			action: {
-				result = TestResult(resultBuffer.numFrames, 4);
-				resultBuffer.query;
-				//resultBuffer.getn(0, resultBuffer.numFrames, {|i| i.postln});
+				//query from the server, not lang!
+				resultBuffer.query({ | addr, bufnum, numFrames, numChannels, sampleRate |
+					result = TestResult(numFrames, 4);
+				});
 			}
 		);
 	}
@@ -79,9 +83,10 @@ TestFluidAmpSlice : FluidUnitTest {
 			offThreshold: 5,
 			floor: -60,
 			action: {
-				result = TestResult(resultBuffer.numFrames, 4);
-				resultBuffer.query;
-				//resultBuffer.getn(0, resultBuffer.numFrames, {|i| ("sc" ++ i).postln});
+				//query from the server, not lang!
+				resultBuffer.query({ | addr, bufnum, numFrames, numChannels, sampleRate |
+					result = TestResult(numFrames, 4);
+				});
 			}
 		);
 	}
@@ -100,9 +105,10 @@ TestFluidAmpSlice : FluidUnitTest {
 			floor: -60,
 			minSliceLength: 800,
 			action: {
-				result = TestResult(resultBuffer.numFrames, 4);
-				resultBuffer.query;
-				//resultBuffer.getn(0, resultBuffer.numFrames, {|i| ("mi" ++ i).postln});
+				//query from the server, not lang!
+				resultBuffer.query({ | addr, bufnum, numFrames, numChannels, sampleRate |
+					result = TestResult(numFrames, 4);
+				});
 			}
 		);
 	}
