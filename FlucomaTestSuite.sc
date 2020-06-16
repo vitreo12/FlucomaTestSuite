@@ -1,9 +1,15 @@
 FlucomaTestSuite {
+	classvar <serverSampleRate = 44100;
 	classvar <testCounter = 0;
 	classvar <completed = false;
 
 	classvar <resultsDict;
 	classvar <classesDict, <totalNumTests;
+
+	*serverSampleRate_ { | sampleRate |
+		serverSampleRate = sampleRate;
+		FluidUnitTest.serverSampleRate = sampleRate;
+	}
 
 	*initClass {
 		this.reset;

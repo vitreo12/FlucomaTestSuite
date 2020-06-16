@@ -1,24 +1,31 @@
 FluidUnitTest : UnitTest {
 	//Run all tests at serverSamplerate
-	classvar serverSampleRate = 44100;
+	classvar <>serverSampleRate = 44100;
 
 	//Shared across all tests
-	classvar <impulsesArray, <sharpSineArray;
+	classvar <oneImpulseArray, <impulsesArray, <sharpSineArray;
 
 	//Per-method
 	var <completed = false;
 	var <>result = "";       //This is the result on every iteration
 	var <>firstResult = ""; //This is the true result of the test: the one from first iteration
 	var <>execTime = 0;
-	var <impulsesBuffer, <sharpSineBuffer;
+	var <oneImpulseBuffer, <impulsesBuffer, <sharpSineBuffer;
 	var <resultBuffer;
 	var server;
 
 	//Global init of all the Arrays
 	*initClass {
+		var impulsesIndices;
+
+		//One impulse after half a second
+		oneImpulseArray = Array.fill(serverSampleRate, { | i |
+			if(i == ((serverSampleRate / 2).asInteger - 1), { 1.0 }, { 0.0 });
+		});
+
 		//Four impulses at indices [ 1000.0, 12025.0, 23050.0, 34075.0  ] @ 44.1k
-		var impulsesIndices = (0..3) * (serverSampleRate / 4) + 1000;
-		impulsesArray = Array.fill(serverSampleRate,{ | i |
+		impulsesIndices = (0..3) * (serverSampleRate / 4) + 1000;
+		impulsesArray = Array.fill(serverSampleRate, { | i |
 			if(impulsesIndices.includes(i.asFloat), { 1.0 }, { 0.0 });
 		});
 
