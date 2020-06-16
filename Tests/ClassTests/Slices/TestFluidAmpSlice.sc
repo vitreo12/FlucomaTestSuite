@@ -21,10 +21,10 @@ TestFluidAmpSlice : FluidUnitTest {
 
 					//Check if the returned index position is correct (middle of file)
 					if(numFrames == 1, {
-						resultBuffer.getn(0, numFrames, { | sample |
+						resultBuffer.getn(0, numFrames, { | samples |
 							var tolerance = 0.1; //0.1% margin of error in sample position
 							var samplePositionTolerance = (oneImpulseBuffer.numFrames / 100) * tolerance;
-							result[\sampleIndex] = TestResultEquals(sample[0], serverSampleRate / 2, samplePositionTolerance);
+							result[\sampleIndex] = TestResultEquals(samples[0], serverSampleRate / 2, samplePositionTolerance);
 						});
 					});
 				});
