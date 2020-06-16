@@ -12,7 +12,7 @@ FluidUnitTest : UnitTest {
 	var <>execTime = 0;
 	var <oneImpulseBuffer, <impulsesBuffer, <sharpSineBuffer;
 	var <resultBuffer;
-	var <tolerance = 1; //Percentage of tolerance
+	//var <tolerance = 1; //1% tolerance
 	var server;
 
 	//Recalculate arrays if changing sample rate

@@ -13,18 +13,19 @@ TestFluidAmpSlice : FluidUnitTest {
 			offThreshold: 7,
 			floor: -60,
 			action: {
-				var sampleReturn;
-				var samplePositionTolerance = (oneImpulseBuffer.numFrames / 100) * tolerance;
-
 				result = Dictionary();
 
 				//query from the server, not lang!
 				resultBuffer.query({ | addr, bufnum, numFrames, numChannels, sampleRate |
-					result[\numFrames] = TestResult(numFrames, 1);
+					result[\numFrames] = TestResult(numFrames == 1);
 
-					resultBuffer.getn(0, numFrames, {| sample |
-						sampleReturn = sample;
-						result[\indexSample] = sampleReturn;
+					//Check if the returned index position is correct (middle of file)
+					if(numFrames == 1, {
+						resultBuffer.getn(0, numFrames, { | sample |
+							var tolerance = 0.1; //0.1% margin of error in sample position
+							var samplePositionTolerance = (oneImpulseBuffer.numFrames / 100) * tolerance;
+							result[\sampleIndex] = TestResultEquals(sample[0], serverSampleRate / 2, samplePositionTolerance);
+						});
 					});
 				});
 			}
@@ -45,7 +46,7 @@ TestFluidAmpSlice : FluidUnitTest {
 			action: {
 				//query from the server, not lang!
 				resultBuffer.query({ | addr, bufnum, numFrames, numChannels, sampleRate |
-					result = TestResult(numFrames, 4);
+					result = TestResult(numFrames == 4);
 				});
 			}
 		);
@@ -67,7 +68,7 @@ TestFluidAmpSlice : FluidUnitTest {
 			action: {
 				//query from the server, not lang!
 				resultBuffer.query({ | addr, bufnum, numFrames, numChannels, sampleRate |
-					result = TestResult(numFrames, 4);
+					result = TestResult(numFrames == 4);
 				});
 			}
 		);
@@ -88,7 +89,7 @@ TestFluidAmpSlice : FluidUnitTest {
 			action: {
 				//query from the server, not lang!
 				resultBuffer.query({ | addr, bufnum, numFrames, numChannels, sampleRate |
-					result = TestResult(numFrames, 4);
+					result = TestResult(numFrames == 4);
 				});
 			}
 		);
@@ -110,7 +111,7 @@ TestFluidAmpSlice : FluidUnitTest {
 			action: {
 				//query from the server, not lang!
 				resultBuffer.query({ | addr, bufnum, numFrames, numChannels, sampleRate |
-					result = TestResult(numFrames, 4);
+					result = TestResult(numFrames == 4);
 				});
 			}
 		);

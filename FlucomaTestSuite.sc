@@ -30,6 +30,7 @@ FlucomaTestSuite {
 		});
 	}
 
+	//Running single tests is quite bad right now
 	*runTestClass { | class, countTest = false |
 		var classStringWithoutTest, resultDict, methodsArray;
 		var classString = class.asString;
