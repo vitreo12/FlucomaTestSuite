@@ -30,22 +30,24 @@ FluidUnitTest : UnitTest {
 			if(i == ((serverSampleRate / 2).asInteger - 1), { 1.0 }, { 0.0 });
 		});
 
-		//Four impulses at indices [ 1000.0, 12025.0, 23050.0, 34075.0  ] @ 44.1k
-		impulsesIndices = (0..3) * (serverSampleRate / 4) + 1000;
+		//Four impulses at [ 1000.0, 12025.0, 23050.0, 34075.0  ] @ 44.1k
+		impulsesIndices = ((0..3) * (serverSampleRate / 4).asInteger) + 1000;
 		impulsesArray = Array.fill(serverSampleRate, { | i |
-			if(impulsesIndices.includes(i.asFloat), { 1.0 }, { 0.0 });
+			if(impulsesIndices.includes(i), { 1.0 }, { 0.0 });
 		});
 
-		//four sine impulses
+		//four sine impulses at [ 1000, 11030, 22055, 33080] @ 44.1k
 		sharpSineArray = Array.fill(serverSampleRate, { | i |
 			//Skip first 1000 samples
-			if( i > 1000, {
+			if( i >= 1000, {
 				var freq = 640;
 				var numOfImpulses = 4;
-				var sampleRateOverImpulses = serverSampleRate / 4;
+				var sampleRateMinusOne = serverSampleRate - 1;
+				var sampleRateOverImpulses = serverSampleRate / numOfImpulses;
 
-				sin(i * pi / (serverSampleRate / freq)) *
-				(((serverSampleRate -1 - i) % sampleRateOverImpulses) / sampleRateOverImpulses);
+				var sine = sin(i * (2 * pi) / (sampleRateMinusOne / freq));
+				var phasor = (((sampleRateMinusOne - i) % sampleRateOverImpulses) / sampleRateOverImpulses);
+				sine * phasor;
 			}, {
 				0.0;
 			});
@@ -72,7 +74,9 @@ FluidUnitTest : UnitTest {
 		oneImpulseBuffer = Buffer.sendCollection(server, oneImpulseArray);
 		impulsesBuffer = Buffer.sendCollection(server, impulsesArray);
 		sharpSineBuffer = Buffer.sendCollection(server, sharpSineArray);
-		resultBuffer = Buffer(server);
+		resultBuffer = Buffer.new(server, 0, 0);
+		server.sendBundle(nil, resultBuffer.allocMsg); //Make sure to send the bundle to the correct server!
+		server.sync;
 	}
 
 	//per-method... server should perhaps be booted per-class.
@@ -97,7 +101,7 @@ FluidUnitTest : UnitTest {
 	//Add execution time as a parameter output
 	runTestMethod { | method |
 		fork {
-			var t, tAvg = 5; //run 5 times to average execution time
+			var t, tAvg = 1; //run 5 times to average execution time
 			this.setUp;
 			this.initBuffers;
 			server.sync;
@@ -106,7 +110,7 @@ FluidUnitTest : UnitTest {
 				t = Main.elapsedTime;
 				this.perform(method.name);
 				t = Main.elapsedTime - t;
-				execTime = t + execTime;
+				execTime = t + execTime; //accumulate exec time
 				if(i == 0, { firstResult = result }); //Only consider the first result
 			});
 			execTime = execTime / tAvg;

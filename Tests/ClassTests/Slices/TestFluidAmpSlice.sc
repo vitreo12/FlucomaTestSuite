@@ -25,7 +25,6 @@ TestFluidAmpSlice : FluidUnitTest {
 			}
 		);
 	}
-
 	test_impulses_num_slices_schmitt {
 		FluidBufAmpSlice.process(
 			server,
@@ -40,6 +39,8 @@ TestFluidAmpSlice : FluidUnitTest {
 			floor: -60,
 			action: {
 				result = TestResult(resultBuffer.numFrames, 4);
+				resultBuffer.query;
+				//resultBuffer.getn(0, resultBuffer.numFrames, {|i| i.postln});
 			}
 		);
 	}
@@ -56,9 +57,11 @@ TestFluidAmpSlice : FluidUnitTest {
 			onThreshold: 10,
 			offThreshold: 10,
 			floor: -60,
-			minSliceLength: 220,
+			minSliceLength: 800,
 			action: {
 				result = TestResult(resultBuffer.numFrames, 4);
+				resultBuffer.query;
+				//resultBuffer.getn(0, resultBuffer.numFrames, {|i| i.postln});
 			}
 		);
 	}
@@ -77,6 +80,8 @@ TestFluidAmpSlice : FluidUnitTest {
 			floor: -60,
 			action: {
 				result = TestResult(resultBuffer.numFrames, 4);
+				resultBuffer.query;
+				//resultBuffer.getn(0, resultBuffer.numFrames, {|i| ("sc" ++ i).postln});
 			}
 		);
 	}
@@ -93,9 +98,11 @@ TestFluidAmpSlice : FluidUnitTest {
 			onThreshold: 10,
 			offThreshold: 10,
 			floor: -60,
-			minSliceLength: 220,
+			minSliceLength: 800,
 			action: {
 				result = TestResult(resultBuffer.numFrames, 4);
+				resultBuffer.query;
+				//resultBuffer.getn(0, resultBuffer.numFrames, {|i| ("mi" ++ i).postln});
 			}
 		);
 	}
