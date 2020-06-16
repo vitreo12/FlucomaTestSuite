@@ -13,17 +13,20 @@ TestFluidAmpSlice : FluidUnitTest {
 			offThreshold: 7,
 			floor: -60,
 			action: {
-				/*
 				var sampleReturn;
 				var samplePositionTolerance = (oneImpulseBuffer.numFrames / 100) * tolerance;
 
 				result = Dictionary();
-				result[\numFrames] = TestResult(resultBuffer.numFrames, 1);
 
-				resultBuffer.getn(0, resultBuffer.numFrames, {|sample| sampleReturn = sample});
+				//query from the server, not lang!
+				resultBuffer.query({ | addr, bufnum, numFrames, numChannels, sampleRate |
+					result[\numFrames] = TestResult(numFrames, 1);
 
-				result[\indexSample] = sampleReturn;
-				*/
+					resultBuffer.getn(0, numFrames, {| sample |
+						sampleReturn = sample;
+						result[\indexSample] = sampleReturn;
+					});
+				});
 			}
 		);
 	}

@@ -33,7 +33,7 @@ FluidUnitTest : UnitTest {
 		//Four impulses at [ 1000.0, 12025.0, 23050.0, 34075.0  ] @ 44.1k
 		impulsesIndices = ((0..3) * (serverSampleRate / 4).asInteger) + 1000;
 		impulsesArray = Array.fill(serverSampleRate, { | i |
-			if(impulsesIndices.includes(i), { 1.0 }, { 0.0 });
+			if(impulsesIndices.includes(i.asInteger), { 1.0 }, { 0.0 });
 		});
 
 		//four sine impulses at [ 1000, 11030, 22055, 33080] @ 44.1k
@@ -74,8 +74,9 @@ FluidUnitTest : UnitTest {
 		oneImpulseBuffer = Buffer.sendCollection(server, oneImpulseArray);
 		impulsesBuffer = Buffer.sendCollection(server, impulsesArray);
 		sharpSineBuffer = Buffer.sendCollection(server, sharpSineArray);
-		resultBuffer = Buffer.new(server, 0, 0);
-		server.sendBundle(nil, resultBuffer.allocMsg); //Make sure to send the bundle to the correct server!
+		resultBuffer = Buffer.new(server);
+		//resultBuffer = Buffer.new(server, 0, 0);
+		//server.sendBundle(nil, resultBuffer.allocMsg); //Make sure to send the bundle to the correct server!
 	}
 
 	//per-method... server should perhaps be booted per-class.
@@ -110,7 +111,7 @@ FluidUnitTest : UnitTest {
 				this.perform(method.name);
 				t = Main.elapsedTime - t;
 				execTime = t + execTime; //accumulate exec time
-				server.sync; //This is essential in order for the query for resultBuffer to work
+				server.sync; //This is essential in order for the query of resultBuffer to work
 				if(i == 0, { firstResult = result }); //Only consider the first result
 			});
 			execTime = execTime / tAvg;

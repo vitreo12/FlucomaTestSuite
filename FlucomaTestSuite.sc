@@ -1,7 +1,7 @@
 FlucomaTestSuite {
 	classvar <serverSampleRate = 44100;
 	classvar <testCounter = 0;
-	classvar <completed = false;
+	classvar <running = false;
 
 	classvar <resultsDict;
 	classvar <classesDict, <totalNumTests;
@@ -69,10 +69,15 @@ FlucomaTestSuite {
 	}
 
 	*runAll {
+		if(running, {
+			"The FluCoMa test suite is already running".error;
+			^nil;
+		});
+
 		//Reset global vars
 		resultsDict.clear;
-		completed = false;
 		testCounter = 0;
+		running = true;
 
 		classesDict.keys.do({ | class |
 			class.postln;
@@ -80,14 +85,13 @@ FlucomaTestSuite {
 		});
 
 		SpinRoutine.waitFor( { testCounter >= totalNumTests }, {
-			completed = true;
-
 			//Wait just in order to print this thing last, as
 			//some of the servers are still quitting, and they will post in the console.
 			//the actual completion is already done
 			0.5.wait;
 			"\n*** All FluCoMa tests completed ***".postln;
 			resultsDict.postFlucomaResultsDict;
+			running = false;
 		});
 	}
 }
