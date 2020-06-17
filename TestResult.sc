@@ -2,7 +2,6 @@ TestResult {
 	*new { | a, b |
 		if(a == b, {
 			^("failure: got " ++ a ++ " but expected " ++ b);
-
 		}, {
 			^("success");
 		});
