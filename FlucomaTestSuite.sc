@@ -1,10 +1,11 @@
 FlucomaTestSuite {
 	classvar <serverSampleRate = 44100;
-	classvar <testCounter = 0;
+	classvar <classCounter = 0;
+	classvar <>parallelMethods = 5;
 	classvar <running = false;
 
 	classvar <resultsDict;
-	classvar <classesDict, <totalNumTests;
+	classvar <classesDict, <totalNumClasses;
 
 	*serverSampleRate_ { | sampleRate |
 		serverSampleRate = sampleRate;
@@ -21,18 +22,24 @@ FlucomaTestSuite {
 
 		classesDict = Dictionary.new(flucomaTestClassesSize);
 		resultsDict = Dictionary.new(flucomaTestClassesSize);
-		totalNumTests = 0;
+
+		//DIRTY: subtract the subclasses named FluidSliceUnitTest, FluidLayerUnitTest, etc...
+		//totalNumClasses = flucomaTestClassesSize - 4;
+
 
 		flucomaTestClasses.do({ | testClass |
 			var testClassMethods = testClass.findTestMethods;
 			classesDict[testClass] = testClassMethods;
-			totalNumTests = totalNumTests + testClassMethods.size;
 		});
+
+		//There might be empty classes, so take the size from classesDict
+		totalNumClasses = classesDict.size;
 	}
 
 	//Running single tests is quite bad right now
-	*runTestClass { | class, countTest = false |
+	*runTestClass { | class, classCondition, countTest = false |
 		var classStringWithoutTest, resultDict, methodsArray;
+		var countMethods = 0, totalMethods = 0;
 		var classString = class.asString;
 
 		//Accepts both TestFluidAmpGate and FluidAmpGate.
@@ -50,23 +57,47 @@ FlucomaTestSuite {
 		//Add to global results dict
 		resultsDict[classStringWithoutTest] = resultDict;
 
-		methodsArray.do({ | method |
-			var classInstance = class.runTest(method);
-			SpinRoutine.waitFor( { classInstance.completed }, {
+		//Total number of test methods for this class
+		totalMethods = methodsArray.size;
 
-				var methodString = method.name.asString;
+		fork {
+			var methodCondition = Condition.new;
 
-				//Here there will be the return code from individual methods
-				resultDict[methodString] = [
-					("result" -> classInstance.firstResult), //only consider the first result
-					("time" -> classInstance.execTime)
-				];
+			methodsArray.do({ | method, i |
+				//Run the method
+				var classInstance = class.runTest(method);
 
-				//Variables are thread safe in sclang, so this is fine:
-				//https://scsynth.org/t/are-variables-thread-safe-in-sclang/2224/11
-				if(countTest, { testCounter = testCounter + 1; });
+				//Wait for the parallel methods to finish
+				if((i > 0).and(i % (parallelMethods-1) == 0), {
+					methodCondition.hang;
+				});
+
+				//Wait for completion, advance states
+				SpinRoutine.waitFor( { classInstance.completed }, {
+
+					var methodString = method.name.asString;
+
+					//Here there will be the return code from individual methods
+					resultDict[methodString] = [
+						("result" -> classInstance.firstResult), //only consider the first result
+						("time" -> classInstance.execTime)
+					];
+
+					//One more method completed
+					countMethods = countMethods + 1;
+
+					//Wait for all the parallel methods to be finished before moving on
+					if((countMethods > 0).and(countMethods % (parallelMethods-1) == 0), {
+						methodCondition.unhang;
+					});
+
+					//Last method, unhang classCondition
+					if(classCondition != nil, {
+						if(countMethods >= totalMethods, { classCondition.unhang });
+					});
+				});
 			});
-		});
+		}
 	}
 
 	*runAll {
@@ -77,14 +108,22 @@ FlucomaTestSuite {
 
 		//Reset global vars
 		resultsDict.clear;
-		testCounter = 0;
+		classCounter = 0;
 		running = true;
 
-		classesDict.keys.do({ | class |
-			this.runTestClass(class, true);
-		});
+		//Run one class at the time, or the interpreter won't catch up with
+		//OSC messages to / from all servers
+		fork {
+			classesDict.keys.do({ | class |
+				var classCondition = Condition.new;
+				this.runTestClass(class, classCondition, true);
+				//Wait for completion of all methods before running a new Class
+				classCondition.hang;
+				classCounter = classCounter + 1;
+			});
+		};
 
-		SpinRoutine.waitFor( { testCounter >= totalNumTests }, {
+		SpinRoutine.waitFor( { classCounter >= totalNumClasses }, {
 			//Wait just in order to print this thing last, as
 			//some of the servers are still quitting, and they will post in the console.
 			//the actual completion is already done

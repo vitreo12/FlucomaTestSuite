@@ -86,7 +86,7 @@ FluidUnitTest : UnitTest {
 	//This is run in a Routine, so wait / sync can be used
 	setUp {
 		var uniqueId = UniqueID.next;
-		var serverOptions = Server.default.options;
+		var serverOptions = ServerOptions.new;
 		completed = false;
 		result = "";
 		firstResult = "";
@@ -94,7 +94,7 @@ FluidUnitTest : UnitTest {
 		serverOptions.sampleRate = serverSampleRate;
 		server = Server(
 			this.class.name ++ uniqueId,
-			NetAddr("127.0.0.1", 57110 + uniqueId),
+			NetAddr("127.0.0.1", 5000 + uniqueId),
 			serverOptions
 		);
 		//server.bootSync;
@@ -107,14 +107,23 @@ FluidUnitTest : UnitTest {
 		completed = true;
 	}
 
+	bootServer {
+		this.setUp;
+		server.waitForBoot({
+			server.initTree;
+			server.name.asString.error;
+			this.tearDown;
+		}, onFailure: {
+			this.bootServer;
+		});
+	}
+
 	runTestMethod { | method |
 		//fork {
 		//var t, tAvg = 1; //run 5 times to average execution time
-		this.setUp;
-		server.waitForBoot({
-			server.name.asString.error;
-			this.tearDown;
-		});
+
+		this.bootServer;
+
 			//server.sync;
 			//this.initBuffers;
 			//this.initResultBuffer;
@@ -154,6 +163,7 @@ FluidUnitTest : UnitTest {
 	}
 }
 
+/*
 //Move all slice related stuff here
 FluidSliceUnitTest : FluidUnitTest {
 
@@ -173,3 +183,4 @@ FluidDescriptorUnitTest : FluidUnitTest {
 FluidObjectUnitTest : FluidUnitTest {
 
 }
+*/

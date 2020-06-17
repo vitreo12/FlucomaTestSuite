@@ -18,4 +18,16 @@ TestFluidAmpGate : FluidUnitTest {
 	test_sine_num_slices_minslicelength {
 		^nil;
 	}
+
+	test_one_impulse1 {
+		^nil;
+	}
+
+	test_impulses_num_slices_schmitt1 {
+		^nil;
+	}
+
+	test_impulses_num_slices_minslicelength1 {
+		^nil;
+	}
 }
