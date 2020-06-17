@@ -26,7 +26,6 @@ FlucomaTestSuite {
 		//DIRTY: subtract the subclasses named FluidSliceUnitTest, FluidLayerUnitTest, etc...
 		//totalNumClasses = flucomaTestClassesSize - 4;
 
-
 		flucomaTestClasses.do({ | testClass |
 			var testClassMethods = testClass.findTestMethods;
 			classesDict[testClass] = testClassMethods;

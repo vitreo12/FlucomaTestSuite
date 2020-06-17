@@ -12,7 +12,7 @@ FluidUnitTest : UnitTest {
 	var <>execTime = 0;
 	var <oneImpulseBuffer, <impulsesBuffer, <sharpSineBuffer;
 	var <resultBuffer;
-	var <>maxWaitTime = 20;
+	var <>maxWaitTime = 30;
 	var server;
 
 	//Recalculate arrays if changing sample rate
@@ -73,19 +73,22 @@ FluidUnitTest : UnitTest {
 	initBuffers {
 		oneImpulseBuffer = Buffer.sendCollection(server, oneImpulseArray);
 		impulsesBuffer = Buffer.sendCollection(server, impulsesArray);
-		sharpSineBuffer = Buffer.sendCollection(server, sharpSineArray)
+		sharpSineBuffer = Buffer.sendCollection(server, sharpSineArray);
+		resultBuffer = Buffer.new(server);
 	}
 
+	/*
 	initResultBuffer {
 		resultBuffer = Buffer.new(server);
 		//resultBuffer = Buffer.new(server, 0, 0);
 		//server.sendBundle(nil, resultBuffer.allocMsg); //Make sure to send the bundle to the correct server!
 	}
+	*/
 
 	//per-method... server should perhaps be booted per-class.
 	//This is run in a Routine, so wait / sync can be used
 	setUp {
-		var uniqueId = UniqueID.next;
+		var uniqueID = UniqueID.next;
 		var serverOptions = ServerOptions.new;
 		completed = false;
 		result = "";
@@ -93,12 +96,12 @@ FluidUnitTest : UnitTest {
 		execTime = 0;
 		serverOptions.sampleRate = serverSampleRate;
 		server = Server(
-			this.class.name ++ uniqueId,
-			NetAddr("127.0.0.1", 5000 + uniqueId),
+			this.class.name ++ uniqueID,
+			NetAddr("127.0.0.1", 5000 + uniqueID),
 			serverOptions
 		);
-		//server.bootSync;
-		//server.initTree; //make sure to init the default group!
+		server.bootSync;
+		server.initTree; //make sure to init the default group!
 	}
 
 	//per-method
@@ -107,6 +110,7 @@ FluidUnitTest : UnitTest {
 		completed = true;
 	}
 
+	/*
 	bootServer {
 		this.setUp;
 		server.waitForBoot({
@@ -117,27 +121,28 @@ FluidUnitTest : UnitTest {
 			this.bootServer;
 		});
 	}
+	*/
 
 	runTestMethod { | method |
-		//fork {
-		//var t, tAvg = 1; //run 5 times to average execution time
+		var t, tAvg = 5; //run 5 times to average execution time
 
-		this.bootServer;
-
-			//server.sync;
-			//this.initBuffers;
-			//this.initResultBuffer;
-			//server.sync;
-			//currentMethod = method;
-			//t = Main.elapsedTime;
-			//server.name.asString.error;
-			//this.perform(method.name);
-			//t = Main.elapsedTime - t;
-			//server.sync;
-			//firstResult = result;
-			//execTime = t;
+		fork {
+			currentMethod = method;
+			this.setUp;
+			server.sync;
+			this.initBuffers;
+			server.sync;
 
 			/*
+			t = Main.elapsedTime;
+			//server.name.asString.error;
+			this.perform(method.name);
+			t = Main.elapsedTime - t;
+			server.sync;
+			firstResult = result;
+			execTime = t;
+			*/
+
 			tAvg.do({ | i |
 				t = Main.elapsedTime;
 				this.perform(method.name);
@@ -146,11 +151,11 @@ FluidUnitTest : UnitTest {
 				server.sync; //This is essential in order for the query of resultBuffer to work
 				if(i == 0, { firstResult = result }); //Only consider the first result
 			});
-			execTime = execTime / tAvg;
-			*/
 
-			//this.tearDown;
-		//};
+			execTime = execTime / tAvg;
+
+			this.tearDown;
+		};
 
 		//If it takes more than maxWaitTime, tearDown
 		fork {
