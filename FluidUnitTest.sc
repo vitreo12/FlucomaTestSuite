@@ -12,7 +12,7 @@ FluidUnitTest : UnitTest {
 	var <>execTime = 0;
 	var <oneImpulseBuffer, <impulsesBuffer, <sharpSineBuffer;
 	var <resultBuffer;
-	//var <tolerance = 1; //1% tolerance
+	var <>maxWaitTime = 20;
 	var server;
 
 	//Recalculate arrays if changing sample rate
@@ -64,7 +64,7 @@ FluidUnitTest : UnitTest {
 			Error(class.asString ++ ": test method not found: " ++ method).throw;
 		};
 		classInstance = class.new;
-		classInstance.runTestMethod(method, false);
+		classInstance.runTestMethod(method);
 		^classInstance;
 	}
 
@@ -73,7 +73,10 @@ FluidUnitTest : UnitTest {
 	initBuffers {
 		oneImpulseBuffer = Buffer.sendCollection(server, oneImpulseArray);
 		impulsesBuffer = Buffer.sendCollection(server, impulsesArray);
-		sharpSineBuffer = Buffer.sendCollection(server, sharpSineArray);
+		sharpSineBuffer = Buffer.sendCollection(server, sharpSineArray)
+	}
+
+	initResultBuffer {
 		resultBuffer = Buffer.new(server);
 		//resultBuffer = Buffer.new(server, 0, 0);
 		//server.sendBundle(nil, resultBuffer.allocMsg); //Make sure to send the bundle to the correct server!
@@ -83,7 +86,7 @@ FluidUnitTest : UnitTest {
 	//This is run in a Routine, so wait / sync can be used
 	setUp {
 		var uniqueId = UniqueID.next;
-		var serverOptions = ServerOptions.new;
+		var serverOptions = Server.default.options;
 		completed = false;
 		result = "";
 		firstResult = "";
@@ -94,18 +97,38 @@ FluidUnitTest : UnitTest {
 			NetAddr("127.0.0.1", 57110 + uniqueId),
 			serverOptions
 		);
-		server.bootSync;
-		server.initTree; //make sure to init the default group!
+		//server.bootSync;
+		//server.initTree; //make sure to init the default group!
 	}
 
-	//Add execution time as a parameter output
+	//per-method
+	tearDown {
+		server.quit.remove;
+		completed = true;
+	}
+
 	runTestMethod { | method |
-		fork {
-			var t, tAvg = 1; //run 5 times to average execution time
-			this.setUp;
-			this.initBuffers;
-			server.sync;
-			currentMethod = method;
+		//fork {
+		//var t, tAvg = 1; //run 5 times to average execution time
+		this.setUp;
+		server.waitForBoot({
+			server.name.asString.error;
+			this.tearDown;
+		});
+			//server.sync;
+			//this.initBuffers;
+			//this.initResultBuffer;
+			//server.sync;
+			//currentMethod = method;
+			//t = Main.elapsedTime;
+			//server.name.asString.error;
+			//this.perform(method.name);
+			//t = Main.elapsedTime - t;
+			//server.sync;
+			//firstResult = result;
+			//execTime = t;
+
+			/*
 			tAvg.do({ | i |
 				t = Main.elapsedTime;
 				this.perform(method.name);
@@ -115,14 +138,19 @@ FluidUnitTest : UnitTest {
 				if(i == 0, { firstResult = result }); //Only consider the first result
 			});
 			execTime = execTime / tAvg;
-			this.tearDown;
-		}
-	}
+			*/
 
-	//per-method
-	tearDown {
-		server.quit.remove;
-		completed = true;
+			//this.tearDown;
+		//};
+
+		//If it takes more than maxWaitTime, tearDown
+		fork {
+			maxWaitTime.wait;
+			if(completed == false, {
+				("Exceeding maximum wait time for server " ++ server.name ++ ". Quitting it").error;
+				this.tearDown;
+			});
+		}
 	}
 }
 

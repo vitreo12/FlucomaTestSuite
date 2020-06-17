@@ -1,15 +1,25 @@
 TestResult {
-	*new { | condition, messageFail = "failure", messageSuccess = "success" |
-		if(condition.not, { ^messageFail }, { ^messageSuccess });
+	*new { | a, b |
+		if(a == b, {
+			^("failure: got " ++ a ++ " but expected " ++ b);
+
+		}, {
+			^("success");
+		});
 	}
 }
 
 TestResultEquals {
-	*new { | a, b, tolerance, messageFail = "failure", messageSuccess = "success" |
+	*new { | a, b, tolerance |
 		if(tolerance == nil, {
-			^TestResult.new(a == b, messageFail, messageSuccess);
+			^TestResult.new(a, b);
 		}, {
-			^TestResult.new((a - b).abs <= tolerance, messageFail, messageSuccess);
+			var condition = (a - b).abs <= tolerance;
+			if(condition.not, {
+				^("failure: " ++ a ++ " exceeds " ++ b ++ " and tolerance " ++ tolerance);
+			}, {
+				^("success");
+			});
 		});
 	}
 }

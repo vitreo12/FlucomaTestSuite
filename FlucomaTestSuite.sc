@@ -81,7 +81,6 @@ FlucomaTestSuite {
 		running = true;
 
 		classesDict.keys.do({ | class |
-			class.postln;
 			this.runTestClass(class, true);
 		});
 
