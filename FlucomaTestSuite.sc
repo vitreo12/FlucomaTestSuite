@@ -37,9 +37,10 @@ FlucomaTestSuite {
 	}
 
 	//Running single tests is quite bad right now
-	*runTestClass { | class, classCondition, countTest = false |
+	*runTestClass { | class, classCondition |
 		var classStringWithoutTest, resultDict, methodsArray;
 		var countMethods = 0, totalMethods = 0;
+		var isStandaloneTest = false;
 		var classString = class.asString;
 
 		//Accepts both TestFluidAmpGate and FluidAmpGate.
@@ -59,6 +60,16 @@ FlucomaTestSuite {
 
 		//Total number of test methods for this class
 		totalMethods = methodsArray.size;
+
+		//If no condition provided, it means it's standalone test. Set running to true if needed
+		if(classCondition == nil, {
+			isStandaloneTest = true;
+			if(running, {
+				"The FluCoMa test suite is already running".error;
+				^nil;
+			});
+			running = true;
+		});
 
 		fork {
 			var methodCondition = Condition.new;
@@ -91,9 +102,17 @@ FlucomaTestSuite {
 						methodCondition.unhang;
 					});
 
-					//Last method, unhang classCondition
-					if(classCondition != nil, {
-						if(countMethods >= totalMethods, { classCondition.unhang });
+					//Last method for this class
+					if(countMethods >= totalMethods, {
+						if(isStandaloneTest.not, {
+							//If provided a condition, unhang it.
+							classCondition.unhang;
+						}, {
+							//No condition provided, simply output result and set running to false
+							0.5.wait;
+							resultDict.postFlucomaResultDict(classString);
+							running = false;
+						});
 					});
 				});
 			});
@@ -145,6 +164,14 @@ FlucomaTestSuite {
 					("\t\t" ++ methodResult ++ ":").postln;
 				});
 			});
+		});
+	}
+
+	postFlucomaResultDict { | classString |
+		("\n" ++ classString ++ ":").postln;
+		this.keysValuesDo({ | methodName, methodResult |
+			("\t" ++ methodName ++ ":").postln;
+			("\t\t" ++ methodResult ++ ":").postln;
 		});
 	}
 }
