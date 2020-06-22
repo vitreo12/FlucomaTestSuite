@@ -148,7 +148,7 @@ FluidUnitTest : UnitTest {
 				this.perform(method.name);
 				t = Main.elapsedTime - t;
 				execTime = t + execTime; //accumulate exec time
-				server.sync; //This is essential in order for the query of resultBuffer to work
+				//server.sync; //This is essential in order for the query of resultBuffer to work
 				if(i == 0, { firstResult = result }); //Only consider the first result
 			});
 

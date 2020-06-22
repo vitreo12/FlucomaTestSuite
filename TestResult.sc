@@ -1,9 +1,9 @@
 TestResult {
 	*new { | a, b |
 		if(a == b, {
-			^("failure: got " ++ a ++ " but expected " ++ b);
-		}, {
 			^("success");
+		}, {
+			^("failure: got " ++ a ++ " but expected " ++ b);
 		});
 	}
 }
@@ -15,7 +15,7 @@ TestResultEquals {
 		}, {
 			var condition = (a - b).abs <= tolerance;
 			if(condition.not, {
-				^("failure: " ++ a ++ " exceeds " ++ b ++ " and tolerance " ++ tolerance);
+				^("failure: " ++ a ++ " exceeds " ++ b ++ " +/- " ++ tolerance);
 			}, {
 				^("success");
 			});
