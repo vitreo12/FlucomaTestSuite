@@ -3,14 +3,14 @@ FluidUnitTest : UnitTest {
 	classvar <serverSampleRate = 44100;
 
 	//Shared across all tests
-	classvar <oneImpulseArray, <impulsesArray, <sharpSineArray;
+	classvar <oneImpulseArray, <impulsesArray, <sharpSineArray, <smoothSineArray;
 
 	//Per-method
 	var <completed = false;
 	var <>result = "";       //This is the result on every iteration
 	var <>firstResult = ""; //This is the true result of the test: the one from first iteration
 	var <>execTime = 0;
-	var <oneImpulseBuffer, <impulsesBuffer, <sharpSineBuffer;
+	var <oneImpulseBuffer, <impulsesBuffer, <sharpSineBuffer, <smoothSineBuffer;
 	var <resultBuffer;
 	var <>maxWaitTime = 30;
 	var server;
@@ -52,6 +52,10 @@ FluidUnitTest : UnitTest {
 				0.0;
 			});
 		});
+
+		smoothSineArray = Array.fill(serverSampleRate,{| i |
+			sin(i * pi/ (serverSampleRate  / 640)) * (sin(i * pi / (serverSampleRate / 2))).abs
+		});
 	}
 
 	//Individual method test run
@@ -68,22 +72,22 @@ FluidUnitTest : UnitTest {
 		^classInstance;
 	}
 
+	initResultBuffer {
+		resultBuffer = Buffer.new(server);
+		//resultBuffer = Buffer.new(server, 0, 0);
+		//server.sendBundle(nil, resultBuffer.allocMsg); //Make sure to send the bundle to the correct server!
+	}
+
 	//Initialize all needed buffers. This will be moved to the individual
 	//Slice / Layer / etc subclasses, together with the corresponding classvar Arrays
 	initBuffers {
 		oneImpulseBuffer = Buffer.sendCollection(server, oneImpulseArray);
 		impulsesBuffer = Buffer.sendCollection(server, impulsesArray);
 		sharpSineBuffer = Buffer.sendCollection(server, sharpSineArray);
-		resultBuffer = Buffer.new(server);
-	}
+		smoothSineBuffer = Buffer.sendCollection(server, smoothSineArray);
 
-	/*
-	initResultBuffer {
-		resultBuffer = Buffer.new(server);
-		//resultBuffer = Buffer.new(server, 0, 0);
-		//server.sendBundle(nil, resultBuffer.allocMsg); //Make sure to send the bundle to the correct server!
+		this.initResultBuffer;
 	}
-	*/
 
 	//per-method... server should perhaps be booted per-class.
 	//This is run in a Routine, so wait / sync can be used
