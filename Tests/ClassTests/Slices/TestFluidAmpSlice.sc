@@ -17,7 +17,7 @@ TestFluidAmpSlice : FluidUnitTest {
 
 				//query from the server, not lang!
 				resultBuffer.query({ | addr, bufnum, numFrames, numChannels, sampleRate |
-					result[\numFrames] = TestResult(numFrames == 1);
+					result[\numFrames] = TestResult(numFrames, 1);
 
 					//Check if the returned index position is correct (middle of file)
 					if(numFrames == 1, {
@@ -27,6 +27,8 @@ TestFluidAmpSlice : FluidUnitTest {
 							result[\sampleIndex] = TestResultEquals(samples[0], serverSampleRate / 2, samplePositionTolerance);
 						});
 					});
+
+					done.unhang;
 				});
 			}
 		);
@@ -46,7 +48,9 @@ TestFluidAmpSlice : FluidUnitTest {
 			action: {
 				//query from the server, not lang!
 				resultBuffer.query({ | addr, bufnum, numFrames, numChannels, sampleRate |
-					result = TestResult(numFrames == 4);
+					result = TestResult(numFrames, 4);
+
+					done.unhang;
 				});
 			}
 		);
@@ -68,7 +72,9 @@ TestFluidAmpSlice : FluidUnitTest {
 			action: {
 				//query from the server, not lang!
 				resultBuffer.query({ | addr, bufnum, numFrames, numChannels, sampleRate |
-					result = TestResult(numFrames == 4);
+					result = TestResult(numFrames, 4);
+
+					done.unhang;
 				});
 			}
 		);
@@ -89,7 +95,9 @@ TestFluidAmpSlice : FluidUnitTest {
 			action: {
 				//query from the server, not lang!
 				resultBuffer.query({ | addr, bufnum, numFrames, numChannels, sampleRate |
-					result = TestResult(numFrames == 4);
+					result = TestResult(numFrames, 4);
+
+					done.unhang;
 				});
 			}
 		);
@@ -111,7 +119,9 @@ TestFluidAmpSlice : FluidUnitTest {
 			action: {
 				//query from the server, not lang!
 				resultBuffer.query({ | addr, bufnum, numFrames, numChannels, sampleRate |
-					result = TestResult(numFrames == 4);
+					result = TestResult(numFrames, 4);
+
+					done.unhang;
 				});
 			}
 		);

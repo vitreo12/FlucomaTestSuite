@@ -1,21 +1,19 @@
 TestFluidOnsetSlice : FluidUnitTest {
-	test_one_impulse {
-		^nil;
-	}
 
-	test_impulses_num_slices_schmitt {
-		^nil;
-	}
+	test_smooth_sine_energy {
+		FluidBufOnsetSlice.process(
+			server,
+			smoothSineBuffer,
+			indices: resultBuffer,
+			metric:0,
+			action: {
+				//query from the server, not lang!
+				resultBuffer.query({ | addr, bufnum, numFrames, numChannels, sampleRate |
+					result = TestResult(numFrames, 4);
 
-	test_impulses_num_slices_minslicelength {
-		^nil;
-	}
-
-	test_sine_num_slices_schmitt {
-		^nil;
-	}
-
-	test_sine_num_slices_minslicelength {
-		^nil;
+					done.unhang;
+				});
+			}
+		)
 	}
 }
