@@ -74,8 +74,9 @@ FluidUnitTest : UnitTest {
 
 	initResultBuffer {
 		resultBuffer = Buffer.new(server);
+		//Would this be better?? :
 		//resultBuffer = Buffer.new(server, 0, 0);
-		//server.sendBundle(nil, resultBuffer.allocMsg); //Make sure to send the bundle to the correct server!
+		//server.sendBundle(nil, resultBuffer.allocMsg);
 	}
 
 	//Initialize all needed buffers. This will be moved to the individual
@@ -136,16 +137,6 @@ FluidUnitTest : UnitTest {
 			server.sync;
 			this.initBuffers;
 			server.sync;
-
-			/*
-			t = Main.elapsedTime;
-			//server.name.asString.error;
-			this.perform(method.name);
-			t = Main.elapsedTime - t;
-			server.sync;
-			firstResult = result;
-			execTime = t;
-			*/
 
 			tAvg.do({ | i |
 				t = Main.elapsedTime;
