@@ -8,25 +8,9 @@ TestFluidAmpGate : FluidUnitTest {
 			rampDown:25,
 			onThreshold:-12,
 			offThreshold:-12,
-			action: {
-				//query from the server, not lang!
-				resultBuffer.query({ | addr, bufnum, numFrames, numChannels, sampleRate |
-					result = Dictionary();
-
-					result[\numFrames] = TestResult(numFrames, 1);
-					result[\channels] = TestResult(numChannels, 2);
-
-					//Check if the returned index position is correct (middle of file)
-					if(numFrames == 1, {
-						resultBuffer.getn(0, numFrames, { | samples |
-							var tolerance = 0.1; //0.1% margin of error in sample position
-							var samplePositionTolerance = (oneImpulseBuffer.numFrames / 100) * tolerance;
-							result[\sampleIndex] = TestResultEquals(samples[0], serverSampleRate / 2, samplePositionTolerance);
-						});
-					});
-
-					done.unhang;
-				});
+			action: { | outputBuffer |
+				outputBuffer.postln;
+				result = TestResult(outputBuffer.numFrames, 1);
 			}
 		)
 	}
@@ -40,16 +24,9 @@ TestFluidAmpGate : FluidUnitTest {
 			rampDown:25,
 			onThreshold:-12,
 			offThreshold:-16,
-			action: {
-				//query from the server, not lang!
-				resultBuffer.query({ | addr, bufnum, numFrames, numChannels, sampleRate |
-					result = Dictionary();
-
-					result[\numFrames] = TestResult(numFrames, 2);
-					result[\channels] = TestResult(numChannels, 2);
-
-					done.unhang;
-				});
+			action: { | outputBuffer |
+				outputBuffer.postln;
+				result = TestResult(outputBuffer.numFrames, 2);
 			}
 		);
 	}
@@ -63,16 +40,9 @@ TestFluidAmpGate : FluidUnitTest {
 			rampDown:25,
 			onThreshold:-12,
 			offThreshold:-18,
-			action: {
-				//query from the server, not lang!
-				resultBuffer.query({ | addr, bufnum, numFrames, numChannels, sampleRate |
-					result = Dictionary();
-
-					result[\numFrames] = TestResult(numFrames, 2);
-					result[\channels] = TestResult(numChannels, 2);
-
-					done.unhang;
-				});
+			action: { | outputBuffer |
+				outputBuffer.postln;
+				result = TestResult(outputBuffer.numFrames, 2);
 			}
 		);
 	}
@@ -86,16 +56,9 @@ TestFluidAmpGate : FluidUnitTest {
 			rampDown:25,
 			onThreshold:-12,
 			offThreshold:-16,
-			action: {
-				//query from the server, not lang!
-				resultBuffer.query({ | addr, bufnum, numFrames, numChannels, sampleRate |
-					result = Dictionary();
-
-					result[\numFrames] = TestResult(numFrames, 2);
-					result[\channels] = TestResult(numChannels, 2);
-
-					done.unhang;
-				});
+			action: { | outputBuffer |
+				outputBuffer.postln;
+				result = TestResult(outputBuffer.numFrames, 2);
 			}
 		);
 	}

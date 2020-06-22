@@ -1,5 +1,4 @@
 TestFluidAmpSlice : FluidUnitTest {
-
 	test_one_impulse {
 		FluidBufAmpSlice.process(
 			server,
@@ -12,23 +11,19 @@ TestFluidAmpSlice : FluidUnitTest {
 			onThreshold: 10,
 			offThreshold: 7,
 			floor: -60,
-			action: {
+			action: { | outputBuffer |
+				outputBuffer.postln;
+
 				result = Dictionary();
+				result[\numFrames] = TestResult(outputBuffer.numFrames, 1);
 
-				//query from the server, not lang!
-				resultBuffer.query({ | addr, bufnum, numFrames, numChannels, sampleRate |
-					result[\numFrames] = TestResult(numFrames, 1);
-
-					//Check if the returned index position is correct (middle of file)
-					if(numFrames == 1, {
-						resultBuffer.getn(0, numFrames, { | samples |
-							var tolerance = 0.1; //0.1% margin of error in sample position
-							var samplePositionTolerance = (oneImpulseBuffer.numFrames / 100) * tolerance;
-							result[\sampleIndex] = TestResultEquals(samples[0], serverSampleRate / 2, samplePositionTolerance);
-						});
+				//Check if the returned index position is correct (middle of file)
+				if(outputBuffer.numFrames == 1, {
+					outputBuffer.getn(0, outputBuffer.numFrames, { | samples |
+						var tolerance = 0.1; //0.1% margin of error in sample position
+						var samplePositionTolerance = (oneImpulseBuffer.numFrames / 100) * tolerance;
+						result[\sampleIndex] = TestResultEquals(samples[0], serverSampleRate / 2, samplePositionTolerance);
 					});
-
-					done.unhang;
 				});
 			}
 		);
@@ -45,13 +40,10 @@ TestFluidAmpSlice : FluidUnitTest {
 			onThreshold: 10,
 			offThreshold: 7,
 			floor: -60,
-			action: {
-				//query from the server, not lang!
-				resultBuffer.query({ | addr, bufnum, numFrames, numChannels, sampleRate |
-					result = TestResult(numFrames, 4);
+			action: { | outputBuffer |
+				outputBuffer.postln;
 
-					done.unhang;
-				});
+				result = TestResult(outputBuffer.numFrames, 4);
 			}
 		);
 	}
@@ -69,13 +61,10 @@ TestFluidAmpSlice : FluidUnitTest {
 			offThreshold: 10,
 			floor: -60,
 			minSliceLength: 800,
-			action: {
-				//query from the server, not lang!
-				resultBuffer.query({ | addr, bufnum, numFrames, numChannels, sampleRate |
-					result = TestResult(numFrames, 4);
+			action: { | outputBuffer |
+				outputBuffer.postln;
 
-					done.unhang;
-				});
+				result = TestResult(outputBuffer.numFrames, 4);
 			}
 		);
 	}
@@ -92,13 +81,10 @@ TestFluidAmpSlice : FluidUnitTest {
 			onThreshold: 10,
 			offThreshold: 5,
 			floor: -60,
-			action: {
-				//query from the server, not lang!
-				resultBuffer.query({ | addr, bufnum, numFrames, numChannels, sampleRate |
-					result = TestResult(numFrames, 4);
+			action: { | outputBuffer |
+				outputBuffer.postln;
 
-					done.unhang;
-				});
+				result = TestResult(outputBuffer.numFrames, 4);
 			}
 		);
 	}
@@ -116,13 +102,10 @@ TestFluidAmpSlice : FluidUnitTest {
 			offThreshold: 10,
 			floor: -60,
 			minSliceLength: 800,
-			action: {
-				//query from the server, not lang!
-				resultBuffer.query({ | addr, bufnum, numFrames, numChannels, sampleRate |
-					result = TestResult(numFrames, 4);
+			action: { | outputBuffer |
+				outputBuffer.postln;
 
-					done.unhang;
-				});
+				result = TestResult(outputBuffer.numFrames, 4);
 			}
 		);
 	}

@@ -7,12 +7,8 @@ TestFluidOnsetSlice : FluidUnitTest {
 			indices: resultBuffer,
 			metric:0,
 			action: {
-				//query from the server, not lang!
-				resultBuffer.query({ | addr, bufnum, numFrames, numChannels, sampleRate |
-					result = TestResult(numFrames, 4);
 
-					done.unhang;
-				});
+
 			}
 		)
 	}

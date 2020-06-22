@@ -8,7 +8,6 @@ FluidUnitTest : UnitTest {
 	//Per-method
 	var <completed = false;
 	var <>result = nil;       //This is the result on every iteration
-	var <>done;
 	var <>firstResult = ""; //This is the true result of the test: the one from first iteration
 	var <>execTime = 0;
 	var <oneImpulseBuffer, <impulsesBuffer, <sharpSineBuffer, <smoothSineBuffer;
@@ -74,9 +73,9 @@ FluidUnitTest : UnitTest {
 	}
 
 	initResultBuffer {
-		//resultBuffer = Buffer.new(server); //This doesn't always work.
-		resultBuffer = Buffer.new(server, 0, 0);
-		server.sendBundle(nil, resultBuffer.allocMsg); //Make sure to send the bundle to the correct server!
+		resultBuffer = Buffer.new(server); //This doesn't always work.
+		//resultBuffer = Buffer.new(server, 2, 0);
+		//server.sendBundle(nil, resultBuffer.allocMsg); //Make sure to send the bundle to the correct server!
 	}
 
 	//Initialize all needed buffers. This will be moved to the individual
@@ -153,16 +152,20 @@ FluidUnitTest : UnitTest {
 			execTime = t;
 			*/
 
+			this.perform(method.name);
+			server.sync;
+			firstResult = result;
+
+			/*
 			tAvg.do({ | i |
-				done = Condition.new;
 				t = Main.elapsedTime;
 				this.perform(method.name);
 				t = Main.elapsedTime - t;
 				execTime = t + execTime; //accumulate exec time
-				done.hang;
 				//Only store first result
 				if(i == 0, { firstResult = result });
 			});
+			*/
 
 			execTime = execTime / tAvg;
 
