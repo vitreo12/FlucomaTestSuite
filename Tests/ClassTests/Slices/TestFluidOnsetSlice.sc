@@ -1,5 +1,5 @@
 TestFluidOnsetSlice : FluidUnitTest {
-	test_impulse_energy {
+	test_one_impulse_energy {
 		FluidBufOnsetSlice.process(
 			server,
 			oneImpulseBuffer,
@@ -21,7 +21,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 		);
 	}
 
-	test_impulse_hfc {
+	test_one_impulse_hfc {
 		FluidBufOnsetSlice.process(
 			server,
 			oneImpulseBuffer,
@@ -43,7 +43,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 		);
 	}
 
-	test_impulse_spectralflux {
+	test_one_impulse_spectralflux {
 		FluidBufOnsetSlice.process(
 			server,
 			oneImpulseBuffer,
@@ -65,7 +65,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 		);
 	}
 
-	test_impulse_mkl {
+	test_one_impulse_mkl {
 		FluidBufOnsetSlice.process(
 			server,
 			oneImpulseBuffer,
@@ -87,7 +87,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 		);
 	}
 
-	test_impulse_is {
+	test_one_impulse_is {
 		FluidBufOnsetSlice.process(
 			server,
 			oneImpulseBuffer,
@@ -109,7 +109,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 		);
 	}
 
-	test_impulse_cosine {
+	test_one_impulse_cosine {
 		FluidBufOnsetSlice.process(
 			server,
 			oneImpulseBuffer,
@@ -131,7 +131,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 		);
 	}
 
-	test_impulse_phasedev {
+	test_one_impulse_phasedev {
 		FluidBufOnsetSlice.process(
 			server,
 			oneImpulseBuffer,
@@ -153,7 +153,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 		);
 	}
 
-	test_impulse_wphasedev {
+	test_one_impulse_wphasedev {
 		FluidBufOnsetSlice.process(
 			server,
 			oneImpulseBuffer,
@@ -175,7 +175,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 		);
 	}
 
-	test_impulse_complexdev {
+	test_one_impulse_complexdev {
 		FluidBufOnsetSlice.process(
 			server,
 			oneImpulseBuffer,
@@ -197,7 +197,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 		);
 	}
 
-	test_impulse_rcomplexdev {
+	test_one_impulse_rcomplexdev {
 		FluidBufOnsetSlice.process(
 			server,
 			oneImpulseBuffer,

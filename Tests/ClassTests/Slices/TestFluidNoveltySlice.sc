@@ -1,5 +1,5 @@
 TestFluidNoveltySlice : FluidUnitTest {
-	test_impulse_spectrum {
+	test_one_impulse_spectrum {
 		FluidBufNoveltySlice.process(
 			server,
 			oneImpulseBuffer,
@@ -22,6 +22,19 @@ TestFluidNoveltySlice : FluidUnitTest {
 						);
 					});
 				});
+			}
+		);
+	}
+
+	test_impulses_spectrum {
+		FluidBufNoveltySlice.process(
+			server,
+			oneImpulseBuffer,
+			indices: resultBuffer,
+			windowSize: 512,
+			fftSize: 1024,
+			action: { | outputBuffer |
+				result = TestResult(outputBuffer.numFrames, 4);
 			}
 		);
 	}
