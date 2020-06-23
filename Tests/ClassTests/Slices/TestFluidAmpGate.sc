@@ -9,10 +9,10 @@ TestFluidAmpGate : FluidUnitTest {
 			onThreshold:-12,
 			offThreshold:-12,
 			action: { | outputBuffer |
-				result = Dictionary();
+				result = Dictionary(3);
 
 				result[\numFrames] = TestResult(outputBuffer.numFrames, 1);
-				result[\numChannels] = TestResult(outputBuffer.numChannels, 1);
+				result[\numChannels] = TestResult(outputBuffer.numChannels, 2);
 
 				//Check if the returned index position is correct (middle of file)
 				if(outputBuffer.numFrames == 1, {
@@ -36,7 +36,7 @@ TestFluidAmpGate : FluidUnitTest {
 			onThreshold:-12,
 			offThreshold:-16,
 			action: { | outputBuffer |
-				result = Dictionary();
+				result = Dictionary(2);
 				result[\numFrames] = TestResult(outputBuffer.numFrames, 2);
 				result[\numChannels] = TestResult(outputBuffer.numChannels, 2);
 			}
@@ -53,7 +53,7 @@ TestFluidAmpGate : FluidUnitTest {
 			onThreshold:-12,
 			offThreshold:-18,
 			action: { | outputBuffer |
-				result = Dictionary();
+				result = Dictionary(2);
 				result[\numFrames] = TestResult(outputBuffer.numFrames, 4);
 				result[\numChannels] = TestResult(outputBuffer.numChannels, 2);
 			}
@@ -70,9 +70,9 @@ TestFluidAmpGate : FluidUnitTest {
 			onThreshold:-12,
 			offThreshold:-12,
 			action: { | outputBuffer |
-				result = Dictionary();
+				result = Dictionary(2);
 				result[\numFrames] = TestResult(outputBuffer.numFrames, 4);
-				result[\numChannels] = TestResult(outputBuffer.numChannels, 1);
+				result[\numChannels] = TestResult(outputBuffer.numChannels, 2);
 			}
 		);
 	}

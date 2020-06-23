@@ -10,7 +10,9 @@ FluidUnitTest : UnitTest {
 	var <>result = "";       //This is the result on every iteration
 	var <>firstResult = ""; //This is the true result of the test: the one from first iteration
 	var <>execTime = 0;
-	var <oneImpulseBuffer, <impulsesBuffer, <sharpSineBuffer, <smoothSineBuffer;
+
+	var <oneImpulseBuffer, <impulsesBuffer, <sharpSineBuffer, <smoothSineBuffer, <drumsBuffer;
+
 	var <resultBuffer;
 	var <>maxWaitTime = 30;
 	var server;
@@ -87,6 +89,10 @@ FluidUnitTest : UnitTest {
 		impulsesBuffer = Buffer.sendCollection(server, impulsesArray);
 		sharpSineBuffer = Buffer.sendCollection(server, sharpSineArray);
 		smoothSineBuffer = Buffer.sendCollection(server, smoothSineArray);
+		drumsBuffer = Buffer.read(
+			server,
+			File.realpath(FluidBufNoveltySlice.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Tremblay-AaS-AcousticStrums-M.wav"
+		);
 
 		this.initResultBuffer;
 	}

@@ -6,7 +6,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 			indices: resultBuffer,
 			metric: 0,
 			action: { | outputBuffer |
-				result = Dictionary();
+				result = Dictionary(2);
 				result[\numFrames] = TestResult(outputBuffer.numFrames, 1);
 
 				//Check if the returned index position is correct (middle of file)
@@ -28,7 +28,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 			indices: resultBuffer,
 			metric: 1,
 			action: { | outputBuffer |
-				result = Dictionary();
+				result = Dictionary(2);
 				result[\numFrames] = TestResult(outputBuffer.numFrames, 1);
 
 				//Check if the returned index position is correct (middle of file)
@@ -50,7 +50,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 			indices: resultBuffer,
 			metric: 2,
 			action: { | outputBuffer |
-				result = Dictionary();
+				result = Dictionary(2);
 				result[\numFrames] = TestResult(outputBuffer.numFrames, 1);
 
 				//Check if the returned index position is correct (middle of file)
@@ -72,7 +72,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 			indices: resultBuffer,
 			metric: 3,
 			action: { | outputBuffer |
-				result = Dictionary();
+				result = Dictionary(2);
 				result[\numFrames] = TestResult(outputBuffer.numFrames, 1);
 
 				//Check if the returned index position is correct (middle of file)
@@ -94,7 +94,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 			indices: resultBuffer,
 			metric: 4,
 			action: { | outputBuffer |
-				result = Dictionary();
+				result = Dictionary(2);
 				result[\numFrames] = TestResult(outputBuffer.numFrames, 1);
 
 				//Check if the returned index position is correct (middle of file)
@@ -116,7 +116,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 			indices: resultBuffer,
 			metric: 5,
 			action: { | outputBuffer |
-				result = Dictionary();
+				result = Dictionary(2);
 				result[\numFrames] = TestResult(outputBuffer.numFrames, 1);
 
 				//Check if the returned index position is correct (middle of file)
@@ -138,7 +138,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 			indices: resultBuffer,
 			metric: 6,
 			action: { | outputBuffer |
-				result = Dictionary();
+				result = Dictionary(2);
 				result[\numFrames] = TestResult(outputBuffer.numFrames, 1);
 
 				//Check if the returned index position is correct (middle of file)
@@ -160,7 +160,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 			indices: resultBuffer,
 			metric: 7,
 			action: { | outputBuffer |
-				result = Dictionary();
+				result = Dictionary(2);
 				result[\numFrames] = TestResult(outputBuffer.numFrames, 1);
 
 				//Check if the returned index position is correct (middle of file)
@@ -182,7 +182,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 			indices: resultBuffer,
 			metric: 8,
 			action: { | outputBuffer |
-				result = Dictionary();
+				result = Dictionary(2);
 				result[\numFrames] = TestResult(outputBuffer.numFrames, 1);
 
 				//Check if the returned index position is correct (middle of file)
@@ -204,7 +204,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 			indices: resultBuffer,
 			metric: 9,
 			action: { | outputBuffer |
-				result = Dictionary();
+				result = Dictionary(2);
 				result[\numFrames] = TestResult(outputBuffer.numFrames, 1);
 
 				//Check if the returned index position is correct (middle of file)
