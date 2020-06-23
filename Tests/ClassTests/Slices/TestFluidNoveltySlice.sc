@@ -4,6 +4,7 @@ TestFluidNoveltySlice : FluidUnitTest {
 			server,
 			oneImpulseBuffer,
 			indices: resultBuffer,
+			feature: 0,
 			windowSize: 512,
 			fftSize: 1024,
 			action: { | outputBuffer |
@@ -29,8 +30,9 @@ TestFluidNoveltySlice : FluidUnitTest {
 	test_impulses_spectrum {
 		FluidBufNoveltySlice.process(
 			server,
-			oneImpulseBuffer,
+			impulsesBuffer,
 			indices: resultBuffer,
+			feature: 0,
 			windowSize: 512,
 			fftSize: 1024,
 			action: { | outputBuffer |
@@ -39,4 +41,35 @@ TestFluidNoveltySlice : FluidUnitTest {
 		);
 	}
 
+	test_sharp_sine_spectrum {
+		FluidBufNoveltySlice.process(
+			server,
+			sharpSineBuffer,
+			indices: resultBuffer,
+			feature: 0,
+			threshold: 0.4,
+			windowSize: 512,
+			fftSize: 1024,
+			minSliceLength: 4,
+			action: { | outputBuffer |
+				result = TestResult(outputBuffer.numFrames, 4);
+			}
+		);
+	}
+
+	test_smooth_sine_spectrum {
+		FluidBufNoveltySlice.process(
+			server,
+			smoothSineBuffer,
+			indices: resultBuffer,
+			feature: 0,
+			threshold: 0.35,
+			windowSize: 512,
+			fftSize: 1024,
+			minSliceLength: 30,
+			action: { | outputBuffer |
+				result = TestResult(outputBuffer.numFrames, 2);
+			}
+		);
+	}
 }

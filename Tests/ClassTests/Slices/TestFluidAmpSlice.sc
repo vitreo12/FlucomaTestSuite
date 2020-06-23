@@ -65,7 +65,7 @@ TestFluidAmpSlice : FluidUnitTest {
 		);
 	}
 
-	test_sine_num_slices_schmitt {
+	test_sharp_sine_num_slices_schmitt {
 		FluidBufAmpSlice.process(
 			server,
 			sharpSineBuffer,
@@ -83,7 +83,7 @@ TestFluidAmpSlice : FluidUnitTest {
 		);
 	}
 
-	test_sine_num_slices_minslicelength {
+	test_sharp_sine_num_slices_minslicelength {
 		FluidBufAmpSlice.process(
 			server,
 			sharpSineBuffer,
