@@ -74,6 +74,7 @@ FluidUnitTest : UnitTest {
 
 	initResultBuffer {
 		resultBuffer = Buffer.new(server);
+
 		//Would this be better?? :
 		//resultBuffer = Buffer.new(server, 0, 0);
 		//server.sendBundle(nil, resultBuffer.allocMsg);
@@ -105,6 +106,8 @@ FluidUnitTest : UnitTest {
 			NetAddr("127.0.0.1", 5000 + uniqueID),
 			serverOptions
 		);
+
+		//If boot fails, it should try again with a different addr until it finds one that works
 		server.bootSync;
 		server.initTree; //make sure to init the default group!
 	}
@@ -114,19 +117,6 @@ FluidUnitTest : UnitTest {
 		server.quit.remove;
 		completed = true;
 	}
-
-	/*
-	bootServer {
-		this.setUp;
-		server.waitForBoot({
-			server.initTree;
-			server.name.asString.error;
-			this.tearDown;
-		}, onFailure: {
-			this.bootServer;
-		});
-	}
-	*/
 
 	runTestMethod { | method |
 		var t, tAvg = 5; //run 5 times to average execution time
@@ -143,7 +133,6 @@ FluidUnitTest : UnitTest {
 				this.perform(method.name);
 				t = Main.elapsedTime - t;
 				execTime = t + execTime; //accumulate exec time
-				//server.sync; //This is essential in order for the query of resultBuffer to work
 				if(i == 0, { firstResult = result }); //Only consider the first result
 			});
 

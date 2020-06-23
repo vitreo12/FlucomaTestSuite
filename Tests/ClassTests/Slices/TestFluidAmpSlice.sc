@@ -1,5 +1,4 @@
 TestFluidAmpSlice : FluidUnitTest {
-
 	test_one_impulse {
 		FluidBufAmpSlice.process(
 			server,
@@ -19,7 +18,7 @@ TestFluidAmpSlice : FluidUnitTest {
 
 				//Check if the returned index position is correct (middle of file)
 				if(outputBuffer.numFrames == 1, {
-					resultBuffer.getn(0, outputBuffer.numFrames, { | samples |
+					outputBuffer.getn(0, outputBuffer.numFrames, { | samples |
 						var tolerance = 0.1; //0.1% margin of error in sample position
 						var samplePositionTolerance = (oneImpulseBuffer.numFrames / 100) * tolerance;
 						result[\sampleIndex] = TestResultEquals(samples[0], serverSampleRate / 2, samplePositionTolerance);
@@ -28,6 +27,7 @@ TestFluidAmpSlice : FluidUnitTest {
 			}
 		);
 	}
+
 	test_impulses_num_slices_schmitt {
 		FluidBufAmpSlice.process(
 			server,
