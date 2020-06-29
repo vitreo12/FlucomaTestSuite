@@ -67,11 +67,15 @@ FluidUnitTest : UnitTest {
 		});
 
 		multipleSinesArray = Signal.newClear(serverSampleRate).sineFill2([
-			[440, 0.25, rrand(-2pi, 2pi)],
-			[660, 0.25, rrand(-2pi, 2pi)],
-			[880, 0.25, rrand(-2pi, 2pi)],
-			[1000, 0.25, rrand(-2pi, 2pi)]
+			[440, 0.2, rrand(-2pi, 2pi)],
+			[660, 0.2, rrand(-2pi, 2pi)],
+			[880, 0.2, rrand(-2pi, 2pi)],
+			[1000, 0.2, rrand(-2pi, 2pi)]
 		]);
+
+		multipleSinesNoiseArray = multipleSinesArray.copy.overDub(
+			Signal.fill(serverSampleRate, { 0.2.bilinrand })
+		);
 	}
 
 	//Individual method test run
@@ -109,6 +113,7 @@ FluidUnitTest : UnitTest {
 		);
 
 		multipleSinesBuffer = Buffer.sendCollection(server, multipleSinesArray);
+		multipleSinesNoiseBuffer = Buffer.sendCollection(server, multipleSinesNoiseArray);
 
 		this.initResultBuffer;
 	}
