@@ -20,8 +20,6 @@ FlucomaTestSuite {
 		var flucomaTestClasses = FluidUnitTest.allSubclasses;
 		var flucomaTestClassesSize = flucomaTestClasses.size;
 
-		flucomaTestClasses.postln;
-
 		classesDict = Dictionary.new(flucomaTestClassesSize);
 		resultsDict = Dictionary.new(flucomaTestClassesSize);
 
@@ -41,6 +39,9 @@ FlucomaTestSuite {
 		var isStandaloneTest = false;
 		var classString = class.asString;
 
+		//Remove Buf
+		classString = classString.replace("Buf", "");
+
 		//Accepts both TestFluidAmpGate and FluidAmpGate.
 		//Will return Class not found if error.
 		if(classString.beginsWith("Test").not, {
@@ -49,9 +50,6 @@ FlucomaTestSuite {
 		}, {
 			classStringWithoutTest = classString[4..];
 		});
-
-		//Remove Buf
-		classStringWithoutTest.replace("Buf", "");
 
 		methodsArray = classesDict[class];
 		resultDict = Dictionary.new(methodsArray.size);

@@ -9,7 +9,9 @@ FluidUnitTest : UnitTest {
 	classvar <multipleSinesArray, <multipleSinesNoiseArray;
 
 	//These are used in Slicers
-	var <oneImpulseBuffer, <impulsesBuffer, <sharpSineBuffer, <smoothSineBuffer, <drumsBuffer;
+	var <oneImpulseBuffer, <impulsesBuffer, <sharpSineBuffer, <smoothSineBuffer;
+
+	var <eurorackSynthBuffer, <drumsBuffer;
 
 	//These are used in Layers
 	var <multipleSinesBuffer, <multipleSinesNoiseBuffer;
@@ -111,6 +113,11 @@ FluidUnitTest : UnitTest {
 			server,
 			File.realpath(FluidBufNoveltySlice.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Tremblay-AaS-AcousticStrums-M.wav"
 		);
+		eurorackSynthBuffer = Buffer.read(
+			server,
+			File.realpath(FluidBufTransients.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Tremblay-AaS-SynthTwoVoices-M.wav"
+		);
+
 
 		multipleSinesBuffer = Buffer.sendCollection(server, multipleSinesArray);
 		multipleSinesNoiseBuffer = Buffer.sendCollection(server, multipleSinesNoiseArray);
