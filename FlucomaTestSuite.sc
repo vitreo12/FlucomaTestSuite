@@ -20,11 +20,10 @@ FlucomaTestSuite {
 		var flucomaTestClasses = FluidUnitTest.allSubclasses;
 		var flucomaTestClassesSize = flucomaTestClasses.size;
 
+		flucomaTestClasses.postln;
+
 		classesDict = Dictionary.new(flucomaTestClassesSize);
 		resultsDict = Dictionary.new(flucomaTestClassesSize);
-
-		//DIRTY: subtract the subclasses named FluidSliceUnitTest, FluidLayerUnitTest, etc...
-		//totalNumClasses = flucomaTestClassesSize - 4;
 
 		flucomaTestClasses.do({ | testClass |
 			var testClassMethods = testClass.findTestMethods;
@@ -37,7 +36,7 @@ FlucomaTestSuite {
 
 	//Running single tests is quite bad right now
 	*runTestClass { | class, classCondition |
-		var classStringWithoutTest, resultDict, methodsArray;
+		var classStringWithoutTest, classStringWithoutBuf, resultDict, methodsArray;
 		var countMethods = 0, totalMethods = 0;
 		var isStandaloneTest = false;
 		var classString = class.asString;
@@ -50,6 +49,9 @@ FlucomaTestSuite {
 		}, {
 			classStringWithoutTest = classString[4..];
 		});
+
+		//Remove Buf
+		classStringWithoutTest.replace("Buf", "");
 
 		methodsArray = classesDict[class];
 		resultDict = Dictionary.new(methodsArray.size);

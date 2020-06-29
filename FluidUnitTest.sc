@@ -2,16 +2,23 @@ FluidUnitTest : UnitTest {
 	//Run all tests at serverSamplerate
 	classvar <serverSampleRate = 44100;
 
-	//Shared across all tests
+	//These are used in Slicers
 	classvar <oneImpulseArray, <impulsesArray, <sharpSineArray, <smoothSineArray;
+
+	//These are used in Layers
+	classvar <multipleSinesArray, <multipleSinesNoiseArray;
+
+	//These are used in Slicers
+	var <oneImpulseBuffer, <impulsesBuffer, <sharpSineBuffer, <smoothSineBuffer, <drumsBuffer;
+
+	//These are used in Layers
+	var <multipleSinesBuffer, <multipleSinesNoiseBuffer;
 
 	//Per-method
 	var <completed = false;
 	var <>result = "";       //This is the result on every iteration
 	var <>firstResult = ""; //This is the true result of the test: the one from first iteration
 	var <>execTime = 0;
-
-	var <oneImpulseBuffer, <impulsesBuffer, <sharpSineBuffer, <smoothSineBuffer, <drumsBuffer;
 
 	var <resultBuffer;
 	var <>maxWaitTime = 30;
@@ -58,6 +65,13 @@ FluidUnitTest : UnitTest {
 		smoothSineArray = Array.fill(serverSampleRate,{| i |
 			sin(i * pi/ (serverSampleRate  / 640)) * (sin(i * pi / (serverSampleRate / 2))).abs
 		});
+
+		multipleSinesArray = Signal.newClear(serverSampleRate).sineFill2([
+			[440, 0.25, rrand(-2pi, 2pi)],
+			[660, 0.25, rrand(-2pi, 2pi)],
+			[880, 0.25, rrand(-2pi, 2pi)],
+			[1000, 0.25, rrand(-2pi, 2pi)]
+		]);
 	}
 
 	//Individual method test run
@@ -93,6 +107,8 @@ FluidUnitTest : UnitTest {
 			server,
 			File.realpath(FluidBufNoveltySlice.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Tremblay-AaS-AcousticStrums-M.wav"
 		);
+
+		multipleSinesBuffer = Buffer.sendCollection(server, multipleSinesArray);
 
 		this.initResultBuffer;
 	}
