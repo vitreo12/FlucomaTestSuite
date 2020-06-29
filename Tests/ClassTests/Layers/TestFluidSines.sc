@@ -92,13 +92,7 @@ TestFluidSines : FluidUnitTest {
 			residual: residualBuffer,
 			action: {
 				var ampTolerance = 0.0001;
-				var sinesArray, residualArray, /*eurorackSynthArray,*/ nullSum = true;
-
-				/*
-				eurorackSynthBuffer.loadToFloatArray(action: { | argEurorackSynthArray |
-					eurorackSynthArray = argEurorackSynthArray;
-				});
-				*/
+				var sinesArray, residualArray, nullSum = true;
 
 				resultBuffer.loadToFloatArray(action: { | argSinesArray |
 					sinesArray = argSinesArray;

@@ -21,13 +21,7 @@ TestFluidTransients : FluidUnitTest {
 			residual: residualBuffer,
 			action: {
 				var ampTolerance = 0.0001;
-				var transientsArray, residualArray, /*eurorackSynthArray,*/ nullSum = true;
-
-				/*
-				eurorackSynthBuffer.loadToFloatArray(action: { | argEurorackSynthArray |
-					eurorackSynthArray = argEurorackSynthArray;
-				});
-				*/
+				var transientsArray, residualArray, nullSum = true;
 
 				resultBuffer.loadToFloatArray(action: { | argTransientsArray |
 					transientsArray = argTransientsArray;
