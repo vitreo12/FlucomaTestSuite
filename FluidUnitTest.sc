@@ -8,13 +8,17 @@ FluidUnitTest : UnitTest {
 	//These are used in Layers
 	classvar <multipleSinesArray, <multipleSinesNoiseArray;
 
+	//Samples
+	classvar <eurorackSynthArray, <drumsArray;
+
 	//These are used in Slicers
 	var <oneImpulseBuffer, <impulsesBuffer, <sharpSineBuffer, <smoothSineBuffer;
 
-	var <eurorackSynthBuffer, <drumsBuffer;
-
 	//These are used in Layers
 	var <multipleSinesBuffer, <multipleSinesNoiseBuffer;
+
+	//Samples
+	var <eurorackSynthBuffer, <drumsBuffer;
 
 	//Per-method
 	var <completed = false;
@@ -102,6 +106,38 @@ FluidUnitTest : UnitTest {
 		//server.sendBundle(nil, resultBuffer.allocMsg);
 	}
 
+	initSampleBuffers {
+		drumsBuffer = Buffer.read(
+			server,
+			File.realpath(FluidBufTransients.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Tremblay-AaS-AcousticStrums-M.wav"
+		);
+
+		eurorackSynthBuffer = Buffer.read(
+			server,
+			File.realpath(FluidBufTransients.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Tremblay-AaS-SynthTwoVoices-M.wav"
+		);
+
+		server.sync;
+
+		//First time samples are loaded, also load them to the classvar Arrays.
+		//This will be thread safe in sclang,
+		//so no worries about multiple .loadToFloatArray on parallel servers!
+
+		if(drumsArray.isNil, {
+			drumsBuffer.loadToFloatArray(action: { | argDrumsArray |
+				drumsArray = argDrumsArray;
+			});
+		});
+
+		if(eurorackSynthArray.isNil, {
+			eurorackSynthBuffer.loadToFloatArray(action: { | argEurorackSynthArray |
+				eurorackSynthArray = argEurorackSynthArray;
+			});
+		});
+
+		server.sync;
+	}
+
 	//Initialize all needed buffers. This will be moved to the individual
 	//Slice / Layer / etc subclasses, together with the corresponding classvar Arrays
 	initBuffers {
@@ -109,19 +145,11 @@ FluidUnitTest : UnitTest {
 		impulsesBuffer = Buffer.sendCollection(server, impulsesArray);
 		sharpSineBuffer = Buffer.sendCollection(server, sharpSineArray);
 		smoothSineBuffer = Buffer.sendCollection(server, smoothSineArray);
-		drumsBuffer = Buffer.read(
-			server,
-			File.realpath(FluidBufNoveltySlice.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Tremblay-AaS-AcousticStrums-M.wav"
-		);
-		eurorackSynthBuffer = Buffer.read(
-			server,
-			File.realpath(FluidBufTransients.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Tremblay-AaS-SynthTwoVoices-M.wav"
-		);
-
 
 		multipleSinesBuffer = Buffer.sendCollection(server, multipleSinesArray);
 		multipleSinesNoiseBuffer = Buffer.sendCollection(server, multipleSinesNoiseArray);
 
+		this.initSampleBuffers;
 		this.initResultBuffer;
 	}
 
