@@ -14,6 +14,7 @@ TestFluidHPSS : FluidUnitTest {
 			harmonic: resultBuffer,
 			percussive: percussiveBuffer,
 			residual: residualBuffer,
+			maskingMode:2,
 			action: {
 				var ampTolerance = 0.0001;
 				var harmonicArray, percussiveArray, residualArray, nullSum = true;
