@@ -12,7 +12,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 				//Check if the returned index position is correct (middle of file)
 				if(outputBuffer.numFrames == 1, {
 					outputBuffer.getn(0, outputBuffer.numFrames, { | samples |
-						var tolerance = 0.5; //0.5% margin of error in sample position
+						var tolerance = 1.0; //1.0% margin of error in sample position
 						var samplePositionTolerance = (oneImpulseBuffer.numFrames / 100) * tolerance;
 						result[\sampleIndex] = TestResultEquals(samples[0], serverSampleRate / 2, samplePositionTolerance);
 					});
@@ -34,7 +34,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 				//Check if the returned index position is correct (middle of file)
 				if(outputBuffer.numFrames == 1, {
 					outputBuffer.getn(0, outputBuffer.numFrames, { | samples |
-						var tolerance = 0.5; //0.5% margin of error in sample position
+						var tolerance = 1.0; //1.0% margin of error in sample position
 						var samplePositionTolerance = (oneImpulseBuffer.numFrames / 100) * tolerance;
 						result[\sampleIndex] = TestResultEquals(samples[0], serverSampleRate / 2, samplePositionTolerance);
 					});
@@ -56,7 +56,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 				//Check if the returned index position is correct (middle of file)
 				if(outputBuffer.numFrames == 1, {
 					outputBuffer.getn(0, outputBuffer.numFrames, { | samples |
-						var tolerance = 0.5; //0.5% margin of error in sample position
+						var tolerance = 1.0; //1.0% margin of error in sample position
 						var samplePositionTolerance = (oneImpulseBuffer.numFrames / 100) * tolerance;
 						result[\sampleIndex] = TestResultEquals(samples[0], serverSampleRate / 2, samplePositionTolerance);
 					});
@@ -78,7 +78,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 				//Check if the returned index position is correct (middle of file)
 				if(outputBuffer.numFrames == 1, {
 					outputBuffer.getn(0, outputBuffer.numFrames, { | samples |
-						var tolerance = 0.5; //0.5% margin of error in sample position
+						var tolerance = 1.0; //1.0% margin of error in sample position
 						var samplePositionTolerance = (oneImpulseBuffer.numFrames / 100) * tolerance;
 						result[\sampleIndex] = TestResultEquals(samples[0], serverSampleRate / 2, samplePositionTolerance);
 					});
@@ -100,7 +100,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 				//Check if the returned index position is correct (middle of file)
 				if(outputBuffer.numFrames == 1, {
 					outputBuffer.getn(0, outputBuffer.numFrames, { | samples |
-						var tolerance = 0.5; //0.5% margin of error in sample position
+						var tolerance = 1.0; //1.0% margin of error in sample position
 						var samplePositionTolerance = (oneImpulseBuffer.numFrames / 100) * tolerance;
 						result[\sampleIndex] = TestResultEquals(samples[0], serverSampleRate / 2, samplePositionTolerance);
 					});
@@ -122,7 +122,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 				//Check if the returned index position is correct (middle of file)
 				if(outputBuffer.numFrames == 1, {
 					outputBuffer.getn(0, outputBuffer.numFrames, { | samples |
-						var tolerance = 0.5; //0.5% margin of error in sample position
+						var tolerance = 1.0; //1.0% margin of error in sample position
 						var samplePositionTolerance = (oneImpulseBuffer.numFrames / 100) * tolerance;
 						result[\sampleIndex] = TestResultEquals(samples[0], serverSampleRate / 2, samplePositionTolerance);
 					});
@@ -144,7 +144,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 				//Check if the returned index position is correct (middle of file)
 				if(outputBuffer.numFrames == 1, {
 					outputBuffer.getn(0, outputBuffer.numFrames, { | samples |
-						var tolerance = 0.5; //0.5% margin of error in sample position
+						var tolerance = 1.0; //1.0% margin of error in sample position
 						var samplePositionTolerance = (oneImpulseBuffer.numFrames / 100) * tolerance;
 						result[\sampleIndex] = TestResultEquals(samples[0], serverSampleRate / 2, samplePositionTolerance);
 					});
@@ -166,7 +166,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 				//Check if the returned index position is correct (middle of file)
 				if(outputBuffer.numFrames == 1, {
 					outputBuffer.getn(0, outputBuffer.numFrames, { | samples |
-						var tolerance = 0.5; //0.5% margin of error in sample position
+						var tolerance = 1.0; //1.0% margin of error in sample position
 						var samplePositionTolerance = (oneImpulseBuffer.numFrames / 100) * tolerance;
 						result[\sampleIndex] = TestResultEquals(samples[0], serverSampleRate / 2, samplePositionTolerance);
 					});
@@ -188,7 +188,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 				//Check if the returned index position is correct (middle of file)
 				if(outputBuffer.numFrames == 1, {
 					outputBuffer.getn(0, outputBuffer.numFrames, { | samples |
-						var tolerance = 0.5; //0.5% margin of error in sample position
+						var tolerance = 1.0; //1.0% margin of error in sample position
 						var samplePositionTolerance = (oneImpulseBuffer.numFrames / 100) * tolerance;
 						result[\sampleIndex] = TestResultEquals(samples[0], serverSampleRate / 2, samplePositionTolerance);
 					});
@@ -210,7 +210,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 				//Check if the returned index position is correct (middle of file)
 				if(outputBuffer.numFrames == 1, {
 					outputBuffer.getn(0, outputBuffer.numFrames, { | samples |
-						var tolerance = 0.5; //0.5% margin of error in sample position
+						var tolerance = 1.0; //1.0% margin of error in sample position
 						var samplePositionTolerance = (oneImpulseBuffer.numFrames / 100) * tolerance;
 						result[\sampleIndex] = TestResultEquals(samples[0], serverSampleRate / 2, samplePositionTolerance);
 					});
