@@ -30,6 +30,9 @@ TestFluidPitch : FluidUnitTest {
 
 				//Check pitch is around 220hz +/- 40hz
 				result[\pitch] = TestResultEquals(pitch, 220, 40);
+
+				//Check onfidence is above 0.5
+				result[\confidence] = TestResult(confidence >= 0.5, true);
 			}
 		)
 	}
