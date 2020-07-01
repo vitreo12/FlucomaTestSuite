@@ -15,10 +15,10 @@ TestFluidLoudness : FluidUnitTest {
 				resultBuffer.getn(32, 6, { |x|
 					x.collect({ | item, index |
 						index = index + 1; //start counting from 1
-						if(index % 2 == 0, {
-							loudness = (loudness.dbamp) + item
+						if(index % 2 != 0, {
+							loudness = loudness + item.dbamp
 						}, {
-							truepeak = (truepeak.dbamp) + item
+							truepeak = truepeak + item.dbamp
 						});
 					})
 				});
@@ -30,6 +30,9 @@ TestFluidLoudness : FluidUnitTest {
 
 				//Check loundness is around 0.5 (amp)
 				result[\loudness] = TestResultEquals(loudness, 0.5, 0.1);
+
+				//Check peak is aroun 1 (amp)
+				result[\truepeak] = TestResultEquals(loudness, 1.0, 0.1);
 			}
 		)
 	}
