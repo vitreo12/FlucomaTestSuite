@@ -8,6 +8,9 @@ FluidUnitTest : UnitTest {
 	//These are used in Layers
 	classvar <multipleSinesArray, <multipleSinesNoiseArray;
 
+	//These are used in descriptors
+	classvar <sineBurstArray;
+
 	//Samples
 	classvar <eurorackSynthArray, <drumsArray;
 
@@ -16,6 +19,9 @@ FluidUnitTest : UnitTest {
 
 	//These are used in Layers
 	var <multipleSinesBuffer, <multipleSinesNoiseBuffer;
+
+	//These are used in Descriptors
+	var <sineBurstBuffer;
 
 	//Samples
 	var <eurorackSynthBuffer, <drumsBuffer;
@@ -82,6 +88,10 @@ FluidUnitTest : UnitTest {
 		multipleSinesNoiseArray = multipleSinesArray.copy.overDub(
 			Signal.fill(serverSampleRate, { 0.2.bilinrand })
 		);
+
+		sineBurstArray = Array.fill(8192,{0}) ++
+		(Signal.sineFill(1203,[0,0,0,0,0,1],[0,0,0,0,0,0.5pi]).takeThese({|x,i|i>1023}))
+		++ Array.fill(8192,{0});
 	}
 
 	//Individual method test run
@@ -148,6 +158,8 @@ FluidUnitTest : UnitTest {
 
 		multipleSinesBuffer = Buffer.sendCollection(server, multipleSinesArray);
 		multipleSinesNoiseBuffer = Buffer.sendCollection(server, multipleSinesNoiseArray);
+
+		sineBurstBuffer = Buffer.sendCollection(server, sineBurstArray);
 
 		this.initSampleBuffers;
 		this.initResultBuffer;
