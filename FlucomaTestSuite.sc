@@ -32,10 +32,6 @@ FlucomaTestSuite {
 		totalNumClasses = classesDict.size;
 	}
 
-	*runTestClass { | class |
-		this.runTestClass_inner(class, nil);
-	}
-
 	*runTestClass_inner { | class, classCondition |
 		var classStringWithoutTest, classStringWithoutBuf, resultDict, methodsArray;
 		var countMethods = 0, totalMethods = 0;
@@ -121,7 +117,11 @@ FlucomaTestSuite {
 		}
 	}
 
-	*runAll {
+	*runTestClass { | class |
+		this.runTestClass_inner(class, nil);
+	}
+
+	*runAllTests {
 		if(running, {
 			"The FluCoMa test suite is already running".error;
 			^nil;
