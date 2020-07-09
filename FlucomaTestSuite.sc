@@ -7,10 +7,12 @@ FlucomaTestSuite {
 	classvar <resultsDict;
 	classvar <classesDict, <totalNumClasses;
 
-	*serverSampleRate_ { | sampleRate |
-		serverSampleRate = sampleRate;
-		FluidUnitTest.serverSampleRate_(sampleRate);
+	*sampleRate_ { | val |
+		serverSampleRate = val;
+		FluidUnitTest.serverSampleRate_(val);
 	}
+
+	*sampleRate { ^serverSampleRate }
 
 	*initClass {
 		this.reset;
