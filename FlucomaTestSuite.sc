@@ -14,9 +14,7 @@ FlucomaTestSuite {
 
 	*sampleRate { ^serverSampleRate }
 
-	*initClass {
-		this.reset;
-	}
+	*initClass { this.reset }
 
 	*reset {
 		var flucomaTestClasses = FluidUnitTest.allSubclasses;
