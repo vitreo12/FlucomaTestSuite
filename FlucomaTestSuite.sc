@@ -32,8 +32,11 @@ FlucomaTestSuite {
 		totalNumClasses = classesDict.size;
 	}
 
-	//Running single tests is quite bad right now
-	*runTestClass { | class, classCondition |
+	*runTestClass { | class |
+		this.runTestClass_inner(class, nil);
+	}
+
+	*runTestClass_inner { | class, classCondition |
 		var classStringWithoutTest, classStringWithoutBuf, resultDict, methodsArray;
 		var countMethods = 0, totalMethods = 0;
 		var isStandaloneTest = false;
@@ -134,7 +137,7 @@ FlucomaTestSuite {
 		fork {
 			classesDict.keys.do({ | class |
 				var classCondition = Condition.new;
-				this.runTestClass(class, classCondition, true);
+				this.runTestClass_inner(class, classCondition);
 				//Wait for completion of all methods before running a new Class
 				classCondition.hang;
 				classCounter = classCounter + 1;
