@@ -7,13 +7,13 @@ TestFluidNoveltySlice : FluidUnitTest {
 			feature: 0,
 			windowSize: 512,
 			fftSize: 1024,
-			action: { | outputBuffer |
+			action: {
 				result = Dictionary(2);
-				result[\numFrames] = TestResult(outputBuffer.numFrames, 1);
+				result[\numFrames] = TestResult(resultBuffer.numFrames, 1);
 
 				//Check if the returned index position is correct (middle of file)
-				if(outputBuffer.numFrames == 1, {
-					outputBuffer.getn(0, outputBuffer.numFrames, { | samples |
+				if(resultBuffer.numFrames == 1, {
+					resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
 						var tolerance = 0.1; //0.1% margin of error in sample position
 						var samplePositionTolerance = 1024 + ((oneImpulseBuffer.numFrames / 100) * tolerance); //also consider fft size
 						result[\sampleIndex] = TestResultEquals(
@@ -35,8 +35,8 @@ TestFluidNoveltySlice : FluidUnitTest {
 			feature: 0,
 			windowSize: 512,
 			fftSize: 1024,
-			action: { | outputBuffer |
-				result = TestResult(outputBuffer.numFrames, 4);
+			action: {
+				result = TestResult(resultBuffer.numFrames, 4);
 			}
 		);
 	}
@@ -51,8 +51,8 @@ TestFluidNoveltySlice : FluidUnitTest {
 			windowSize: 512,
 			fftSize: 1024,
 			minSliceLength: 4,
-			action: { | outputBuffer |
-				result = TestResult(outputBuffer.numFrames, 4);
+			action: {
+				result = TestResult(resultBuffer.numFrames, 4);
 			}
 		);
 	}
@@ -67,8 +67,8 @@ TestFluidNoveltySlice : FluidUnitTest {
 			windowSize: 512,
 			fftSize: 1024,
 			minSliceLength: 30,
-			action: { | outputBuffer |
-				result = TestResult(outputBuffer.numFrames, 2);
+			action: {
+				result = TestResult(resultBuffer.numFrames, 2);
 			}
 		);
 	}

@@ -8,15 +8,15 @@ TestFluidAmpGate : FluidUnitTest {
 			rampDown:25,
 			onThreshold:-12,
 			offThreshold:-12,
-			action: { | outputBuffer |
+			action: {
 				result = Dictionary(3);
 
-				result[\numFrames] = TestResult(outputBuffer.numFrames, 1);
-				result[\numChannels] = TestResult(outputBuffer.numChannels, 2);
+				result[\numFrames] = TestResult(resultBuffer.numFrames, 1);
+				result[\numChannels] = TestResult(resultBuffer.numChannels, 2);
 
 				//Check if the returned index position is correct (middle of file)
-				if(outputBuffer.numFrames == 1, {
-					outputBuffer.getn(0, outputBuffer.numFrames, { | samples |
+				if(resultBuffer.numFrames == 1, {
+					resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
 						var tolerance = 0.1; //0.1% margin of error in sample position
 						var samplePositionTolerance = (oneImpulseBuffer.numFrames / 100) * tolerance;
 						result[\sampleIndex] = TestResultEquals(samples[0], serverSampleRate / 2, samplePositionTolerance);
@@ -35,10 +35,10 @@ TestFluidAmpGate : FluidUnitTest {
 			rampDown:25,
 			onThreshold:-12,
 			offThreshold:-16,
-			action: { | outputBuffer |
+			action: {
 				result = Dictionary(2);
-				result[\numFrames] = TestResult(outputBuffer.numFrames, 2);
-				result[\numChannels] = TestResult(outputBuffer.numChannels, 2);
+				result[\numFrames] = TestResult(resultBuffer.numFrames, 2);
+				result[\numChannels] = TestResult(resultBuffer.numChannels, 2);
 			}
 		);
 	}
@@ -52,10 +52,10 @@ TestFluidAmpGate : FluidUnitTest {
 			rampDown:25,
 			onThreshold:-12,
 			offThreshold:-18,
-			action: { | outputBuffer |
+			action: {
 				result = Dictionary(2);
-				result[\numFrames] = TestResult(outputBuffer.numFrames, 4);
-				result[\numChannels] = TestResult(outputBuffer.numChannels, 2);
+				result[\numFrames] = TestResult(resultBuffer.numFrames, 4);
+				result[\numChannels] = TestResult(resultBuffer.numChannels, 2);
 			}
 		);
 	}
@@ -69,10 +69,10 @@ TestFluidAmpGate : FluidUnitTest {
 			rampDown:25,
 			onThreshold:-12,
 			offThreshold:-12,
-			action: { | outputBuffer |
+			action: {
 				result = Dictionary(2);
-				result[\numFrames] = TestResult(outputBuffer.numFrames, 4);
-				result[\numChannels] = TestResult(outputBuffer.numChannels, 2);
+				result[\numFrames] = TestResult(resultBuffer.numFrames, 4);
+				result[\numChannels] = TestResult(resultBuffer.numChannels, 2);
 			}
 		);
 	}

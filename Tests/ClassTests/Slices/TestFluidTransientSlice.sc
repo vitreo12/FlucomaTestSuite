@@ -4,13 +4,13 @@ TestFluidTransientSlice : FluidUnitTest {
 			server,
 			oneImpulseBuffer,
 			indices: resultBuffer,
-			action: { | outputBuffer |
+			action: {
 				result = Dictionary(2);
-				result[\numFrames] = TestResult(outputBuffer.numFrames, 1);
+				result[\numFrames] = TestResult(resultBuffer.numFrames, 1);
 
 				//Check if the returned index position is correct (middle of file)
-				if(outputBuffer.numFrames == 1, {
-					outputBuffer.getn(0, outputBuffer.numFrames, { | samples |
+				if(resultBuffer.numFrames == 1, {
+					resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
 						var tolerance = 0.1; //0.1% margin of error in sample position
 						var samplePositionTolerance = (oneImpulseBuffer.numFrames / 100) * tolerance;
 						result[\sampleIndex] = TestResultEquals(
@@ -29,8 +29,8 @@ TestFluidTransientSlice : FluidUnitTest {
 			server,
 			impulsesBuffer,
 			indices: resultBuffer,
-			action: { | outputBuffer |
-				result = TestResult(outputBuffer.numFrames, 4);
+			action: {
+				result = TestResult(resultBuffer.numFrames, 4);
 			}
 		);
 	}
@@ -40,9 +40,9 @@ TestFluidTransientSlice : FluidUnitTest {
 			server,
 			sharpSineBuffer,
 			indices: resultBuffer,
-			action: { | outputBuffer |
-				result = TestResult(outputBuffer.numFrames, 4);
-				outputBuffer.getn(0, outputBuffer.numFrames, { | samples |
+			action: {
+				result = TestResult(resultBuffer.numFrames, 4);
+				resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
 					samples.postln;
 				});
 			}

@@ -11,14 +11,14 @@ TestFluidAmpSlice : FluidUnitTest {
 			onThreshold: 10,
 			offThreshold: 7,
 			floor: -60,
-			action: { | outputBuffer |
+			action: {
 				result = Dictionary(2);
 
-				result[\numFrames] = TestResult(outputBuffer.numFrames, 1);
+				result[\numFrames] = TestResult(resultBuffer.numFrames, 1);
 
 				//Check if the returned index position is correct (middle of file)
-				if(outputBuffer.numFrames == 1, {
-					outputBuffer.getn(0, outputBuffer.numFrames, { | samples |
+				if(resultBuffer.numFrames == 1, {
+					resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
 						var tolerance = 0.1; //0.1% margin of error in sample position
 						var samplePositionTolerance = (oneImpulseBuffer.numFrames / 100) * tolerance;
 						result[\sampleIndex] = TestResultEquals(samples[0], serverSampleRate / 2, samplePositionTolerance);
@@ -40,8 +40,8 @@ TestFluidAmpSlice : FluidUnitTest {
 			onThreshold: 10,
 			offThreshold: 7,
 			floor: -60,
-			action: { | outputBuffer |
-				result = TestResult(outputBuffer.numFrames, 4);
+			action: {
+				result = TestResult(resultBuffer.numFrames, 4);
 			}
 		);
 	}
@@ -59,8 +59,8 @@ TestFluidAmpSlice : FluidUnitTest {
 			offThreshold: 10,
 			floor: -60,
 			minSliceLength: 800,
-			action: { | outputBuffer |
-				result = TestResult(outputBuffer.numFrames, 4);
+			action: {
+				result = TestResult(resultBuffer.numFrames, 4);
 			}
 		);
 	}
@@ -77,8 +77,8 @@ TestFluidAmpSlice : FluidUnitTest {
 			onThreshold: 10,
 			offThreshold: 5,
 			floor: -60,
-			action: { | outputBuffer |
-				result = TestResult(outputBuffer.numFrames, 4);
+			action: {
+				result = TestResult(resultBuffer.numFrames, 4);
 			}
 		);
 	}
@@ -96,8 +96,8 @@ TestFluidAmpSlice : FluidUnitTest {
 			offThreshold: 10,
 			floor: -60,
 			minSliceLength: 800,
-			action: { | outputBuffer |
-				result = TestResult(outputBuffer.numFrames, 4);
+			action: {
+				result = TestResult(resultBuffer.numFrames, 4);
 			}
 		);
 	}
