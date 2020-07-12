@@ -38,8 +38,10 @@ FlucomaTestSuite {
 		var isStandaloneTest = false;
 		var classString = class.asString;
 
-		//Remove Buf
-		classString = classString.replace("Buf", "");
+		//Don't remove Buf for FluidBufCompose
+		if(classString != "FluidBufCompose", {
+			classString = classString.replace("Buf", "");
+		});
 
 		//Accepts both TestFluidAmpGate and FluidAmpGate.
 		//Will return Class not found if error.
