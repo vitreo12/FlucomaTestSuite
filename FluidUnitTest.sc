@@ -91,9 +91,9 @@ FluidUnitTest : UnitTest {
 			Signal.fill(serverSampleRate, { 0.2.bilinrand })
 		);
 
-		sineBurstArray = Array.fill(8192,{0}) ++
-		(Signal.sineFill(1203,[0,0,0,0,0,1],[0,0,0,0,0,0.5pi]).takeThese({|x,i|i>1023}))
-		++ Array.fill(8192,{0});
+		sineBurstArray = Array.fill(8192, { 0 }) ++
+		(Signal.sineFill(1203,[0,0,0,0,0,1],[0,0,0,0,0,0.5pi]).takeThese({ |x, i| i > 1023 }))
+		++ Array.fill(8192, { 0 });
 	}
 
 	//Individual method test run
