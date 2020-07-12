@@ -1,5 +1,6 @@
 FlucomaTestSuite {
 	classvar <serverSampleRate = 44100;
+	classvar <serverStartingPort = 5000;
 	classvar <classCounter = 0;
 	classvar <>parallelMethods = 5;
 	classvar <running = false;
@@ -13,6 +14,13 @@ FlucomaTestSuite {
 	}
 
 	*sampleRate { ^serverSampleRate }
+
+	*port_ { | val |
+		serverStartingPort = val;
+		FluidUnitTest.serverStartingPort_(val);
+	}
+
+	*port { ^serverStartingPort }
 
 	*initClass { this.reset }
 
