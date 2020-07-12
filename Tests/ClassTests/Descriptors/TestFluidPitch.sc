@@ -32,7 +32,7 @@ TestFluidPitch : FluidUnitTest {
 				result[\pitch] = TestResultEquals(pitch, 220, 40);
 
 				//Check onfidence is above 0.5
-				result[\confidence] = TestResult(confidence >= 0.6, true);
+				result[\confidence] = TestResult(confidence >= 0.5, true);
 			}
 		)
 	}
