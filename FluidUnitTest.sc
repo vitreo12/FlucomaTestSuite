@@ -195,8 +195,9 @@ FluidUnitTest : UnitTest {
 
 	//per-method
 	tearDown {
-		server.quit.remove;
-		completed = true;
+		server.quit({
+			completed = true;
+		});
 	}
 
 	runTestMethod { | method, serverIndex = -1 |
