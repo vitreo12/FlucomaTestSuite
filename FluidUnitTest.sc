@@ -2,6 +2,8 @@ FluidUnitTest : UnitTest {
 	//Run all tests at serverSamplerate
 	classvar <serverSampleRate = 44100;
 
+	classvar <>serverStartingPort = 5000;
+
 	//These are used in Slicers
 	classvar <oneImpulseArray, <impulsesArray, <sharpSineArray, <smoothSineArray;
 
@@ -95,7 +97,7 @@ FluidUnitTest : UnitTest {
 	}
 
 	//Individual method test run
-	*runTest { | method |
+	*runTest { | method, serverIndex = -1 |
 		var class, classInstance;
 		# class, method = method.asString.split($:);
 		class = class.asSymbol.asClass;
@@ -104,7 +106,7 @@ FluidUnitTest : UnitTest {
 			Error(class.asString ++ ": test method not found: " ++ method).throw;
 		};
 		classInstance = class.new;
-		classInstance.runTestMethod(method);
+		classInstance.runTestMethod(method, serverIndex);
 		^classInstance;
 	}
 
@@ -167,17 +169,22 @@ FluidUnitTest : UnitTest {
 
 	//per-method... server should perhaps be booted per-class.
 	//This is run in a Routine, so wait / sync can be used
-	setUp {
-		var uniqueID = UniqueID.next;
+	setUp { | serverIndex = -1 |
 		var serverOptions = ServerOptions.new;
+
+		//Generate a uniqueID if serverIndex is -1 or nil
+		if((serverIndex == -1).or(serverIndex.isNil), {
+			serverIndex = UniqueID.next;
+		});
+
 		completed = false;
 		result = "";
 		firstResult = "";
 		execTime = 0;
 		serverOptions.sampleRate = serverSampleRate;
 		server = Server(
-			this.class.name ++ uniqueID,
-			NetAddr("127.0.0.1", 5000 + uniqueID),
+			this.class.name ++ serverIndex,
+			NetAddr("127.0.0.1", serverStartingPort + serverIndex),
 			serverOptions
 		);
 
@@ -192,12 +199,12 @@ FluidUnitTest : UnitTest {
 		completed = true;
 	}
 
-	runTestMethod { | method |
+	runTestMethod { | method, serverIndex = -1 |
 		var t, tAvg = 5; //run 5 times to average execution time
 
 		fork {
 			currentMethod = method;
-			this.setUp;
+			this.setUp(serverIndex);
 			server.sync;
 			this.initBuffers;
 			server.sync;

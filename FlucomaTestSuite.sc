@@ -76,7 +76,7 @@ FlucomaTestSuite {
 
 			methodsArray.do({ | method, i |
 				//Run the method
-				var classInstance = class.runTest(method);
+				var classInstance = class.runTest(method, i);
 
 				//Wait for the parallel methods to finish
 				if((i > 0).and(i % (parallelMethods-1) == 0), {
@@ -123,6 +123,10 @@ FlucomaTestSuite {
 		this.runTestClass_inner(class, nil);
 	}
 
+	*runTest { | class |
+		this.runTestClass(class)
+	}
+
 	*runAllTests {
 		if(running, {
 			"The FluCoMa test suite is already running".error;
@@ -155,6 +159,10 @@ FlucomaTestSuite {
 			resultsDict.postFlucomaResultsDict;
 			running = false;
 		});
+	}
+
+	*runAll {
+		this.runAllTests;
 	}
 }
 
