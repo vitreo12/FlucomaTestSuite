@@ -5,13 +5,22 @@ TestFluidSpectralShape : FluidUnitTest {
 	//normalised kurtosis (ratio), rolloff (hz), flatness (db), crest (db)
 
 	test_multiple_sines {
+		var fftsize = 256;
+		var hopsize = fftsize / 2;
+
 		FluidBufSpectralShape.process(
 			server,
 			source: multipleSinesBuffer,
 			features: resultBuffer,
+			fftSize: fftsize,
+			hopSize: hopsize,
 			action: {
-				result = Dictionary(1);
+				result = Dictionary(2);
 				result[\numStats] = TestResult(resultBuffer.numChannels, 7);
+				result[\numFrames] = TestResult(
+					resultBuffer.numFrames,
+					(multipleSinesBuffer.numFrames / hopsize) + 1
+				)
 			}
 		)
 	}
