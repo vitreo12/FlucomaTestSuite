@@ -46,8 +46,8 @@ FlucomaTestSuite {
 		var isStandaloneTest = false;
 		var classString = class.asString;
 
-		//Don't remove Buf for FluidBufCompose
-		if(classString != "FluidBufCompose", {
+		//Don't remove Buf for FluidBufCompose and FluidBufStats
+		if((classString != "FluidBufCompose").and(classString != "FluidBufStats"), {
 			classString = classString.replace("Buf", "");
 		});
 

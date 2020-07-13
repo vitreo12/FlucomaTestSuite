@@ -1,17 +1,15 @@
-TestFluidSpectralShape : FluidUnitTest {
-	//a lot of things to test here (like onset slice)
-	//the process returns 7 stats:
-	//spectral centroid (hz), spectral spread (hz), normalised skeweness (ratio)
-	//normalised kurtosis (ratio), rolloff (hz), flatness (db), crest (db)
-
+TestFluidBufStats : FluidUnitTest {
 	test_multiple_sines {
-		FluidBufSpectralShape.process(
+		var numDerivs = 2;
+
+		FluidBufStats.process(
 			server,
 			source: multipleSinesBuffer,
-			features: resultBuffer,
+			stats: resultBuffer,
+			numDerivs: numDerivs,
 			action: {
 				result = Dictionary(1);
-				result[\numStats] = TestResult(resultBuffer.numChannels, 7);
+				result[\numFrames] = TestResult(resultBuffer.numFrames, (numDerivs + 1) * 7);
 			}
 		)
 	}
