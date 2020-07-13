@@ -2,6 +2,7 @@ FluidUnitTest : UnitTest {
 	//Run all tests at serverSamplerate
 	classvar <serverSampleRate = 44100;
 
+	classvar <>serverIPAddr = "127.0.0.1";
 	classvar <>serverStartingPort = 5000;
 
 	//These are used in Slicers
@@ -184,7 +185,7 @@ FluidUnitTest : UnitTest {
 		serverOptions.sampleRate = serverSampleRate;
 		server = Server(
 			this.class.name ++ serverIndex,
-			NetAddr("127.0.0.1", serverStartingPort + serverIndex),
+			NetAddr(serverIPAddr, serverStartingPort + serverIndex),
 			serverOptions
 		);
 
