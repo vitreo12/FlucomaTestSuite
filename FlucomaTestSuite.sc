@@ -28,7 +28,7 @@ FlucomaTestSuite {
 		//Reset state on CmdPeriod
 		CmdPeriod.add({
 			running = false;
-			Server.quitAll;
+			//Server.quitAll;
 			this.reset;
 		});
 	}
