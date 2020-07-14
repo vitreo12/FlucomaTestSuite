@@ -22,7 +22,15 @@ FlucomaTestSuite {
 
 	*port { ^serverStartingPort }
 
-	*initClass { this.reset }
+	*initClass {
+		this.reset;
+
+		//Reset Routines on CmdPeriod
+		CmdPeriod.add({
+			running = false;
+			Server.quitAll;
+		});
+	}
 
 	*reset {
 		var flucomaTestClasses = FluidUnitTest.allSubclasses;
