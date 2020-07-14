@@ -25,10 +25,11 @@ FlucomaTestSuite {
 	*initClass {
 		this.reset;
 
-		//Reset Routines on CmdPeriod
+		//Reset state on CmdPeriod
 		CmdPeriod.add({
 			running = false;
 			Server.quitAll;
+			this.reset;
 		});
 	}
 
