@@ -22,9 +22,13 @@ TestFluidBufNMF : FluidUnitTest {
 			fftSize: fftsize,
 			hopSize: hopsize,
 			action: {
+				var ampTolerance = 0.0001;
+				var nmfArray, nullSum = true;
+
 				result = Dictionary(3);
 
 				result[\components] = TestResult(resultBuffer.numChannels, components);
+				result[\componensNumFrames] = TestResult(resultBuffer.numFrames, multipleSinesBuffer.numFrames);
 
 				result[\basesNumFrames] = TestResult(
 					basesBuffer.numFrames,
@@ -35,6 +39,27 @@ TestFluidBufNMF : FluidUnitTest {
 					activationsBuffer.numFrames,
 					(multipleSinesBuffer.numFrames / hopsize) + 1
 				);
+
+				//Null summing
+				resultBuffer.loadToFloatArray(action: { | argNMFArray |
+					nmfArray = argNMFArray;
+				});
+
+				server.sync;
+
+				multipleSinesArray.do({ | sample, index |
+					var nmfIndex, component1, component2, component3, component4, allComponents;
+					nmfIndex = index * 4;
+					component1 = nmfArray[nmfIndex];
+					component2 = nmfArray[nmfIndex+1];
+					component3 = nmfArray[nmfIndex+2];
+					component4 = nmfArray[nmfIndex+3];
+					allComponents = component1+component2+component3+component4;
+
+					if(abs(allComponents - sample) >= ampTolerance, { nullSum = false });
+				});
+
+				result[\nullSum] = TestResult(nullSum, true);
 			}
 		)
 	}
