@@ -40,7 +40,6 @@ TestFluidBufNMF : FluidUnitTest {
 					(multipleSinesBuffer.numFrames / hopsize) + 1
 				);
 
-				//Null summing
 				resultBuffer.loadToFloatArray(action: { | argNMFArray |
 					nmfArray = argNMFArray;
 				});
