@@ -1,9 +1,13 @@
 TestResult {
-	*new { | a, b |
+	*new { | a, b, errorMessage |
 		if(a == b, {
 			^("success");
 		}, {
-			^("failure: got " ++ a ++ " but expected " ++ b);
+			if(errorMessage.class == String, {
+				^errorMessage
+			}, {
+				^("failure: got " ++ a ++ " but expected " ++ b);
+			});
 		});
 	}
 }
