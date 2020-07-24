@@ -26,8 +26,6 @@ s.waitForBoot({
 
 			s.sync;
 
-			//outArray.size.postln;
-
 			File.use(File.realpath(TestFluidMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "MFCC.txt", "w", { | f |
 				outArray.do({ | sample, index |
 					var sampleOut;
