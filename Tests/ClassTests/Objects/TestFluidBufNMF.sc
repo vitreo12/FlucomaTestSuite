@@ -25,7 +25,7 @@ TestFluidBufNMF : FluidUnitTest {
 				var ampTolerance = 0.0001;
 				var nmfArray, nullSum = true;
 
-				result = Dictionary(3);
+				result = Dictionary(4);
 
 				result[\components] = TestResult(resultBuffer.numChannels, components);
 				result[\componensNumFrames] = TestResult(resultBuffer.numFrames, multipleSinesBuffer.numFrames);
