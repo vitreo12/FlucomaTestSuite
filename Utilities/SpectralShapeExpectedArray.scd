@@ -1,20 +1,17 @@
-//Generates expected result MFCC.txt
 (
 s.waitForBoot({
-	var numCoeffs = 13;
 	var fftsize = 256;
 	var hopsize = fftsize / 2;
 
-	var b = Buffer.read(s, File.realpath(FluidBufMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Nicol-LoopE-M.wav");
+	var b = Buffer.read(s, File.realpath(FluidBufSpectralShape.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Nicol-LoopE-M.wav");
 	var c = Buffer.new(s);
 
 	s.sync;
 
-	FluidBufMFCC.process(
+	FluidBufSpectralShape.process(
 		s,
 		source: b,
 		features: c,
-		numCoeffs: numCoeffs,
 		fftSize: fftsize,
 		hopSize: hopsize,
 		action: {
@@ -24,7 +21,7 @@ s.waitForBoot({
 
 			s.sync;
 
-			File.use(File.realpath(TestFluidMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "MFCC.txt", "w", { | f |
+			File.use(File.realpath(TestFluidSpectralShape.class.filenameSymbol).dirname.withTrailingSlash ++ "SpectralShape.txt", "w", { | f |
 				outArray.do({ | sample, index |
 					var sampleOut;
 					if(index < (outArray.size - 1), {

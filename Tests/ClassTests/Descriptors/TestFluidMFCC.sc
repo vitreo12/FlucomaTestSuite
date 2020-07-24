@@ -11,8 +11,6 @@ TestFluidMFCC : FluidUnitTest {
 		var numCoeffs = 13;
 		var fftsize = 256;
 		var hopsize = fftsize / 2;
-		var tolerance = 0.001;
-		var expectedResult = true;
 
 		FluidBufMFCC.process(
 			server,
@@ -23,6 +21,9 @@ TestFluidMFCC : FluidUnitTest {
 			hopSize: hopsize,
 
 			action: {
+				var tolerance = 0.001;
+				var expectedResult = true;
+
 				result = Dictionary(4);
 				result[\numChannels] = TestResult(resultBuffer.numChannels, numCoeffs);
 				result[\numFrames] = TestResult(

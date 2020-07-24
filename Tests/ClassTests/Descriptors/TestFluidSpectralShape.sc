@@ -1,26 +1,52 @@
 TestFluidSpectralShape : FluidUnitTest {
-	//a lot of things to test here (like onset slice)
-	//the process returns 7 stats:
-	//spectral centroid (hz), spectral spread (hz), normalised skeweness (ratio)
-	//normalised kurtosis (ratio), rolloff (hz), flatness (db), crest (db)
 
-	test_multiple_sines {
+	classvar expectedResultDrums;
+
+	*initClass {
+		expectedResultDrums = TextFileToArray(
+			File.realpath(TestFluidSpectralShape.class.filenameSymbol).dirname.withTrailingSlash ++ "SpectralShape.txt"
+		);
+	}
+
+	test_drums_mono {
 		var fftsize = 256;
 		var hopsize = fftsize / 2;
 
 		FluidBufSpectralShape.process(
 			server,
-			source: multipleSinesBuffer,
+			source: drumsBuffer,
 			features: resultBuffer,
 			fftSize: fftsize,
 			hopSize: hopsize,
 			action: {
-				result = Dictionary(2);
+				var tolerance = 0.001;
+				var expectedResult = true;
+
+				result = Dictionary(4);
 				result[\numStats] = TestResult(resultBuffer.numChannels, 7);
 				result[\numFrames] = TestResult(
 					resultBuffer.numFrames,
-					(multipleSinesBuffer.numFrames / hopsize) + 1
-				)
+					((drumsBuffer.numFrames / hopsize) + 1).asInteger
+				);
+
+				//Abstract this in a reusable function!
+				resultBuffer.loadToFloatArray(action: { | resultArray |
+					result[\expectedSize] = TestResult(resultArray.size, expectedResultDrums.size);
+
+					//Compare sample by sample with a set tolerance
+					resultArray.size.do({ | i |
+						var resultArraySample = resultArray[i];
+						var expectedResultDrumsSample = expectedResultDrums[i];
+
+						if(abs(resultArraySample - expectedResultDrumsSample) >= tolerance, {
+							expectedResult = false
+						});
+					});
+
+					server.sync;
+
+					result[\expectedResult] = TestResult(expectedResult, true);
+				});
 			}
 		)
 	}
