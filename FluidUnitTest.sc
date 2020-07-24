@@ -122,7 +122,7 @@ FluidUnitTest : UnitTest {
 	initSampleBuffers {
 		drumsBuffer = Buffer.read(
 			server,
-			File.realpath(FluidBufTransients.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Tremblay-AaS-AcousticStrums-M.wav"
+			File.realpath(FluidBufTransients.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Nicol-LoopE-M.wav"
 		);
 
 		eurorackSynthBuffer = Buffer.read(
