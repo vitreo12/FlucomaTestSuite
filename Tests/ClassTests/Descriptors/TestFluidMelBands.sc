@@ -1,23 +1,54 @@
 TestFluidMelBands : FluidUnitTest {
-	test_multiple_sines {
+	classvar expectedResultDrums;
+
+	*initClass {
+		expectedResultDrums = TextFileToArray(
+			File.realpath(TestFluidMelBands.class.filenameSymbol).dirname.withTrailingSlash ++ "MelBands.txt"
+		);
+	}
+
+	test_drums_mono {
 		var numBands = 10;
 		var fftsize = 256;
 		var hopsize = fftsize / 2;
 
 		FluidBufMelBands.process(
 			server,
-			source: multipleSinesBuffer,
+			source: drumsBuffer,
 			features: resultBuffer,
 			numBands: numBands,
 			fftSize: fftsize,
 			hopSize: hopsize,
 			action: {
-				result = Dictionary(2);
+				var tolerance = 0.001;
+				var expectedResult = true;
+
+				result = Dictionary(4);
+
 				result[\numChannels] = TestResult(resultBuffer.numChannels, numBands);
 				result[\numFrames] = TestResult(
 					resultBuffer.numFrames,
-					(multipleSinesBuffer.numFrames / hopsize) + 1
-				)
+					((drumsBuffer.numFrames / hopsize) + 1).asInteger
+				);
+
+				//Abstract this in a reusable function!
+				resultBuffer.loadToFloatArray(action: { | resultArray |
+					result[\expectedSize] = TestResult(resultArray.size, expectedResultDrums.size);
+
+					//Compare sample by sample with a set tolerance
+					resultArray.size.do({ | i |
+						var resultArraySample = resultArray[i];
+						var expectedResultDrumsSample = expectedResultDrums[i];
+
+						if(abs(resultArraySample - expectedResultDrumsSample) >= tolerance, {
+							expectedResult = false
+						});
+					});
+
+					server.sync;
+
+					result[\expectedResult] = TestResult(expectedResult, true);
+				});
 			}
 		)
 	}

@@ -25,6 +25,7 @@ TestFluidMFCC : FluidUnitTest {
 				var expectedResult = true;
 
 				result = Dictionary(4);
+
 				result[\numChannels] = TestResult(resultBuffer.numChannels, numCoeffs);
 				result[\numFrames] = TestResult(
 					resultBuffer.numFrames,
