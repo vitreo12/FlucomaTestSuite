@@ -62,4 +62,8 @@ TestFluidBufNMF : FluidUnitTest {
 			}
 		)
 	}
+
+	test_drums_mono {
+
+	}
 }

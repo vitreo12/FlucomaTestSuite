@@ -42,9 +42,6 @@ TestFluidTransientSlice : FluidUnitTest {
 			indices: resultBuffer,
 			action: {
 				result = TestResult(resultBuffer.numFrames, 4);
-				resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
-					samples.postln;
-				});
 			}
 		);
 	}
