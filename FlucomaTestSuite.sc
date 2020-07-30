@@ -129,7 +129,9 @@ FlucomaTestSuite {
 						}, {
 							//No condition provided, simply output result and set running to false
 							0.5.wait;
+							("\n*** " ++ classString ++ ": tests completed ***").postln;
 							resultDict.postFlucomaResultDict(classString);
+							"\n*** Failed tests: ***".postln;
 							resultsDict.postFlucomaErrors;
 							running = false;
 						});
@@ -177,6 +179,7 @@ FlucomaTestSuite {
 			0.5.wait;
 			"\n*** All FluCoMa tests completed ***".postln;
 			resultsDict.postFlucomaResultsDict;
+			"\n*** Failed tests: ***".postln;
 			resultsDict.postFlucomaErrors;
 			running = false;
 		});
