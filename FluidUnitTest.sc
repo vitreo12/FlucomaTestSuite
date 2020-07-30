@@ -213,7 +213,7 @@ FluidUnitTest : UnitTest {
 	}
 
 	runTestMethod { | method, serverIndex = -1 |
-		var t, tAvg = 5; //run 5 times to average execution time
+		var t, tAvg = 4; //run 4 times to average execution time
 
 		fork {
 			currentMethod = method;
