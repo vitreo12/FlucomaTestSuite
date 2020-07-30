@@ -27,6 +27,48 @@ TestFluidNoveltySlice : FluidUnitTest {
 		);
 	}
 
+	test_filterSize_1 {
+		FluidBufNoveltySlice.process(
+			server,
+			acousticStrumsBuffer,
+			indices: resultBuffer,
+			kernelSize: 31,
+			threshold: 0.1,
+			filterSize: 1,
+			action: {
+				result = TestResult(resultBuffer.numFrames, 11);
+			}
+		)
+	}
+
+	test_filterSize_4 {
+		FluidBufNoveltySlice.process(
+			server,
+			acousticStrumsBuffer,
+			indices: resultBuffer,
+			kernelSize: 31,
+			threshold: 0.1,
+			filterSize: 4,
+			action: {
+				result = TestResult(resultBuffer.numFrames, 10);
+			}
+		)
+	}
+
+	test_filterSize_12 {
+		FluidBufNoveltySlice.process(
+			server,
+			acousticStrumsBuffer,
+			indices: resultBuffer,
+			kernelSize: 31,
+			threshold: 0.1,
+			filterSize: 12,
+			action: {
+				result = TestResult(resultBuffer.numFrames, 8);
+			}
+		)
+	}
+
 	test_impulses_spectrum {
 		FluidBufNoveltySlice.process(
 			server,
