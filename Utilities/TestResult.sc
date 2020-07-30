@@ -4,7 +4,7 @@ TestResult {
 			^("success");
 		}, {
 			if(errorMessage.class == String, {
-				^errorMessage
+				^("failure: " ++ errorMessage);
 			}, {
 				^("failure: got " ++ a ++ " but expected " ++ b);
 			});

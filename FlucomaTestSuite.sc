@@ -130,6 +130,7 @@ FlucomaTestSuite {
 							//No condition provided, simply output result and set running to false
 							0.5.wait;
 							resultDict.postFlucomaResultDict(classString);
+							resultsDict.postFlucomaErrors;
 							running = false;
 						});
 					});
@@ -176,6 +177,7 @@ FlucomaTestSuite {
 			0.5.wait;
 			"\n*** All FluCoMa tests completed ***".postln;
 			resultsDict.postFlucomaResultsDict;
+			resultsDict.postFlucomaErrors;
 			running = false;
 		});
 	}
@@ -193,6 +195,30 @@ FlucomaTestSuite {
 				entry.keysValuesDo({ | methodName, methodResult |
 					("\t" ++ methodName ++ ":").postln;
 					("\t\t" ++ methodResult ++ ":").postln;
+				});
+			});
+		});
+	}
+
+	postFlucomaErrors {
+		"".postln;
+		this.keysValuesDo({ | key, entry |
+			if(entry.class == Dictionary, {
+				entry.keysValuesDo({ | methodName, methodResult |
+					methodResult.do({ | methodDictResult |
+						var methodDictResultValue = methodDictResult.value;
+						if(methodDictResultValue.class == Dictionary, {
+							methodDictResultValue.keysValuesDo({ | methodDictResultName, methodDictResultResult |
+								if(methodDictResultResult.value.asString.beginsWith("failure"), {
+									("ERROR: " ++ key ++ " -> " ++ methodName ++ " -> (" ++ methodDictResultName ++ " -> " ++ methodDictResultResult ++ ")" ).postln;
+								});
+							});
+						}, {
+							if(methodDictResultValue.asString.beginsWith("failure"), {
+								("ERROR: " ++ key ++ " -> " ++ methodName ++ " -> " ++ methodDictResult).postln;
+							});
+						});
+					});
 				});
 			});
 		});
