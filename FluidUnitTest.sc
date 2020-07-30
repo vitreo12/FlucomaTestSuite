@@ -15,7 +15,7 @@ FluidUnitTest : UnitTest {
 	classvar <sineBurstArray;
 
 	//Samples
-	classvar <eurorackSynthArray, <drumsArray;
+	classvar <eurorackSynthArray, <drumsArray, <acousticStrumsArray;
 
 	//These are used in Slicers
 	var <oneImpulseBuffer, <impulsesBuffer, <sharpSineBuffer, <smoothSineBuffer;
@@ -27,7 +27,7 @@ FluidUnitTest : UnitTest {
 	var <sineBurstBuffer;
 
 	//Samples
-	var <eurorackSynthBuffer, <drumsBuffer;
+	var <eurorackSynthBuffer, <drumsBuffer, <acousticStrumsBuffer;
 
 	//Per-method
 	var <completed = false;
@@ -130,6 +130,11 @@ FluidUnitTest : UnitTest {
 			File.realpath(FluidBufTransients.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Tremblay-AaS-SynthTwoVoices-M.wav"
 		);
 
+		acousticStrumsBuffer = Buffer.read(
+			server,
+			File.realpath(FluidBufTransients.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Tremblay-AaS-AcousticStrums-M.wav"
+		);
+
 		server.sync;
 
 		//First time samples are loaded, also load them to the classvar Arrays.
@@ -145,6 +150,12 @@ FluidUnitTest : UnitTest {
 		if(eurorackSynthArray.isNil, {
 			eurorackSynthBuffer.loadToFloatArray(action: { | argEurorackSynthArray |
 				eurorackSynthArray = argEurorackSynthArray;
+			});
+		});
+
+		if(acousticStrumsArray.isNil, {
+			acousticStrumsBuffer.loadToFloatArray(action: { | argAcousticStrumsArray |
+				acousticStrumsArray = argAcousticStrumsArray;
 			});
 		});
 
