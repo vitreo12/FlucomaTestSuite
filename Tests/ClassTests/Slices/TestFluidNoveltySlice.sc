@@ -27,7 +27,7 @@ TestFluidNoveltySlice : FluidUnitTest {
 		);
 	}
 
-	test_filterSize_1 {
+	test_filterSize1 {
 		FluidBufNoveltySlice.process(
 			server,
 			acousticStrumsBuffer,
@@ -41,7 +41,7 @@ TestFluidNoveltySlice : FluidUnitTest {
 		)
 	}
 
-	test_filterSize_4 {
+	test_filterSize4 {
 		FluidBufNoveltySlice.process(
 			server,
 			acousticStrumsBuffer,
@@ -55,7 +55,7 @@ TestFluidNoveltySlice : FluidUnitTest {
 		)
 	}
 
-	test_filterSize_12 {
+	test_filterSize12 {
 		FluidBufNoveltySlice.process(
 			server,
 			acousticStrumsBuffer,
