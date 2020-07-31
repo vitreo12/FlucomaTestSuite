@@ -238,7 +238,7 @@ FluidUnitTest : UnitTest {
 		//If it takes more than maxWaitTime, tearDown
 		fork {
 			maxWaitTime.wait;
-			if(completed == false, {
+			if((FlucomaTestSuite.running == true).and(completed == false), {
 				("Exceeding maximum wait time for server " ++ server.name ++ ". Quitting it").error;
 				this.tearDown;
 			});
