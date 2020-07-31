@@ -24,13 +24,6 @@ FlucomaTestSuite {
 
 	*initClass {
 		this.reset;
-
-		//Reset state on CmdPeriod
-		CmdPeriod.add({
-			running = false;
-			//Server.quitAll;
-			this.reset;
-		});
 	}
 
 	*reset {
@@ -50,8 +43,9 @@ FlucomaTestSuite {
 	}
 
 	*stop {
-		Server.quitAll;
 		running = false;
+		Server.quitAll;
+		this.reset;
 	}
 
 	*runTestClass_inner { | class, classCondition |
