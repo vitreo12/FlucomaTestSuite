@@ -134,9 +134,7 @@ FlucomaTestSuite {
 						}, {
 							//No condition provided, simply output result and set running to false
 							0.5.wait;
-							("\n*** " ++ classString ++ ": tests completed ***").postln;
 							resultDict.postFlucomaResultDict(classString);
-							"\n*** Failed tests: ***".postln;
 							resultsDict.postFlucomaErrors;
 							running = false;
 						});
@@ -182,9 +180,7 @@ FlucomaTestSuite {
 			//some of the servers are still quitting, and they will post in the console.
 			//the actual completion is already done
 			0.5.wait;
-			"\n*** All FluCoMa tests completed ***".postln;
 			resultsDict.postFlucomaResultsDict;
-			"\n*** Failed tests: ***".postln;
 			resultsDict.postFlucomaErrors;
 			running = false;
 		});
@@ -197,6 +193,7 @@ FlucomaTestSuite {
 
 +Dictionary {
 	postFlucomaResultsDict {
+		"\n*** All FluCoMa tests completed ***".postln;
 		this.keysValuesDo({ | key, entry |
 			("\n" ++ key ++ ":").postln;
 			if(entry.class == Dictionary, {
@@ -209,7 +206,7 @@ FlucomaTestSuite {
 	}
 
 	postFlucomaErrors {
-		"".postln;
+		var printMsg = true;
 		this.keysValuesDo({ | key, entry |
 			if(entry.class == Dictionary, {
 				entry.keysValuesDo({ | methodName, methodResult |
@@ -218,11 +215,13 @@ FlucomaTestSuite {
 						if(methodDictResultValue.class == Dictionary, {
 							methodDictResultValue.keysValuesDo({ | methodDictResultName, methodDictResultResult |
 								if(methodDictResultResult.value.asString.beginsWith("failure"), {
+									if(printMsg, { "\n*** Failed tests: ***\n".postln; printMsg = false });
 									("ERROR: " ++ key ++ " -> " ++ methodName ++ " -> (" ++ methodDictResultName ++ " -> " ++ methodDictResultResult ++ ")" ).postln;
 								});
 							});
 						}, {
 							if(methodDictResultValue.asString.beginsWith("failure"), {
+								if(printMsg, { "\n*** Failed tests: ***\n".postln; printMsg = false });
 								("ERROR: " ++ key ++ " -> " ++ methodName ++ " -> " ++ methodDictResult).postln;
 							});
 						});
@@ -233,6 +232,7 @@ FlucomaTestSuite {
 	}
 
 	postFlucomaResultDict { | classString |
+		("\n*** " ++ classString ++ ": tests completed ***").postln;
 		("\n" ++ classString ++ ":").postln;
 		this.keysValuesDo({ | methodName, methodResult |
 			("\t" ++ methodName ++ ":").postln;
