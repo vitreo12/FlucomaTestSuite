@@ -1,14 +1,27 @@
 TestFluidBufNMF : FluidUnitTest {
-	//Move this to Objects tests
-	var <basesBuffer, <activationsBuffer;
+	classvar expectedResynthArray, expectedBasesArray, expectedActivationsArray;
+
+	*initClass {
+		expectedResynthArray = TextFileToArray(
+			File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMFResynth.txt"
+		);
+
+		expectedBasesArray = TextFileToArray(
+			File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMFBases.txt"
+		);
+
+		expectedActivationsArray = TextFileToArray(
+			File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMFActivations.txt"
+		);
+	}
 
 	test_multiple_sines {
 		var components = 4;
-		var fftsize = 256;
-		var hopsize = fftsize / 2;
+		var fftSize = 256;
+		var hopSize = fftSize / 2;
 
-		basesBuffer = Buffer.new(server);
-		activationsBuffer = Buffer.new(server);
+		var basesBuffer = Buffer.new(server);
+		var activationsBuffer = Buffer.new(server);
 		server.sync;
 
 		FluidBufNMF.process(
@@ -18,26 +31,26 @@ TestFluidBufNMF : FluidUnitTest {
 			bases: basesBuffer,
 			activations: activationsBuffer,
 			components: components,
-			windowSize: fftsize,
-			fftSize: fftsize,
-			hopSize: hopsize,
+			windowSize: fftSize,
+			fftSize: fftSize,
+			hopSize: hopSize,
 			action: {
 				var ampTolerance = 0.0001;
 				var nmfArray, nullSum = true;
 
-				result = Dictionary(4);
+				result = Dictionary(5);
 
 				result[\components] = TestResult(resultBuffer.numChannels, components);
 				result[\componensNumFrames] = TestResult(resultBuffer.numFrames, multipleSinesBuffer.numFrames);
 
 				result[\basesNumFrames] = TestResult(
 					basesBuffer.numFrames,
-					(fftsize / 2) + 1
+					((fftSize / 2) + 1).asInteger
 				);
 
 				result[\activationsNumFrames] = TestResult(
 					activationsBuffer.numFrames,
-					(multipleSinesBuffer.numFrames / hopsize) + 1
+					((multipleSinesBuffer.numFrames / hopSize) + 1).asInteger
 				);
 
 				resultBuffer.loadToFloatArray(action: { | argNMFArray |
@@ -63,7 +76,112 @@ TestFluidBufNMF : FluidUnitTest {
 		)
 	}
 
-	test_drums_mono {
+	test_eurorack_mono {
+		var components = 3;
+		var fftSize = 1024;
+		var windowSize = 512;
+		var hopSize = 256;
 
+		//only 5000 samples, or array would be huge to load at startup
+		var startFrame = 1000;
+		var numFrames = 5000;
+
+		var basesBuffer = Buffer.new(server);
+		var activationsBuffer = Buffer.new(server);
+		server.sync;
+
+		FluidBufNMF.process(
+			server,
+			source: eurorackSynthBuffer,
+			startFrame: startFrame,
+			numFrames: numFrames,
+			resynth: resultBuffer,
+			bases: basesBuffer,
+			activations: activationsBuffer,
+			components: components,
+			windowSize: windowSize,
+			fftSize: fftSize,
+			hopSize: hopSize,
+			action: {
+				var tolerance = 0.001;
+				var resynth = true;
+				var bases = true;
+				var activations = true;
+
+				result = Dictionary(10);
+
+				result[\components] = TestResult(resultBuffer.numChannels, components);
+				result[\componensNumFrames] = TestResult(resultBuffer.numFrames, numFrames);
+
+				result[\basesNumFrames] = TestResult(
+					basesBuffer.numFrames,
+					((fftSize / 2) + 1).asInteger
+				);
+
+				result[\activationsNumFrames] = TestResult(
+					activationsBuffer.numFrames,
+					((numFrames / hopSize) + 1).asInteger
+				);
+
+				server.sync;
+
+				//RESYNTH
+				resultBuffer.loadToFloatArray(action: { | resultArray |
+					result[\resynthSize] = TestResult(resultArray.size, expectedResynthArray.size);
+
+					//Compare sample by sample with a set tolerance
+					resultArray.size.do({ | i |
+						var resultArraySample = resultArray[i];
+						var expectedResynthSample = expectedResynthArray[i];
+
+						if(abs(resultArraySample - expectedResynthSample) >= tolerance, {
+							resynth = false
+						});
+					});
+
+					server.sync;
+
+					result[\resynth] = TestResult(resynth, true);
+				});
+
+				//BASES
+				basesBuffer.loadToFloatArray(action: { | resultArray |
+					result[\basesSize] = TestResult(resultArray.size, expectedBasesArray.size);
+
+					//Compare sample by sample with a set tolerance
+					resultArray.size.do({ | i |
+						var resultArraySample = resultArray[i];
+						var expectedBasesSample = expectedBasesArray[i];
+
+						if(abs(resultArraySample - expectedBasesSample) >= tolerance, {
+							bases = false
+						});
+					});
+
+					server.sync;
+
+					result[\bases] = TestResult(bases, true);
+				});
+
+				//ACTIVATIONS
+				activationsBuffer.loadToFloatArray(action: { | resultArray |
+					result[\activationsSize] = TestResult(resultArray.size, expectedActivationsArray.size);
+
+					//Compare sample by sample with a set tolerance
+					resultArray.size.do({ | i |
+						var resultArraySample = resultArray[i];
+						var expectedActivationsSample = expectedActivationsArray[i];
+
+						if(abs(resultArraySample - expectedActivationsSample) >= tolerance, {
+							activations = false
+						});
+					});
+
+					server.sync;
+
+					result[\activations] = TestResult(activations, true);
+				});
+			}
+		)
 	}
 }
