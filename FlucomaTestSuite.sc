@@ -49,6 +49,11 @@ FlucomaTestSuite {
 		totalNumClasses = classesDict.size;
 	}
 
+	*stop {
+		Server.quitAll;
+		running = false;
+	}
+
 	*runTestClass_inner { | class, classCondition |
 		var classStringWithoutTest, classStringWithoutBuf, resultDict, methodsArray;
 		var countMethods = 0, totalMethods = 0;
