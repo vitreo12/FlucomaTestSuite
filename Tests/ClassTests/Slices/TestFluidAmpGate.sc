@@ -77,5 +77,59 @@ TestFluidAmpGate : FluidUnitTest {
 		);
 	}
 
-	//Test lookAhead and lookBack
+	test_smooth_sine_lookAhead {
+		FluidBufAmpGate.process(
+			server,
+			smoothSineBuffer,
+			indices: resultBuffer,
+			rampUp: 5,
+			rampDown: 25,
+			onThreshold: -12,
+			offThreshold: -12,
+			lookAhead: 441,
+			action: {
+				result = Dictionary(2);
+				result[\numFrames] = TestResult(resultBuffer.numFrames, 2);
+				result[\numChannels] = TestResult(resultBuffer.numChannels, 2);
+			}
+		)
+	}
+
+	//Bugged?
+	test_smooth_sine_lookBack {
+		FluidBufAmpGate.process(
+			server,
+			smoothSineBuffer,
+			indices: resultBuffer,
+			rampUp: 5,
+			rampDown: 25,
+			onThreshold: -12,
+			offThreshold: -12,
+			lookBack: 441,
+			action: {
+				result = Dictionary(2);
+				result[\numFrames] = TestResult(resultBuffer.numFrames, 2);
+				result[\numChannels] = TestResult(resultBuffer.numChannels, 2);
+			}
+		)
+	}
+
+	test_smooth_sine_lookBack_lookAhead {
+		FluidBufAmpGate.process(
+			server,
+			smoothSineBuffer,
+			indices: resultBuffer,
+			rampUp: 5,
+			rampDown: 25,
+			onThreshold: -12,
+			offThreshold: -12,
+			lookBack: 221,
+			lookAhead: 441,
+			action: {
+				result = Dictionary(2);
+				result[\numFrames] = TestResult(resultBuffer.numFrames, 2);
+				result[\numChannels] = TestResult(resultBuffer.numChannels, 2);
+			}
+		)
+	}
 }
