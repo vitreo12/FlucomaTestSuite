@@ -29,6 +29,9 @@ FluidUnitTest : UnitTest {
 	//Samples
 	var <eurorackSynthBuffer, <drumsBuffer, <acousticStrumsBuffer;
 
+	//Composite stereo Buffer (piano + acoustic strums)
+	var <stereoBuffer;
+
 	//Per-method
 	var <completed = false;
 	var <>result = "";       //This is the result on every iteration
@@ -134,6 +137,15 @@ FluidUnitTest : UnitTest {
 			server,
 			File.realpath(FluidBufTransients.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Tremblay-AaS-AcousticStrums-M.wav"
 		);
+
+		stereoBuffer = Buffer.read(
+			server,
+			File.realpath(FluidBufTransients.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Tremblay-SA-UprightPianoPedalWide.wav"
+		);
+
+		server.sync;
+
+		FluidBufCompose.process(server, acousticStrumsBuffer, numFrames: stereoBuffer.numFrames, startFrame: 555000, destStartChan: 1, destination: stereoBuffer);
 
 		server.sync;
 

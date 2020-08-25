@@ -1,9 +1,13 @@
 TestFluidMFCC : FluidUnitTest {
-	classvar expectedResultDrums;
+	classvar expectedResultDrumsMono, expectedResultStereo;
 
 	*initClass {
-		expectedResultDrums = TextFileToArray(
+		expectedResultDrumsMono = TextFileToArray(
 			File.realpath(TestFluidMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "MFCC_drums_mono.txt"
+		);
+
+		expectedResultStereo = TextFileToArray(
+			File.realpath(TestFluidMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "MFCC_stereo.txt"
 		);
 	}
 
@@ -34,14 +38,14 @@ TestFluidMFCC : FluidUnitTest {
 
 				//Abstract this in a reusable function!
 				resultBuffer.loadToFloatArray(action: { | resultArray |
-					result[\expectedSize] = TestResult(resultArray.size, expectedResultDrums.size);
+					result[\expectedSize] = TestResult(resultArray.size, expectedResultDrumsMono.size);
 
 					//Compare sample by sample with a set tolerance
 					resultArray.size.do({ | i |
 						var resultArraySample = resultArray[i];
-						var expectedResultDrumsSample = expectedResultDrums[i];
+						var expectedResultSample = expectedResultDrumsMono[i];
 
-						if(abs(resultArraySample - expectedResultDrumsSample) >= tolerance, {
+						if(abs(resultArraySample - expectedResultSample) >= tolerance, {
 							expectedResult = false
 						});
 					});
@@ -55,6 +59,41 @@ TestFluidMFCC : FluidUnitTest {
 	}
 
 	test_stereo {
+		var numCoeffs = 5;
 
+		FluidBufMFCC.process(
+			server,
+			source: stereoBuffer,
+			features: resultBuffer,
+			numCoeffs: numCoeffs,
+
+			action: {
+				var tolerance = 0.001;
+				var expectedResult = true;
+
+				result = Dictionary(4);
+
+				result[\numChannels] = TestResult(resultBuffer.numChannels, numCoeffs * 2);
+
+				//Abstract this in a reusable function!
+				resultBuffer.loadToFloatArray(action: { | resultArray |
+					result[\expectedSize] = TestResult(resultArray.size, expectedResultStereo.size);
+
+					//Compare sample by sample with a set tolerance
+					resultArray.size.do({ | i |
+						var resultArraySample = resultArray[i];
+						var expectedResultSample = expectedResultStereo[i];
+
+						if(abs(resultArraySample - expectedResultSample) >= tolerance, {
+							expectedResult = false
+						});
+					});
+
+					server.sync;
+
+					result[\expectedResult] = TestResult(expectedResult, true);
+				});
+			}
+		)
 	}
 }
