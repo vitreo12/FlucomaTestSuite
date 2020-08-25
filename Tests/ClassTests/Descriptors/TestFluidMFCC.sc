@@ -3,7 +3,7 @@ TestFluidMFCC : FluidUnitTest {
 
 	*initClass {
 		expectedResultDrums = TextFileToArray(
-			File.realpath(TestFluidMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "MFCC.txt"
+			File.realpath(TestFluidMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "MFCC_drums_mono.txt"
 		);
 	}
 
@@ -52,5 +52,9 @@ TestFluidMFCC : FluidUnitTest {
 				});
 			}
 		)
+	}
+
+	test_stereo {
+
 	}
 }

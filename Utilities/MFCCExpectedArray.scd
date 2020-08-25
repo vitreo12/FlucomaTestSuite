@@ -23,7 +23,7 @@ s.waitForBoot({
 
 			s.sync;
 
-			File.use(File.realpath(TestFluidMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "MFCC.txt", "w", { | f |
+			File.use(File.realpath(TestFluidMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "MFCC_drums_mono.txt", "w", { | f |
 				outArray.do({ | sample, index |
 					var sampleOut;
 					if(index < (outArray.size - 1), {
