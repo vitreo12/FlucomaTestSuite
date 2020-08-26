@@ -24,6 +24,8 @@
 			"*** Generated Flucoma Binaries ***".postln;
 
 			server.quit;
+
+			thisProcess.recompile();
 		});
 	}
 
@@ -210,45 +212,95 @@
 	}
 
 	*generateBufStats { | server, condition |
+		var buf_stats_mono, buf_stats_stereo;
+
 		server = server ? Server.local;
 
-		server.waitForBoot({
+		buf_stats_stereo = {
 			var numDerivs = 1;
 
-			var b = Buffer.read(server, File.realpath(FluidBufMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Nicol-LoopE-M.wav");
+			var b = Buffer.read(server, File.realpath(FluidBufMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Tremblay-SA-UprightPianoPedalWide.wav");
+			var b2 = Buffer.read(server, File.realpath(FluidBufMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Tremblay-AaS-AcousticStrums-M.wav");
+
 			var c = Buffer.new(server);
 
 			server.sync;
 
+			FluidBufCompose.process(server, b2, numFrames:b.numFrames, startFrame:555000, destStartChan:1, destination:b);
+
+			server.sync;
+
 			FluidBufStats.process(
-				server,
-				source: b,
-				stats: c,
-				numDerivs: numDerivs,
-				action: {
-					var outArray;
+					server,
+					source: b,
+					stats: c,
+					numDerivs: numDerivs,
+					action: {
+						var outArray;
 
-					c.loadToFloatArray(action: { arg array; outArray = array });
+						c.loadToFloatArray(action: { arg array; outArray = array });
 
-					server.sync;
+						server.sync;
 
-					File.use(File.realpath(TestFluidBufStats.class.filenameSymbol).dirname.withTrailingSlash ++ "BufStats.txt", "w", { | f |
-						outArray.do({ | sample, index |
-							var sampleOut;
-							if(index < (outArray.size - 1), {
-								sampleOut = sample.asString ++ ","
-							}, {
-								sampleOut = sample.asString
+						File.use(File.realpath(TestFluidBufStats.class.filenameSymbol).dirname.withTrailingSlash ++ "BufStats_stereo.txt", "w", { | f |
+							outArray.do({ | sample, index |
+								var sampleOut;
+								if(index < (outArray.size - 1), {
+									sampleOut = sample.asString ++ ","
+								}, {
+									sampleOut = sample.asString
+								});
+
+								f.write(sampleOut);
 							});
 
-							f.write(sampleOut);
+							if(condition != nil, { condition.unhang })
 						});
+					}
+				);
+		};
 
-						if(condition != nil, { condition.unhang })
-					});
-				}
-			);
-		});
+		buf_stats_mono = {
+			server.waitForBoot({
+				var numDerivs = 1;
+
+				var b = Buffer.read(server, File.realpath(FluidBufMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Nicol-LoopE-M.wav");
+				var c = Buffer.new(server);
+
+				server.sync;
+
+				FluidBufStats.process(
+					server,
+					source: b,
+					stats: c,
+					numDerivs: numDerivs,
+					action: {
+						var outArray;
+
+						c.loadToFloatArray(action: { arg array; outArray = array });
+
+						server.sync;
+
+						File.use(File.realpath(TestFluidBufStats.class.filenameSymbol).dirname.withTrailingSlash ++ "BufStats_mono.txt", "w", { | f |
+							outArray.do({ | sample, index |
+								var sampleOut;
+								if(index < (outArray.size - 1), {
+									sampleOut = sample.asString ++ ","
+								}, {
+									sampleOut = sample.asString
+								});
+
+								f.write(sampleOut);
+							});
+
+							buf_stats_stereo.value;
+						});
+					}
+				);
+			});
+		};
+
+		buf_stats_mono.value;
 	}
 
 	*generateSpectralShape { | server, condition |
