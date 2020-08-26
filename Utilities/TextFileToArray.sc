@@ -1,8 +1,15 @@
 TextFileToArray {
 	*new { | path |
-		var file = File(path, "r");
-		var string = file.readAllString;
-		file.close;
-		^("[" ++ string ++ "]").interpret;
+		if(path != nil, {
+			var file, string;
+			file = File(path, "r");
+			if(file.isOpen, {
+				string = file.readAllString;
+				file.close;
+				^("[" ++ string ++ "]").interpret;
+			}, {
+				("Could not read path " ++ path).error;
+			});
+		});
 	}
 }
