@@ -139,6 +139,7 @@ FlucomaTestSuite {
 	}
 
 	*runTestClass { | class |
+		this.reset;
 		this.runTestClass_inner(class, nil);
 	}
 
@@ -152,8 +153,10 @@ FlucomaTestSuite {
 			^nil;
 		});
 
-		//Reset global vars
-		resultsDict.clear;
+		//reset Dicts
+		this.reset;
+
+		//Set global vars
 		classCounter = 0;
 		running = true;
 
