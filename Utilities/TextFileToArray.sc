@@ -10,7 +10,7 @@ TextFileToArray {
 			}, {
 				("Could not read path " ++ path).error;
 				("Run 'FlucomaTestSuite.generateBinaries'").warn;
-				^[0];
+				^nil;
 			});
 		});
 	}

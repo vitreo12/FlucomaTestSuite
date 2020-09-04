@@ -16,6 +16,8 @@ TestFluidMFCC : FluidUnitTest {
 		var fftsize = 256;
 		var hopsize = fftsize / 2;
 
+		if(expectedResultDrumsMono.isNil, { result = "failure: could not read binary file"; ^nil; });
+
 		FluidBufMFCC.process(
 			server,
 			source: drumsBuffer,
@@ -60,6 +62,8 @@ TestFluidMFCC : FluidUnitTest {
 
 	test_stereo {
 		var numCoeffs = 5;
+
+		if(expectedResultStereo.isNil, { result = "failure: could not read binary file"; ^nil; });
 
 		FluidBufMFCC.process(
 			server,

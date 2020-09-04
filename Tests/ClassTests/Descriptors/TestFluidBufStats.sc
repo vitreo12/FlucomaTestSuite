@@ -14,6 +14,8 @@ TestFluidBufStats : FluidUnitTest {
 	test_drums_mono {
 		var numDerivs = 1;
 
+		if(expectedResultDrums.isNil, { result = "failure: could not read binary file"; ^nil; });
+
 		FluidBufStats.process(
 			server,
 			source: drumsBuffer,
@@ -51,6 +53,8 @@ TestFluidBufStats : FluidUnitTest {
 
 	test_stereo {
 		var numDerivs = 1;
+
+		if(expectedResultStereo.isNil, { result = "failure: could not read binary file"; ^nil; });
 
 		FluidBufStats.process(
 			server,

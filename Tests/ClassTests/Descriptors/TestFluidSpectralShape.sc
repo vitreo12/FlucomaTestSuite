@@ -12,6 +12,8 @@ TestFluidSpectralShape : FluidUnitTest {
 		var fftsize = 256;
 		var hopsize = fftsize / 2;
 
+		if(expectedResultDrums.isNil, { result = "failure: could not read binary file"; ^nil; });
+
 		FluidBufSpectralShape.process(
 			server,
 			source: drumsBuffer,

@@ -22,6 +22,7 @@ TestFluidBufNMF : FluidUnitTest {
 
 		var basesBuffer = Buffer.new(server);
 		var activationsBuffer = Buffer.new(server);
+
 		server.sync;
 
 		FluidBufNMF.process(
@@ -88,7 +89,14 @@ TestFluidBufNMF : FluidUnitTest {
 
 		var basesBuffer = Buffer.new(server);
 		var activationsBuffer = Buffer.new(server);
+
 		server.sync;
+
+		if(expectedResynthArray.isNil.or(
+			expectedBasesArray.isNil.or(
+				expectedActivationsArray.isNil
+			)
+		), { result = "failure: could not read binary file"; ^nil; });
 
 		FluidBufNMF.process(
 			server,
