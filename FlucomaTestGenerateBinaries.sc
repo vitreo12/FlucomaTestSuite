@@ -60,7 +60,7 @@
 
 					server.sync;
 
-					File.use(File.realpath(TestFluidMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "MFCC_stereo.txt", "w", { | f |
+					File.use(File.realpath(TestFluidMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "MFCC_stereo.flucoma", "w", { | f |
 						outArray.do({ | sample, index |
 							var sampleOut;
 							if(index < (outArray.size - 1), {
@@ -103,7 +103,7 @@
 
 						server.sync;
 
-						File.use(File.realpath(TestFluidMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "MFCC_drums_mono.txt", "w", { | f |
+						File.use(File.realpath(TestFluidMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "MFCC_drums_mono.flucoma", "w", { | f |
 							outArray.do({ | sample, index |
 								var sampleOut;
 								if(index < (outArray.size - 1), {
@@ -166,7 +166,7 @@
 
 					server.sync;
 
-					File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMFResynth.txt", "w", { | f |
+					File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMFResynth.flucoma", "w", { | f |
 						resynthArray.do({ | sample, index |
 							var sampleOut;
 							if(index < (resynthArray.size - 1), {
@@ -178,7 +178,7 @@
 							f.write(sampleOut);
 						});
 
-						File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMFBases.txt", "w", { | f |
+						File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMFBases.flucoma", "w", { | f |
 							basesArray.do({ | sample, index |
 								var sampleOut;
 								if(index < (basesArray.size - 1), {
@@ -190,7 +190,7 @@
 								f.write(sampleOut);
 							});
 
-							File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMFActivations.txt", "w", { | f |
+							File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMFActivations.flucoma", "w", { | f |
 								activationsArray.do({ | sample, index |
 									var sampleOut;
 									if(index < (activationsArray.size - 1), {
@@ -242,7 +242,7 @@
 
 						server.sync;
 
-						File.use(File.realpath(TestFluidBufStats.class.filenameSymbol).dirname.withTrailingSlash ++ "BufStats_stereo.txt", "w", { | f |
+						File.use(File.realpath(TestFluidBufStats.class.filenameSymbol).dirname.withTrailingSlash ++ "BufStats_stereo.flucoma", "w", { | f |
 							outArray.do({ | sample, index |
 								var sampleOut;
 								if(index < (outArray.size - 1), {
@@ -281,7 +281,7 @@
 
 						server.sync;
 
-						File.use(File.realpath(TestFluidBufStats.class.filenameSymbol).dirname.withTrailingSlash ++ "BufStats_mono.txt", "w", { | f |
+						File.use(File.realpath(TestFluidBufStats.class.filenameSymbol).dirname.withTrailingSlash ++ "BufStats_mono.flucoma", "w", { | f |
 							outArray.do({ | sample, index |
 								var sampleOut;
 								if(index < (outArray.size - 1), {
@@ -328,7 +328,7 @@
 
 					server.sync;
 
-					File.use(File.realpath(TestFluidSpectralShape.class.filenameSymbol).dirname.withTrailingSlash ++ "SpectralShape.txt", "w", { | f |
+					File.use(File.realpath(TestFluidSpectralShape.class.filenameSymbol).dirname.withTrailingSlash ++ "SpectralShape.flucoma", "w", { | f |
 						outArray.do({ | sample, index |
 							var sampleOut;
 							if(index < (outArray.size - 1), {
@@ -374,7 +374,7 @@
 
 					server.sync;
 
-					File.use(File.realpath(TestFluidMelBands.class.filenameSymbol).dirname.withTrailingSlash ++ "MelBands.txt", "w", { | f |
+					File.use(File.realpath(TestFluidMelBands.class.filenameSymbol).dirname.withTrailingSlash ++ "MelBands.flucoma", "w", { | f |
 						outArray.do({ | sample, index |
 							var sampleOut;
 							if(index < (outArray.size - 1), {

@@ -3,11 +3,11 @@ TestFluidMFCC : FluidUnitTest {
 
 	*initClass {
 		expectedResultDrumsMono = TextFileToArray(
-			File.realpath(TestFluidMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "MFCC_drums_mono.txt"
+			File.realpath(TestFluidMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "MFCC_drums_mono.flucoma"
 		);
 
 		expectedResultStereo = TextFileToArray(
-			File.realpath(TestFluidMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "MFCC_stereo.txt"
+			File.realpath(TestFluidMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "MFCC_stereo.flucoma"
 		);
 	}
 

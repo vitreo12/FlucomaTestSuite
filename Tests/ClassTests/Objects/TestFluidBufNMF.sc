@@ -3,15 +3,15 @@ TestFluidBufNMF : FluidUnitTest {
 
 	*initClass {
 		expectedResynthArray = TextFileToArray(
-			File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMFResynth.txt"
+			File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMFResynth.flucoma"
 		);
 
 		expectedBasesArray = TextFileToArray(
-			File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMFBases.txt"
+			File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMFBases.flucoma"
 		);
 
 		expectedActivationsArray = TextFileToArray(
-			File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMFActivations.txt"
+			File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMFActivations.flucoma"
 		);
 	}
 

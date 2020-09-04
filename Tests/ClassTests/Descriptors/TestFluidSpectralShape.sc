@@ -4,7 +4,7 @@ TestFluidSpectralShape : FluidUnitTest {
 
 	*initClass {
 		expectedResultDrums = TextFileToArray(
-			File.realpath(TestFluidSpectralShape.class.filenameSymbol).dirname.withTrailingSlash ++ "SpectralShape.txt"
+			File.realpath(TestFluidSpectralShape.class.filenameSymbol).dirname.withTrailingSlash ++ "SpectralShape.flucoma"
 		);
 	}
 

@@ -3,11 +3,11 @@ TestFluidBufStats : FluidUnitTest {
 
 	*initClass {
 		expectedResultDrums = TextFileToArray(
-			File.realpath(TestFluidBufStats.class.filenameSymbol).dirname.withTrailingSlash ++ "BufStats_mono.txt"
+			File.realpath(TestFluidBufStats.class.filenameSymbol).dirname.withTrailingSlash ++ "BufStats_mono.flucoma"
 		);
 
 		expectedResultStereo = TextFileToArray(
-			File.realpath(TestFluidBufStats.class.filenameSymbol).dirname.withTrailingSlash ++ "BufStats_stereo.txt"
+			File.realpath(TestFluidBufStats.class.filenameSymbol).dirname.withTrailingSlash ++ "BufStats_stereo.flucoma"
 		);
 	}
 

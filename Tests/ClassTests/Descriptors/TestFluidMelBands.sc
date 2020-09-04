@@ -3,7 +3,7 @@ TestFluidMelBands : FluidUnitTest {
 
 	*initClass {
 		expectedResultDrums = TextFileToArray(
-			File.realpath(TestFluidMelBands.class.filenameSymbol).dirname.withTrailingSlash ++ "MelBands.txt"
+			File.realpath(TestFluidMelBands.class.filenameSymbol).dirname.withTrailingSlash ++ "MelBands.flucoma"
 		);
 	}
 
