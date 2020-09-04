@@ -9,6 +9,8 @@ TextFileToArray {
 				^("[" ++ string ++ "]").interpret;
 			}, {
 				("Could not read path " ++ path).error;
+				("Run 'FlucomaTestSuite.generateBinaries'").warn;
+				^[0];
 			});
 		});
 	}
