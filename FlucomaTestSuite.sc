@@ -40,6 +40,8 @@ FlucomaTestSuite {
 
 		//There might be empty classes, so take the size from classesDict
 		totalNumClasses = classesDict.size;
+
+		classCounter = 0;
 	}
 
 	*stop {
@@ -83,7 +85,7 @@ FlucomaTestSuite {
 		if(classCondition == nil, {
 			isStandaloneTest = true;
 			if(running, {
-				"The FluCoMa test suite is already running".error;
+				"The FluCoMa test suite is already running. Run 'FlucomaTestSuite.stop' to interrupt it.".error;
 				^nil;
 			});
 			running = true;
@@ -149,15 +151,14 @@ FlucomaTestSuite {
 
 	*runAllTests {
 		if(running, {
-			"The FluCoMa test suite is already running".error;
+			"The FluCoMa test suite is already running. Run 'FlucomaTestSuite.stop' to interrupt it.".error;
 			^nil;
 		});
 
-		//reset Dicts
+		//reset vars
 		this.reset;
 
-		//Set global vars
-		classCounter = 0;
+		//Set running state
 		running = true;
 
 		//Run one class at the time, or the interpreter won't catch up with
