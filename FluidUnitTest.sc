@@ -194,7 +194,7 @@ FluidUnitTest : UnitTest {
 	//per-method... server should perhaps be booted per-class.
 	//This is run in a Routine, so wait / sync can be used
 	setUp { | serverIndex = -1 |
-		var serverOptions = ServerOptions.new;
+		var serverOptions = Server.default.options;
 
 		//Generate a uniqueID if serverIndex is -1 or nil
 		if((serverIndex == -1).or(serverIndex.isNil), {
