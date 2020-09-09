@@ -244,6 +244,8 @@ FluidUnitTest : UnitTest {
 
 			execTime = execTime / tAvg;
 
+			server.sync;
+
 			this.tearDown;
 		};
 
