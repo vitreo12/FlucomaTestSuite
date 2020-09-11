@@ -18,11 +18,21 @@ TestResultEquals {
 			^TestResult.new(a, b);
 		}, {
 			var condition = (a - b).abs <= tolerance;
-			if(condition.not, {
-				^("failure: " ++ a ++ " exceeds " ++ b ++ " +/- " ++ tolerance);
+			if(condition.class == Array, {
+				condition.do({ | entry |
+					if(entry.not, {
+						^("failure: " ++ a ++ " exceeds " ++ b ++ " +/- " ++ tolerance);
+					}, {
+						^("success");
+					});
+				});
 			}, {
-				^("success");
+				if(condition.not, {
+					^("failure: " ++ a ++ " exceeds " ++ b ++ " +/- " ++ tolerance);
+				}, {
+					^("success");
+				});
 			});
-		});
+		})
 	}
 }
