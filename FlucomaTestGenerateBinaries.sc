@@ -226,7 +226,11 @@
 			var d = Buffer.new(server);
 			var e = Buffer.new(server);
 
-			var first_sine_func, first_sine_array;
+			var bases_array;
+
+			var filter_first_sine_func, filter_first_sine_array;
+			var filter_second_sine_func, filter_second_sine_array;
+			var filter_both_sines_func, filter_both_sines_array;
 
 			var loadToFloatArrayCondition = Condition();
 
@@ -247,10 +251,29 @@
 
 			server.sync;
 
-			first_sine_func = {FluidNMFFilter.ar(SinOsc.ar(500), e, 2)};
+			e.loadToFloatArray(action: { arg array; bases_array = array });
 
-			first_sine_func.loadToFloatArray(0.5, server, { | array |
-				first_sine_array = array;
+			server.sync;
+
+			filter_first_sine_func = {FluidNMFFilter.ar(SinOsc.ar(500), e, 2)};
+			filter_first_sine_func.loadToFloatArray(0.5, server, { | array |
+				filter_first_sine_array = array;
+				loadToFloatArrayCondition.unhang;
+			});
+
+			loadToFloatArrayCondition.hang;
+
+			filter_second_sine_func = {FluidNMFFilter.ar(SinOsc.ar(5000), e, 2)};
+			filter_second_sine_func.loadToFloatArray(0.5, server, { | array |
+				filter_second_sine_array = array;
+				loadToFloatArrayCondition.unhang;
+			});
+
+			loadToFloatArrayCondition.hang;
+
+			filter_both_sines_func = {FluidNMFFilter.ar(SinOsc.ar([500, 5000]).sum, e, 2)};
+			filter_both_sines_func.loadToFloatArray(0.5, server, { | array |
+				filter_both_sines_array = array;
 				loadToFloatArrayCondition.unhang;
 			});
 
@@ -258,10 +281,53 @@
 
 			server.sync;
 
-			File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Filter_Match.flucoma", "w", { | f |
-				first_sine_array.do({ | sample, index |
+			//Store bases used for process
+			File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Filter_Match_Bases.flucoma", "w", { | f |
+				bases_array.do({ | sample, index |
 					var sampleOut;
-					if(index < (first_sine_array.size - 1), {
+					if(index < (bases_array.size - 1), {
+						sampleOut = sample.asString ++ ","
+					}, {
+						sampleOut = sample.asString
+					});
+
+					f.write(sampleOut);
+				});
+			});
+
+			//Store the 500 sine wave from NMFFilter
+			File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Filter_Sine500.flucoma", "w", { | f |
+				filter_first_sine_array.do({ | sample, index |
+					var sampleOut;
+					if(index < (filter_first_sine_array.size - 1), {
+						sampleOut = sample.asString ++ ","
+					}, {
+						sampleOut = sample.asString
+					});
+
+					f.write(sampleOut);
+				});
+			});
+
+			//Store the 5000 sine wave from NMFFilter
+			File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Filter_Sine5000.flucoma", "w", { | f |
+				filter_second_sine_array.do({ | sample, index |
+					var sampleOut;
+					if(index < (filter_second_sine_array.size - 1), {
+						sampleOut = sample.asString ++ ","
+					}, {
+						sampleOut = sample.asString
+					});
+
+					f.write(sampleOut);
+				});
+			});
+
+			//Store both the sine waves retrieval
+			File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Filter_Sines.flucoma", "w", { | f |
+				filter_both_sines_array.do({ | sample, index |
+					var sampleOut;
+					if(index < (filter_both_sines_array.size - 1), {
 						sampleOut = sample.asString ++ ","
 					}, {
 						sampleOut = sample.asString
