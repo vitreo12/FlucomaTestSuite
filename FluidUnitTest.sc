@@ -225,7 +225,7 @@ FluidUnitTest : UnitTest {
 	}
 
 	runTestMethod { | method, serverIndex = -1 |
-		var t, tAvg = 4; //run 4 times to average execution time
+		var t, tAvg = FlucomaTestSuite.averageRuns; //run 4 times to average execution time
 
 		fork {
 			currentMethod = method;
