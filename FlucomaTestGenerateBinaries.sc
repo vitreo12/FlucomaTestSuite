@@ -23,6 +23,7 @@
 
 			this.generateSines(server, c);
 			c.hang;
+
 			"*** Generated Flucoma Binaries ***".postln;
 
 			server.quit;
@@ -73,62 +74,70 @@
 
 							f.write(sampleOut);
 						});
-
-						if(condition != nil, { condition.unhang })
 					});
 				}
 			);
 		};
 
 		mfcc_mono = {
-			server.waitForBoot({
-				var numCoeffs = 13;
-				var fftsize = 256;
-				var hopsize = fftsize / 2;
+			var numCoeffs = 13;
+			var fftsize = 256;
+			var hopsize = fftsize / 2;
 
-				var b = Buffer.read(server, File.realpath(FluidBufMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Nicol-LoopE-M.wav");
-				var c = Buffer.new(server);
+			var b = Buffer.read(server, File.realpath(FluidBufMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Nicol-LoopE-M.wav");
+			var c = Buffer.new(server);
 
-				server.sync;
+			server.sync;
 
-				FluidBufMFCC.process(
-					server,
-					source: b,
-					features: c,
-					numCoeffs: numCoeffs,
-					fftSize: fftsize,
-					hopSize: hopsize,
-					action: {
-						var outArray;
+			FluidBufMFCC.process(
+				server,
+				source: b,
+				features: c,
+				numCoeffs: numCoeffs,
+				fftSize: fftsize,
+				hopSize: hopsize,
+				action: {
+					var outArray;
 
-						c.loadToFloatArray(action: { arg array; outArray = array });
+					c.loadToFloatArray(action: { arg array; outArray = array });
 
-						server.sync;
+					server.sync;
 
-						File.use(File.realpath(TestFluidMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "MFCC_drums_mono.flucoma", "w", { | f |
-							outArray.do({ | sample, index |
-								var sampleOut;
-								if(index < (outArray.size - 1), {
-									sampleOut = sample.asString ++ ","
-								}, {
-									sampleOut = sample.asString
-								});
-
-								f.write(sampleOut);
+					File.use(File.realpath(TestFluidMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "MFCC_drums_mono.flucoma", "w", { | f |
+						outArray.do({ | sample, index |
+							var sampleOut;
+							if(index < (outArray.size - 1), {
+								sampleOut = sample.asString ++ ","
+							}, {
+								sampleOut = sample.asString
 							});
-						});
 
-						mfcc_stereo.value;
-					}
-				);
-			});
+							f.write(sampleOut);
+						});
+					});
+				}
+			);
 		};
 
-		mfcc_mono.value;
+		server.waitForBoot({
+			mfcc_mono.value;
+
+			server.sync;
+
+			mfcc_stereo.value;
+
+			server.sync;
+
+			if(condition != nil, { condition.unhang })
+		});
 	}
 
 	*generateNMF { | server, condition |
-		server.waitForBoot({
+		var nmf_eurorack, nmf_filter_match;
+
+		server = server ? Server.local;
+
+		nmf_eurorack = {
 			var components = 3;
 
 			var fftSize = 1024;
@@ -203,13 +212,76 @@
 
 									f.write(sampleOut);
 								});
-
-								if(condition != nil, { condition.unhang })
 							});
 						});
 					});
 				}
 			);
+		};
+
+		nmf_filter_match = {
+			// create buffers
+			var b = Buffer.alloc(server, 44100);
+			var c = Buffer.alloc(server, 44100);
+			var d = Buffer.new(server);
+			var e = Buffer.new(server);
+
+			var first_sine_func, first_sine_array;
+
+			var loadToFloatArrayCondition = Condition();
+
+			server.sync;
+
+			// fill them with 2 clearly segregated sine waves and composite a buffer where they are consecutive
+			b.sine2([500],  [1], false, false);
+			c.sine2([5000], [1], false, false);
+
+			server.sync;
+
+			FluidBufCompose.process(server, b, destination: d);
+			FluidBufCompose.process(server, c, destStartFrame: 44100, destination: d, destGain: 1);
+
+			server.sync;
+
+			FluidBufNMF.process(server, d, bases: e, components: 2);
+
+			server.sync;
+
+			first_sine_func = {FluidNMFFilter.ar(SinOsc.ar(500), e, 2)};
+
+			first_sine_func.loadToFloatArray(0.5, server, { | array |
+				first_sine_array = array;
+				loadToFloatArrayCondition.unhang;
+			});
+
+			loadToFloatArrayCondition.hang;
+
+			server.sync;
+
+			File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Filter_Match.flucoma", "w", { | f |
+				first_sine_array.do({ | sample, index |
+					var sampleOut;
+					if(index < (first_sine_array.size - 1), {
+						sampleOut = sample.asString ++ ","
+					}, {
+						sampleOut = sample.asString
+					});
+
+					f.write(sampleOut);
+				});
+			});
+		};
+
+		server.waitForBoot({
+			nmf_eurorack.value;
+
+			server.sync;
+
+			nmf_filter_match.value;
+
+			server.sync;
+
+			if(condition != nil, { condition.unhang })
 		});
 	}
 
@@ -255,54 +327,58 @@
 
 							f.write(sampleOut);
 						});
-
-						if(condition != nil, { condition.unhang })
 					});
 				}
 			);
 		};
 
 		buf_stats_mono = {
-			server.waitForBoot({
-				var numDerivs = 1;
+			var numDerivs = 1;
 
-				var b = Buffer.read(server, File.realpath(FluidBufMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Nicol-LoopE-M.wav");
-				var c = Buffer.new(server);
+			var b = Buffer.read(server, File.realpath(FluidBufMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Nicol-LoopE-M.wav");
+			var c = Buffer.new(server);
 
-				server.sync;
+			server.sync;
 
-				FluidBufStats.process(
-					server,
-					source: b,
-					stats: c,
-					numDerivs: numDerivs,
-					action: {
-						var outArray;
+			FluidBufStats.process(
+				server,
+				source: b,
+				stats: c,
+				numDerivs: numDerivs,
+				action: {
+					var outArray;
 
-						c.loadToFloatArray(action: { arg array; outArray = array });
+					c.loadToFloatArray(action: { arg array; outArray = array });
 
-						server.sync;
+					server.sync;
 
-						File.use(File.realpath(TestFluidBufStats.class.filenameSymbol).dirname.withTrailingSlash ++ "BufStats_mono.flucoma", "w", { | f |
-							outArray.do({ | sample, index |
-								var sampleOut;
-								if(index < (outArray.size - 1), {
-									sampleOut = sample.asString ++ ","
-								}, {
-									sampleOut = sample.asString
-								});
-
-								f.write(sampleOut);
+					File.use(File.realpath(TestFluidBufStats.class.filenameSymbol).dirname.withTrailingSlash ++ "BufStats_mono.flucoma", "w", { | f |
+						outArray.do({ | sample, index |
+							var sampleOut;
+							if(index < (outArray.size - 1), {
+								sampleOut = sample.asString ++ ","
+							}, {
+								sampleOut = sample.asString
 							});
 
-							buf_stats_stereo.value;
+							f.write(sampleOut);
 						});
-					}
-				);
-			});
+					});
+				}
+			);
 		};
 
-		buf_stats_mono.value;
+		server.waitForBoot({
+			buf_stats_mono.value;
+
+			server.sync;
+
+			buf_stats_stereo.value;
+
+			server.sync;
+
+			if(condition != nil, { condition.unhang })
+		});
 	}
 
 	*generateSpectralShape { | server, condition |
@@ -341,11 +417,13 @@
 
 							f.write(sampleOut);
 						});
-
-						if(condition != nil, { condition.unhang })
 					});
 				}
 			);
+
+			server.sync;
+
+			if(condition != nil, { condition.unhang })
 		});
 	}
 
@@ -387,15 +465,19 @@
 
 							f.write(sampleOut);
 						});
-
-						if(condition != nil, { condition.unhang })
 					});
 				}
 			);
+
+			server.sync;
+
+			if(condition != nil, { condition.unhang });
 		});
 	}
 
 	*generateSines { | server, condition |
+		server = server ? Server.local;
+
 		server.waitForBoot({
 			var fftSize = 8192;
 			var windowSize = 1024;
@@ -450,12 +532,14 @@
 
 								f.write(sampleOut);
 							});
-
-							if(condition != nil, { condition.unhang })
 						});
 					});
 				}
 			);
+
+			server.sync;
+
+			if(condition != nil, { condition.unhang });
 		});
 	}
 }
