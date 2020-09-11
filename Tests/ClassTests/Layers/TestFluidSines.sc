@@ -1,6 +1,15 @@
 TestFluidSines : FluidUnitTest {
-	//Move this to Layers tests
+	classvar expectedSinesArray, expectedResidualArray;
 	var <residualBuffer;
+
+	*initClass {
+		expectedSinesArray = TextFileToArray(
+			File.realpath(TestFluidSines.class.filenameSymbol).dirname.withTrailingSlash ++ "Sines_sines.flucoma"
+		);
+		expectedResidualArray = TextFileToArray(
+			File.realpath(TestFluidSines.class.filenameSymbol).dirname.withTrailingSlash ++ "Sines_resid.flucoma"
+		);
+	}
 
 	test_multiple_sines_null_sum {
 		residualBuffer = Buffer.new(server);
@@ -106,12 +115,57 @@ TestFluidSines : FluidUnitTest {
 
 				result = Dictionary(3);
 
-				result[\transientsNumFrames] = TestResult(resultBuffer.numFrames, eurorackSynthArray.size);
+				result[\sinesNumFrames] = TestResult(resultBuffer.numFrames, eurorackSynthArray.size);
 				result[\residualNumFrames]   = TestResult(residualBuffer.numFrames, eurorackSynthArray.size);
 
 				//If at least one sample is above tolerance, result is false
 				((sinesArray + residualArray) - eurorackSynthArray).do({ | sample |
 					if(abs(sample) >= ampTolerance, { nullSum = false });
+				});
+
+				result[\nullSum] = TestResult(nullSum, true);
+			}
+		);
+	}
+
+	test_eurorack_output {
+		residualBuffer = Buffer.new(server);
+		server.sync;
+
+		//Null summing test
+		FluidBufSines.process(
+			server,
+			eurorackSynthBuffer,
+			sines: resultBuffer,
+			residual: residualBuffer,
+			numFrames: 22050,
+			windowSize: 1024,
+			hopSize: 256,
+			fftSize: 8192,
+			action: {
+				var ampTolerance = 0.0001;
+				var sinesArray, residualArray;
+				var nullSum = true;
+
+				resultBuffer.loadToFloatArray(action: { | argSinesArray |
+					sinesArray = argSinesArray;
+				});
+
+				residualBuffer.loadToFloatArray(action: { | argResidualArray |
+					residualArray = argResidualArray;
+				});
+
+				server.sync;
+
+				result = Dictionary(3);
+
+				result[\sinesNumFrames] = TestResult(resultBuffer.numFrames, 22050);
+				result[\residualNumFrames]   = TestResult(residualBuffer.numFrames, 22050);
+
+				//If at least one sample is above tolerance, result is false
+				sinesArray.do({ | sample, index |
+					if(abs(sample - expectedSinesArray[index] ) >= ampTolerance, { nullSum = false });
+					if(abs(residualArray[index] - expectedResidualArray[index] ) >= ampTolerance, { nullSum = false })
 				});
 
 				result[\nullSum] = TestResult(nullSum, true);

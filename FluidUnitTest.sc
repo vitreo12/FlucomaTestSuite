@@ -1,6 +1,7 @@
 FluidUnitTest : UnitTest {
 	//Run all tests at serverSamplerate
 	classvar <serverSampleRate = 44100;
+	classvar <serverSampleRateRatio;
 
 	classvar <>serverIPAddr = "127.0.0.1";
 	classvar <>serverStartingPort = 5000;
@@ -51,15 +52,16 @@ FluidUnitTest : UnitTest {
 	//Global init of all the Arrays
 	*initClass {
 		var impulsesIndices;
+		serverSampleRateRatio = serverSampleRate / 44100.0;//ratio needed for expected values
 
 		//One impulse after half a second
 		oneImpulseArray = Array.fill(serverSampleRate, { | i |
 			if(i == ((serverSampleRate / 2).asInteger - 1), { 1.0 }, { 0.0 });
 		});
 
-		//Four impulses at [ 1000.0, 12025.0, 23050.0, 34075.0  ] @ 44.1k
-		impulsesIndices = ((0..3) * (serverSampleRate / 4).asInteger) + 1000;
-		impulsesArray = Array.fill(serverSampleRate, { | i |
+		//Four impulses at [ 1000.0, 12025.0, 23051.0, 34076.0  ] @ 44.1k alternating sereo
+		impulsesIndices = ((0..3) * (serverSampleRate / 2 + 1).asInteger) + 2000;
+		impulsesArray = Array.fill(serverSampleRate*2, { | i |
 			if(impulsesIndices.includes(i.asInteger), { 1.0 }, { 0.0 });
 		});
 
@@ -178,7 +180,7 @@ FluidUnitTest : UnitTest {
 	//Slice / Layer / etc subclasses, together with the corresponding classvar Arrays
 	initBuffers {
 		oneImpulseBuffer = Buffer.sendCollection(server, oneImpulseArray);
-		impulsesBuffer = Buffer.sendCollection(server, impulsesArray);
+		impulsesBuffer = Buffer.sendCollection(server, impulsesArray, 2);
 		sharpSineBuffer = Buffer.sendCollection(server, sharpSineArray);
 		smoothSineBuffer = Buffer.sendCollection(server, smoothSineArray);
 
@@ -225,7 +227,7 @@ FluidUnitTest : UnitTest {
 	}
 
 	runTestMethod { | method, serverIndex = -1 |
-		var t, tAvg = 4; //run 4 times to average execution time
+		var t, tAvg = FlucomaTestSuite.averageRuns; //run 4 times to average execution time
 
 		fork {
 			currentMethod = method;

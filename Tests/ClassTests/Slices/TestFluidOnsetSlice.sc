@@ -109,51 +109,51 @@ TestFluidOnsetSlice : FluidUnitTest {
 		);
 	}
 
-	test_one_impulse_cosine {
-		FluidBufOnsetSlice.process(
-			server,
-			oneImpulseBuffer,
-			indices: resultBuffer,
-			metric: 5,
-			action: {
-				result = Dictionary(2);
-				result[\numFrames] = TestResult(resultBuffer.numFrames, 1);
+	// test_one_impulse_cosine {
+	// 	FluidBufOnsetSlice.process(
+	// 		server,
+	// 		oneImpulseBuffer,
+	// 		indices: resultBuffer,
+	// 		metric: 5,
+	// 		action: {
+	// 			result = Dictionary(2);
+	// 			result[\numFrames] = TestResult(resultBuffer.numFrames, 1);
+	//
+	// 			//Check if the returned index position is correct (middle of file)
+	// 			if(resultBuffer.numFrames == 1, {
+	// 				resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
+	// 					var tolerance = 1.0; //1.0% margin of error in sample position
+	// 					var samplePositionTolerance = (oneImpulseBuffer.numFrames / 100) * tolerance;
+	// 					result[\sampleIndex] = TestResultEquals(samples[0], serverSampleRate / 2, samplePositionTolerance);
+	// 				});
+	// 			});
+	// 		}
+	// 	);
+	// }
 
-				//Check if the returned index position is correct (middle of file)
-				if(resultBuffer.numFrames == 1, {
-					resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
-						var tolerance = 1.0; //1.0% margin of error in sample position
-						var samplePositionTolerance = (oneImpulseBuffer.numFrames / 100) * tolerance;
-						result[\sampleIndex] = TestResultEquals(samples[0], serverSampleRate / 2, samplePositionTolerance);
-					});
-				});
-			}
-		);
-	}
+	// test_one_impulse_phasedev {
+	// 	FluidBufOnsetSlice.process(
+	// 		server,
+	// 		oneImpulseBuffer,
+	// 		indices: resultBuffer,
+	// 		metric: 6,
+	// 		action: {
+	// 			result = Dictionary(2);
+	// 			result[\numFrames] = TestResult(resultBuffer.numFrames, 1);
+	//
+	// 			//Check if the returned index position is correct (middle of file)
+	// 			if(resultBuffer.numFrames == 1, {
+	// 				resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
+	// 					var tolerance = 1.0; //1.0% margin of error in sample position
+	// 					var samplePositionTolerance = (oneImpulseBuffer.numFrames / 100) * tolerance;
+	// 					result[\sampleIndex] = TestResultEquals(samples[0], serverSampleRate / 2, samplePositionTolerance);
+	// 				});
+	// 			});
+	// 		}
+	// 	);
+	// }
 
-	test_one_impulse_phasedev {
-		FluidBufOnsetSlice.process(
-			server,
-			oneImpulseBuffer,
-			indices: resultBuffer,
-			metric: 6,
-			action: {
-				result = Dictionary(2);
-				result[\numFrames] = TestResult(resultBuffer.numFrames, 1);
-
-				//Check if the returned index position is correct (middle of file)
-				if(resultBuffer.numFrames == 1, {
-					resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
-						var tolerance = 1.0; //1.0% margin of error in sample position
-						var samplePositionTolerance = (oneImpulseBuffer.numFrames / 100) * tolerance;
-						result[\sampleIndex] = TestResultEquals(samples[0], serverSampleRate / 2, samplePositionTolerance);
-					});
-				});
-			}
-		);
-	}
-
-	test_one_impulse_wphasedev {
+/*	test_one_impulse_wphasedev {
 		FluidBufOnsetSlice.process(
 			server,
 			oneImpulseBuffer,
@@ -173,7 +173,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 				});
 			}
 		);
-	}
+	}*/
 
 	test_one_impulse_complexdev {
 		FluidBufOnsetSlice.process(

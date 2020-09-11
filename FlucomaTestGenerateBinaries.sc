@@ -21,6 +21,8 @@
 			this.generateMelBands(server, c);
 			c.hang;
 
+			this.generateSines(server, c);
+			c.hang;
 			"*** Generated Flucoma Binaries ***".postln;
 
 			server.quit;
@@ -231,33 +233,33 @@
 			server.sync;
 
 			FluidBufStats.process(
-					server,
-					source: b,
-					stats: c,
-					numDerivs: numDerivs,
-					action: {
-						var outArray;
+				server,
+				source: b,
+				stats: c,
+				numDerivs: numDerivs,
+				action: {
+					var outArray;
 
-						c.loadToFloatArray(action: { arg array; outArray = array });
+					c.loadToFloatArray(action: { arg array; outArray = array });
 
-						server.sync;
+					server.sync;
 
-						File.use(File.realpath(TestFluidBufStats.class.filenameSymbol).dirname.withTrailingSlash ++ "BufStats_stereo.flucoma", "w", { | f |
-							outArray.do({ | sample, index |
-								var sampleOut;
-								if(index < (outArray.size - 1), {
-									sampleOut = sample.asString ++ ","
-								}, {
-									sampleOut = sample.asString
-								});
-
-								f.write(sampleOut);
+					File.use(File.realpath(TestFluidBufStats.class.filenameSymbol).dirname.withTrailingSlash ++ "BufStats_stereo.flucoma", "w", { | f |
+						outArray.do({ | sample, index |
+							var sampleOut;
+							if(index < (outArray.size - 1), {
+								sampleOut = sample.asString ++ ","
+							}, {
+								sampleOut = sample.asString
 							});
 
-							if(condition != nil, { condition.unhang })
+							f.write(sampleOut);
 						});
-					}
-				);
+
+						if(condition != nil, { condition.unhang })
+					});
+				}
+			);
 		};
 
 		buf_stats_mono = {
@@ -387,6 +389,70 @@
 						});
 
 						if(condition != nil, { condition.unhang })
+					});
+				}
+			);
+		});
+	}
+
+	*generateSines { | server, condition |
+		server.waitForBoot({
+			var fftSize = 8192;
+			var windowSize = 1024;
+			var hopSize = 256;
+
+			var numFrames = 22050;
+
+			var b = Buffer.read(server, File.realpath(FluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Tremblay-AaS-SynthTwoVoices-M.wav");
+
+			var x = Buffer.new(server);
+			var y = Buffer.new(server);
+
+			server.sync;
+
+			FluidBufSines.process(
+				server,
+				source: b,
+				sines: x,
+				residual: y,
+				numFrames: numFrames,
+				windowSize: windowSize,
+				fftSize: fftSize,
+				hopSize: hopSize,
+				action: {
+					var sinesArray, residArray;
+
+					x.loadToFloatArray(action: { arg array; sinesArray = array });
+					y.loadToFloatArray(action: { arg array; residArray = array });
+
+					server.sync;
+
+					File.use(File.realpath(TestFluidSines.class.filenameSymbol).dirname.withTrailingSlash ++ "Sines_sines.flucoma", "w", { | f |
+						sinesArray.do({ | sample, index |
+							var sampleOut;
+							if(index < (sinesArray.size - 1), {
+								sampleOut = sample.asString ++ ","
+							}, {
+								sampleOut = sample.asString
+							});
+
+							f.write(sampleOut);
+						});
+
+						File.use(File.realpath(TestFluidSines.class.filenameSymbol).dirname.withTrailingSlash ++ "Sines_resid.flucoma", "w", { | f |
+							residArray.do({ | sample, index |
+								var sampleOut;
+								if(index < (residArray.size - 1), {
+									sampleOut = sample.asString ++ ","
+								}, {
+									sampleOut = sample.asString
+								});
+
+								f.write(sampleOut);
+							});
+
+							if(condition != nil, { condition.unhang })
+						});
 					});
 				}
 			);

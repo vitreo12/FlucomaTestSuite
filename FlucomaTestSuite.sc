@@ -4,6 +4,7 @@ FlucomaTestSuite {
 	classvar <classCounter = 0;
 	classvar <>parallelMethods = 5;
 	classvar <running = false;
+	classvar <>averageRuns = 4;
 
 	classvar <resultsDict;
 	classvar <classesDict, <totalNumClasses;

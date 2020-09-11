@@ -40,9 +40,8 @@ TestFluidTransientSlice : FluidUnitTest {
 			server,
 			sharpSineBuffer,
 			indices: resultBuffer,
-			skew: 5,
 			action: {
-				result = TestResult(resultBuffer.numFrames, 4);
+				result = TestResult(resultBuffer.numFrames, 3);
 			}
 		);
 	}
