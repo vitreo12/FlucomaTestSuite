@@ -1,6 +1,7 @@
 FluidUnitTest : UnitTest {
 	//Run all tests at serverSamplerate
 	classvar <serverSampleRate = 44100;
+	classvar <serverSampleRateRatio;
 
 	classvar <>serverIPAddr = "127.0.0.1";
 	classvar <>serverStartingPort = 5000;
@@ -51,6 +52,7 @@ FluidUnitTest : UnitTest {
 	//Global init of all the Arrays
 	*initClass {
 		var impulsesIndices;
+		serverSampleRateRatio = serverSampleRate / 44100.0;//ratio needed for expected values
 
 		//One impulse after half a second
 		oneImpulseArray = Array.fill(serverSampleRate, { | i |
