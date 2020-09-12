@@ -255,8 +255,6 @@
 
 			server.sync;
 
-			e.query;
-
 			e.loadToFloatArray(action: { arg array; bases_array = array });
 
 			server.sync;
@@ -264,7 +262,7 @@
 			/* FluidNMFFilter */
 
 			filter_first_sine_func = {FluidNMFFilter.ar(SinOsc.ar(500), e, 2)};
-			filter_first_sine_func.loadToFloatArray(0.5, server, { | array |
+			filter_first_sine_func.loadToFloatArray(0.1, server, { | array |
 				filter_first_sine_array = array;
 				loadToFloatArrayCondition.unhang;
 			});
@@ -272,7 +270,7 @@
 			loadToFloatArrayCondition.hang;
 
 			filter_second_sine_func = {FluidNMFFilter.ar(SinOsc.ar(5000), e, 2)};
-			filter_second_sine_func.loadToFloatArray(0.5, server, { | array |
+			filter_second_sine_func.loadToFloatArray(0.1, server, { | array |
 				filter_second_sine_array = array;
 				loadToFloatArrayCondition.unhang;
 			});
@@ -280,17 +278,19 @@
 			loadToFloatArrayCondition.hang;
 
 			filter_both_sines_func = {FluidNMFFilter.ar(SinOsc.ar([500, 5000]).sum, e, 2)};
-			filter_both_sines_func.loadToFloatArray(0.5, server, { | array |
+			filter_both_sines_func.loadToFloatArray(0.1, server, { | array |
 				filter_both_sines_array = array;
 				loadToFloatArrayCondition.unhang;
 			});
+
+			{filter_first_sine_array.plot}.defer;
 
 			loadToFloatArrayCondition.hang;
 
 			/* FluidNMFMatch */
 
 			match_first_sine_func = {FluidNMFMatch.kr(SinOsc.ar(500), e, 2)};
-			match_first_sine_func.loadToFloatArray(0.5, server, { | array |
+			match_first_sine_func.loadToFloatArray(0.1, server, { | array |
 				match_first_sine_array = array;
 				loadToFloatArrayCondition.unhang;
 			});
@@ -298,7 +298,7 @@
 			loadToFloatArrayCondition.hang;
 
 			match_second_sine_func = {FluidNMFMatch.kr(SinOsc.ar(5000), e, 2)};
-			match_second_sine_func.loadToFloatArray(0.5, server, { | array |
+			match_second_sine_func.loadToFloatArray(0.1, server, { | array |
 				match_second_sine_array = array;
 				loadToFloatArrayCondition.unhang;
 			});
@@ -306,7 +306,7 @@
 			loadToFloatArrayCondition.hang;
 
 			match_both_sines_func = {FluidNMFMatch.kr(SinOsc.ar([500, 5000]).sum, e, 2)};
-			match_both_sines_func.loadToFloatArray(0.5, server, { | array |
+			match_both_sines_func.loadToFloatArray(0.1, server, { | array |
 				match_both_sines_array = array;
 				loadToFloatArrayCondition.unhang;
 			});

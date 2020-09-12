@@ -39,7 +39,7 @@ TestFluidNMFMatch : FluidUnitTest {
 
 		result = Dictionary(3);
 
-		sine500Func.loadToFloatArray(0.5, server, { | array |
+		sine500Func.loadToFloatArray(0.1, server, { | array |
 			sine500Array = array;
 			loadToFloatArrayCondition.unhang;
 		});
@@ -49,7 +49,7 @@ TestFluidNMFMatch : FluidUnitTest {
 
 		result[\sine500] = TestResultEquals(sine500Array, expectedSine500Array, tolerance);
 
-		sine5000Func.loadToFloatArray(0.5, server, { | array |
+		sine5000Func.loadToFloatArray(0.1, server, { | array |
 			sine5000Array = array;
 			loadToFloatArrayCondition.unhang;
 		});
@@ -59,7 +59,7 @@ TestFluidNMFMatch : FluidUnitTest {
 
 		result[\sine5000] = TestResultEquals(sine5000Array, expectedSine5000Array, tolerance);
 
-		sinesFunc.loadToFloatArray(0.5, server, { | array |
+		sinesFunc.loadToFloatArray(0.1, server, { | array |
 			sinesArray = array;
 			loadToFloatArrayCondition.unhang;
 		});
