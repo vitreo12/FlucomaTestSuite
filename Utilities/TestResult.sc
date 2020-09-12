@@ -21,14 +21,14 @@ TestResultEquals {
 			if(condition.class == Array, {
 				condition.do({ | entry |
 					if(entry.not, {
-						^("failure: " ++ a ++ " exceeds " ++ b ++ " +/- " ++ tolerance);
+						^("failure: " ++ a ++ " exceeds " ++ b ++ " by +/- " ++ tolerance);
 					}, {
 						^("success");
 					});
 				});
 			}, {
 				if(condition.not, {
-					^("failure: " ++ a ++ " exceeds " ++ b ++ " +/- " ++ tolerance);
+					^("failure: " ++ a ++ " exceeds " ++ b ++ " by +/- " ++ tolerance);
 				}, {
 					^("success");
 				});
