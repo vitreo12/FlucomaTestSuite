@@ -6,6 +6,8 @@ FlucomaTestSuite {
 	classvar <running = false;
 	classvar <>averageRuns = 4;
 
+	classvar <>txtFile = true;
+
 	classvar <resultsDict;
 	classvar <classesDict, <totalNumClasses;
 
