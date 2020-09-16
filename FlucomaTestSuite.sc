@@ -170,6 +170,7 @@ FlucomaTestSuite {
 
 							if(outTxtFile != nil, {
 								outTxtFile.close;
+								Document.open(txtFile);
 							});
 						});
 					});
@@ -251,6 +252,7 @@ FlucomaTestSuite {
 
 			if(outTxtFile != nil, {
 				outTxtFile.close;
+				Document.open(txtFile);
 			});
 		});
 	}
