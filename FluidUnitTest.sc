@@ -251,12 +251,13 @@ FluidUnitTest : UnitTest {
 			this.tearDown;
 		};
 
-		//If it takes more than maxWaitTime, tearDown
+		//If it takes more than maxWaitTime, tearDown AND interrupt all testing
 		fork {
 			maxWaitTime.wait;
 			if((FlucomaTestSuite.running == true).and(completed == false), {
-				("Exceeding maximum wait time for server " ++ server.name ++ ". Quitting it").error;
+				("Exceeding maximum wait time for server " ++ server.name ++ ". Quitting the testing suite").error;
 				this.tearDown;
+				FlucomaTestSuite.stop;
 			});
 		}
 	}

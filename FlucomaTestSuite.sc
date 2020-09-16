@@ -6,6 +6,8 @@ FlucomaTestSuite {
 	classvar <running = false;
 	classvar <>averageRuns = 4;
 
+	classvar <>outToTxtFile = true;
+
 	classvar <resultsDict;
 	classvar <classesDict, <totalNumClasses;
 
@@ -51,7 +53,7 @@ FlucomaTestSuite {
 		this.reset;
 	}
 
-	*runTestClass_inner { | class, classCondition |
+	*runTestClass_inner { | class, classCondition, txtFile |
 		var classStringWithoutTest, classStringWithoutBuf, resultDict, methodsArray;
 		var countMethods = 0, totalMethods = 0;
 		var isStandaloneTest = false;
@@ -129,11 +131,47 @@ FlucomaTestSuite {
 							//If provided a condition, unhang it.
 							classCondition.unhang;
 						}, {
+							var outTxtFile;
+
+							if(outToTxtFile == true, {
+								if(txtFile == nil, {
+									var date = Date.getDate;
+									txtFile = (
+										"~/flucoma-test-" ++
+										classString ++
+										"-" ++
+										date.day ++
+										date.month ++
+										date.year ++
+										"-" ++
+										date.hour ++
+										date.minute ++
+										date.second ++
+										".txt"
+									)
+								});
+
+								txtFile = txtFile.standardizePath;
+								outTxtFile = File(txtFile, "w+");
+
+								if(outTxtFile.isOpen == false, {
+									outTxtFile = nil;
+									("Could not open file " ++ txtFile ++ " to write results to").error;
+								});
+							});
+
 							//No condition provided, simply output result and set running to false
 							0.5.wait;
-							resultDict.postFlucomaResultDict(classString);
-							resultsDict.postFlucomaErrors;
+
+							resultDict.postFlucomaResultDict(classString, outTxtFile);
+							resultsDict.postFlucomaErrors(outTxtFile);
+
 							running = false;
+
+							if(outTxtFile != nil, {
+								outTxtFile.close;
+								Document.open(txtFile);
+							});
 						});
 					});
 				});
@@ -141,19 +179,36 @@ FlucomaTestSuite {
 		}
 	}
 
-	*runTestClass { | class |
+	*runTestClass { | class, txtFile |
 		this.reset;
-		this.runTestClass_inner(class, nil);
+		this.runTestClass_inner(class, nil, txtFile);
 	}
 
-	*runTest { | class |
-		this.runTestClass(class)
+	*runTest { | class, txtFile |
+		this.runTestClass(class, txtFile)
 	}
 
-	*runAllTests {
+	*runAllTests { | txtFile |
 		if(running, {
 			"The FluCoMa test suite is already running. Run 'FlucomaTestSuite.stop' to interrupt it.".error;
 			^nil;
+		});
+
+		if(outToTxtFile == true, {
+			if(txtFile == nil, {
+				var date = Date.getDate;
+				txtFile = (
+					"~/flucoma-test-" ++
+					date.day ++
+					date.month ++
+					date.year ++
+					"-" ++
+					date.hour ++
+					date.minute ++
+					date.second ++
+					".txt"
+				)
+			})
 		});
 
 		//reset vars
@@ -175,13 +230,30 @@ FlucomaTestSuite {
 		};
 
 		SpinRoutine.waitFor( { classCounter >= totalNumClasses }, {
+			var outTxtFile;
+
+			if(outToTxtFile == true, {
+				txtFile = txtFile.standardizePath;
+				outTxtFile = File(txtFile, "w+");
+				if(outTxtFile.isOpen == false, {
+					outTxtFile = nil;
+					("Could not open file " ++ txtFile ++ " to write results to").error;
+				});
+			});
+
 			//Wait just in order to print this thing last, as
 			//some of the servers are still quitting, and they will post in the console.
 			//the actual completion is already done
 			0.5.wait;
-			resultsDict.postFlucomaResultsDict;
-			resultsDict.postFlucomaErrors;
+
+			resultsDict.postFlucomaResultsDict(outTxtFile);
+			resultsDict.postFlucomaErrors(outTxtFile);
 			running = false;
+
+			if(outTxtFile != nil, {
+				outTxtFile.close;
+				Document.open(txtFile);
+			});
 		});
 	}
 
@@ -191,12 +263,18 @@ FlucomaTestSuite {
 }
 
 +Dictionary {
-	postFlucomaResultsDict {
+	postFlucomaResultsDict { | outTxtFile |
+		if(outTxtFile != nil, { outTxtFile.write("\*** All FluCoMa tests completed ***\n") });
 		"\n*** All FluCoMa tests completed ***".postln;
 		this.keysValuesDo({ | key, entry |
+			if(outTxtFile != nil, { outTxtFile.write(("\n" ++ key ++ ":\n")) });
 			("\n" ++ key ++ ":").postln;
 			if(entry.class == Dictionary, {
 				entry.keysValuesDo({ | methodName, methodResult |
+					if(outTxtFile != nil, {
+						outTxtFile.write(("\t" ++ methodName ++ ":\n"));
+						outTxtFile.write(("\t\t" ++ methodResult ++ ":\n"))
+					});
 					("\t" ++ methodName ++ ":").postln;
 					("\t\t" ++ methodResult ++ ":").postln;
 				});
@@ -204,7 +282,7 @@ FlucomaTestSuite {
 		});
 	}
 
-	postFlucomaErrors {
+	postFlucomaErrors { | outTxtFile |
 		var printMsg = true;
 		this.keysValuesDo({ | key, entry |
 			if(entry.class == Dictionary, {
@@ -214,13 +292,23 @@ FlucomaTestSuite {
 						if(methodDictResultValue.class == Dictionary, {
 							methodDictResultValue.keysValuesDo({ | methodDictResultName, methodDictResultResult |
 								if(methodDictResultResult.value.asString.beginsWith("failure"), {
-									if(printMsg, { "\n*** Failed tests: ***\n".postln; printMsg = false });
+									if(printMsg, {
+										if(outTxtFile != nil, { outTxtFile.write("\n*** Failed tests: ***\n\n") });
+										"\n*** Failed tests: ***\n".postln;
+										printMsg = false
+									});
+									if(outTxtFile != nil, { outTxtFile.write(("ERROR: " ++ key ++ " -> " ++ methodName ++ " -> (" ++ methodDictResultName ++ " -> " ++ methodDictResultResult ++ ")\n" )) });
 									("ERROR: " ++ key ++ " -> " ++ methodName ++ " -> (" ++ methodDictResultName ++ " -> " ++ methodDictResultResult ++ ")" ).postln;
 								});
 							});
 						}, {
 							if(methodDictResultValue.asString.beginsWith("failure"), {
-								if(printMsg, { "\n*** Failed tests: ***\n".postln; printMsg = false });
+								if(printMsg, {
+									if(outTxtFile != nil, { outTxtFile.write("\n*** Failed tests: ***\n") });
+									"\n*** Failed tests: ***\n".postln;
+									printMsg = false
+								});
+								if(outTxtFile != nil, { outTxtFile.write(("ERROR: " ++ key ++ " -> " ++ methodName ++ " -> " ++ methodDictResult ++ "\n")) });
 								("ERROR: " ++ key ++ " -> " ++ methodName ++ " -> " ++ methodDictResult).postln;
 							});
 						});
@@ -230,10 +318,16 @@ FlucomaTestSuite {
 		});
 	}
 
-	postFlucomaResultDict { | classString |
+	postFlucomaResultDict { | classString, outTxtFile |
+		if(outTxtFile != nil, { outTxtFile.write("\*** " ++ classString ++ ": tests completed ***\n") });
 		("\n*** " ++ classString ++ ": tests completed ***").postln;
+		if(outTxtFile != nil, { outTxtFile.write("\n" ++ classString ++ ":\n") });
 		("\n" ++ classString ++ ":").postln;
 		this.keysValuesDo({ | methodName, methodResult |
+			if(outTxtFile != nil, {
+				outTxtFile.write(("\t" ++ methodName ++ ":\n"));
+				outTxtFile.write(("\t\t" ++ methodResult ++ ":\n"));
+			});
 			("\t" ++ methodName ++ ":").postln;
 			("\t\t" ++ methodResult ++ ":").postln;
 		});
