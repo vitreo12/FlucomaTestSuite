@@ -6,6 +6,8 @@ FluidUnitTest : UnitTest {
 	classvar <>serverIPAddr = "127.0.0.1";
 	classvar <>serverStartingPort = 5000;
 
+	classvar <>maxWaitTime = 30;
+
 	//These are used in Slicers
 	classvar <oneImpulseArray, <impulsesArray, <sharpSineArray, <smoothSineArray;
 
@@ -36,11 +38,10 @@ FluidUnitTest : UnitTest {
 	//Per-method
 	var <completed = false;
 	var <>result = "";       //This is the result on every iteration
-	var <>firstResult = ""; //This is the true result of the test: the one from first iteration
+	var <>firstResult = "";  //This is the true result of the test: the one from first iteration
 	var <>execTime = 0;
 
 	var <resultBuffer;
-	var <>maxWaitTime = 30;
 	var server;
 
 	//Recalculate arrays if changing sample rate
@@ -228,6 +229,11 @@ FluidUnitTest : UnitTest {
 
 	runTestMethod { | method, serverIndex = -1 |
 		var t, tAvg = FlucomaTestSuite.averageRuns; //run 4 times to average execution time
+		var results;
+
+		if(FlucomaTestSuite.checkResultsMismatch == true, {
+			results = Array.newClear(tAvg);
+		});
 
 		fork {
 			currentMethod = method;
@@ -241,7 +247,10 @@ FluidUnitTest : UnitTest {
 				this.perform(method.name);
 				t = Main.elapsedTime - t;
 				execTime = t + execTime; //accumulate exec time
-				if(i == 0, { firstResult = result }); //Only consider the first result
+				if(i == 0, { firstResult = result });
+				if(FlucomaTestSuite.checkResultsMismatch == true, {
+					results[i] = result;
+				});
 			});
 
 			execTime = execTime / tAvg;
@@ -249,6 +258,27 @@ FluidUnitTest : UnitTest {
 			server.sync;
 
 			this.tearDown;
+
+			//Compare every result with each other!
+			if(FlucomaTestSuite.checkResultsMismatch == true, {
+				results.do({ | tempResult |
+					results.do({ | compTempResult |
+						if(tempResult.class == Dictionary, {
+							tempResult.keysValuesDo({ | entry, tempResultVal |
+								var compTempResultVal = compTempResult[entry];
+								if(tempResultVal != compTempResultVal, {
+									//Invalidate firstResult's entry, which is what's taken in FlucomaTestSuite
+									firstResult[entry] = "failure: invalid result across runs on same server";
+								});
+							});
+						}, {
+							if(tempResult != compTempResult, {
+								firstResult = "failure: invalid result across runs on same server";
+							});
+						});
+					});
+				})
+			});
 		};
 
 		//If it takes more than maxWaitTime, tearDown AND interrupt all testing
