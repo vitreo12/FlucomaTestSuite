@@ -7,6 +7,7 @@ FlucomaTestSuite {
 	classvar <>averageRuns = 4;
 
 	classvar <>outToTxtFile = true;
+	classvar <>checkResultsMismatch = true;
 
 	classvar <resultsDict;
 	classvar <classesDict, <totalNumClasses;
@@ -51,6 +52,7 @@ FlucomaTestSuite {
 		running = false;
 		Server.quitAll;
 		this.reset;
+		thisProcess.recompile();
 	}
 
 	*runTestClass_inner { | class, classCondition, txtFile |

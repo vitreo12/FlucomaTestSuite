@@ -112,9 +112,6 @@ TestFluidBufNMF : FluidUnitTest {
 			hopSize: hopSize,
 			action: {
 				var tolerance = 0.001;
-				var resynth = true;
-				var bases = true;
-				var activations = true;
 
 				result = Dictionary(10);
 
@@ -131,64 +128,25 @@ TestFluidBufNMF : FluidUnitTest {
 					((numFrames / hopSize) + 1).asInteger
 				);
 
-				server.sync;
-
 				//RESYNTH
 				resultBuffer.loadToFloatArray(action: { | resultArray |
 					result[\resynthSize] = TestResult(resultArray.size, expectedResynthArray.size);
-
-					//Compare sample by sample with a set tolerance
-					resultArray.size.do({ | i |
-						var resultArraySample = resultArray[i];
-						var expectedResynthSample = expectedResynthArray[i];
-
-						if(abs(resultArraySample - expectedResynthSample) >= tolerance, {
-							resynth = false
-						});
-					});
-
-					server.sync;
-
-					result[\resynth] = TestResult(resynth, true);
+					result[\resynth] = TestResultEquals(resultArray, expectedResynthArray, tolerance);
 				});
 
 				//BASES
 				basesBuffer.loadToFloatArray(action: { | resultArray |
 					result[\basesSize] = TestResult(resultArray.size, expectedBasesArray.size);
-
-					//Compare sample by sample with a set tolerance
-					resultArray.size.do({ | i |
-						var resultArraySample = resultArray[i];
-						var expectedBasesSample = expectedBasesArray[i];
-
-						if(abs(resultArraySample - expectedBasesSample) >= tolerance, {
-							bases = false
-						});
-					});
-
-					server.sync;
-
-					result[\bases] = TestResult(bases, true);
+					result[\bases] = TestResultEquals(resultArray, expectedBasesArray, tolerance);
 				});
 
 				//ACTIVATIONS
 				activationsBuffer.loadToFloatArray(action: { | resultArray |
 					result[\activationsSize] = TestResult(resultArray.size, expectedActivationsArray.size);
-
-					//Compare sample by sample with a set tolerance
-					resultArray.size.do({ | i |
-						var resultArraySample = resultArray[i];
-						var expectedActivationsSample = expectedActivationsArray[i];
-
-						if(abs(resultArraySample - expectedActivationsSample) >= tolerance, {
-							activations = false
-						});
-					});
-
-					server.sync;
-
-					result[\activations] = TestResult(activations, true);
+					result[\activations] = TestResult(resultArray, expectedActivationsArray, tolerance);
 				});
+
+				server.sync;
 			}
 		)
 	}

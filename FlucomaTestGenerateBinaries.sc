@@ -283,8 +283,6 @@
 				loadToFloatArrayCondition.unhang;
 			});
 
-			{filter_first_sine_array.plot}.defer;
-
 			loadToFloatArrayCondition.hang;
 
 			/* FluidNMFMatch */
