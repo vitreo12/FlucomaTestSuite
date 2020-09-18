@@ -6,7 +6,11 @@ TestResult {
 			if(errorMessage.class == String, {
 				^("failure: " ++ errorMessage);
 			}, {
-				^("failure: got " ++ a ++ " but expected " ++ b);
+				if((a.isSequenceableCollection).and(b.isSequenceableCollection), {
+					^("failure: compared arrays mismatch");
+				}, {
+					^("failure: got " ++ a ++ " but expected " ++ b);
+				});
 			});
 		});
 	}
@@ -18,10 +22,10 @@ TestResultEquals {
 			^TestResult.new(a, b);
 		}, {
 			var condition = (a - b).abs <= tolerance;
-			if(condition.class == Array, {
+			if(condition.isSequenceableCollection, {
 				condition.do({ | entry |
 					if(entry.not, {
-						^("failure: " ++ a ++ " exceeds " ++ b ++ " by +/- " ++ tolerance);
+						^("failure: compared arrays mismatch");
 					}, {
 						^("success");
 					});
