@@ -139,7 +139,7 @@ FlucomaTestSuite {
 								if(txtFile == nil, {
 									var date = Date.getDate;
 									txtFile = (
-										"~/flucoma-test-" ++
+										"/tmp/flucoma-test-" ++
 										classString ++
 										"-" ++
 										date.day ++
@@ -200,7 +200,7 @@ FlucomaTestSuite {
 			if(txtFile == nil, {
 				var date = Date.getDate;
 				txtFile = (
-					"~/flucoma-test-" ++
+					"/tmp/flucoma-test-" ++
 					date.day ++
 					date.month ++
 					date.year ++
