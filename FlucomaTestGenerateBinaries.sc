@@ -169,18 +169,28 @@
 				fftSize: fftSize,
 				hopSize: hopSize,
 				action: {
-					var resynthArray, basesArray, activationsArray;
+					var resynthArraySort, basesArraySort, activationsArraySort;
 
-					c.loadToFloatArray(action: { arg array; resynthArray = array });
-					x.loadToFloatArray(action: { arg array; basesArray = array });
-					y.loadToFloatArray(action: { arg array; activationsArray = array });
+					c.loadToFloatArray(action: { | array |
+						resynthArraySort = TestFluidBufNMF.nmfArraySort(array, components, components * numFrames)
+					});
+
+
+					x.loadToFloatArray(action: { | array |
+						basesArraySort = TestFluidBufNMF.nmfArraySort(array, components, (fftSize / 2) + 1)
+					});
+
+
+					y.loadToFloatArray(action: { | array |
+						activationsArraySort = TestFluidBufNMF.nmfArraySort(array, components, (numFrames / hopSize) + 1)
+					});
 
 					server.sync;
 
 					File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Resynth.flucoma", "w", { | f |
-						resynthArray.do({ | sample, index |
+						resynthArraySort.do({ | sample, index |
 							var sampleOut;
-							if(index < (resynthArray.size - 1), {
+							if(index < (resynthArraySort.size - 1), {
 								sampleOut = sample.asString ++ ","
 							}, {
 								sampleOut = sample.asString
@@ -190,9 +200,9 @@
 						});
 
 						File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Bases.flucoma", "w", { | f |
-							basesArray.do({ | sample, index |
+							basesArraySort.do({ | sample, index |
 								var sampleOut;
-								if(index < (basesArray.size - 1), {
+								if(index < (basesArraySort.size - 1), {
 									sampleOut = sample.asString ++ ","
 								}, {
 									sampleOut = sample.asString
@@ -202,9 +212,9 @@
 							});
 
 							File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Activations.flucoma", "w", { | f |
-								activationsArray.do({ | sample, index |
+								activationsArraySort.do({ | sample, index |
 									var sampleOut;
-									if(index < (activationsArray.size - 1), {
+									if(index < (activationsArraySort.size - 1), {
 										sampleOut = sample.asString ++ ","
 									}, {
 										sampleOut = sample.asString

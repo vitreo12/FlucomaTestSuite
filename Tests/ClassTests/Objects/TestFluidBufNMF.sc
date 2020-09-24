@@ -2,22 +2,17 @@ TestFluidBufNMF : FluidUnitTest {
 	classvar expectedResynthArraySort, expectedBasesArraySort, expectedActivationsArraySort;
 
 	*initClass {
-		var expectedResynthArray = TextFileToArray(
+		expectedResynthArraySort = TextFileToArray(
 			File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Resynth.flucoma"
 		);
 
-		var expectedBasesArray = TextFileToArray(
+		expectedBasesArraySort = TextFileToArray(
 			File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Bases.flucoma"
 		);
 
-		var expectedActivationsArray = TextFileToArray(
+		expectedActivationsArraySort = TextFileToArray(
 			File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Activations.flucoma"
 		);
-
-		//Calculate the sorted avg arrays!
-		expectedResynthArraySort = this.nmfArraySort(expectedResynthArray, 3, 3 * 5000);
-		expectedBasesArraySort = this.nmfArraySort(expectedBasesArray, 3, (1024 / 2) + 1);
-		expectedActivationsArraySort = this.nmfArraySort(expectedActivationsArray, 3, (5000 / 256) + 1);
 	}
 
 	*nmfArraySort { | array, components, scaleFactor |
@@ -64,7 +59,7 @@ TestFluidBufNMF : FluidUnitTest {
 				result = Dictionary(5);
 
 				result[\components] = TestResult(resultBuffer.numChannels, components);
-				result[\componensNumFrames] = TestResult(resultBuffer.numFrames, multipleSinesBuffer.numFrames);
+				result[\componentsNumFrames] = TestResult(resultBuffer.numFrames, multipleSinesBuffer.numFrames);
 
 				result[\basesNumFrames] = TestResult(
 					basesBuffer.numFrames,
@@ -137,7 +132,7 @@ TestFluidBufNMF : FluidUnitTest {
 				result = Dictionary(7);
 
 				result[\components] = TestResult(resultBuffer.numChannels, components);
-				result[\componensNumFrames] = TestResult(resultBuffer.numFrames, numFrames);
+				result[\componentsNumFrames] = TestResult(resultBuffer.numFrames, numFrames);
 
 				result[\basesNumFrames] = TestResult(
 					basesBuffer.numFrames,
