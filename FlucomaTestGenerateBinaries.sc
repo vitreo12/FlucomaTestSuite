@@ -145,7 +145,7 @@
 			var hopSize = 256;
 
 			//only 5000 samples, or array would be huge to load at startup
-			var startFrame = 1000;
+			var startFrame = 100;
 			var numFrames = 5000;
 
 			var b = Buffer.read(server, File.realpath(FluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Tremblay-AaS-SynthTwoVoices-M.wav");

@@ -1,18 +1,40 @@
 TestFluidBufNMF : FluidUnitTest {
-	classvar expectedResynthArray, expectedBasesArray, expectedActivationsArray;
+	classvar expectedResynthArraySort, expectedBasesArraySort, expectedActivationsArraySort;
 
 	*initClass {
-		expectedResynthArray = TextFileToArray(
+		var expectedResynthArray = TextFileToArray(
 			File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Resynth.flucoma"
 		);
 
-		expectedBasesArray = TextFileToArray(
+		var expectedBasesArray = TextFileToArray(
 			File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Bases.flucoma"
 		);
 
-		expectedActivationsArray = TextFileToArray(
+		var expectedActivationsArray = TextFileToArray(
 			File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Activations.flucoma"
 		);
+
+		//Calculate the sorted avg arrays!
+		expectedResynthArraySort = this.nmfArraySort(expectedResynthArray, 3, 3 * 5000);
+		expectedBasesArraySort = this.nmfArraySort(expectedBasesArray, 3, (1024 / 2) + 1);
+		expectedActivationsArraySort = this.nmfArraySort(expectedActivationsArray, 3, (5000 / 256) + 1);
+	}
+
+	*nmfArraySort { | array, components, scaleFactor |
+		var count = 0;
+		var arraySort = Array.fill(components, { 0 });
+
+		if(array == nil, { ^nil });
+
+		array.do({ | entry |
+			arraySort[count] = arraySort[count] + entry;
+			count = count + 1;
+			if(count == components, { count = 0 });
+		});
+
+		arraySort.sort;
+		arraySort = arraySort / scaleFactor;
+		^arraySort;
 	}
 
 	test_multiple_sines {
@@ -83,8 +105,7 @@ TestFluidBufNMF : FluidUnitTest {
 		var windowSize = 512;
 		var hopSize = 256;
 
-		//only 5000 samples, or array would be huge to load at startup
-		var startFrame = 1000;
+		var startFrame = 100;
 		var numFrames = 5000;
 
 		var basesBuffer = Buffer.new(server);
@@ -92,9 +113,9 @@ TestFluidBufNMF : FluidUnitTest {
 
 		server.sync;
 
-		if(expectedResynthArray.isNil.or(
-			expectedBasesArray.isNil.or(
-				expectedActivationsArray.isNil
+		if(expectedResynthArraySort.isNil.or(
+			expectedBasesArraySort.isNil.or(
+				expectedActivationsArraySort.isNil
 			)
 		), { result = "failure: could not read binary file"; ^nil; });
 
@@ -111,9 +132,9 @@ TestFluidBufNMF : FluidUnitTest {
 			fftSize: fftSize,
 			hopSize: hopSize,
 			action: {
-				var tolerance = 0.001;
+				var c = Condition();
 
-				result = Dictionary(10);
+				result = Dictionary(7);
 
 				result[\components] = TestResult(resultBuffer.numChannels, components);
 				result[\componensNumFrames] = TestResult(resultBuffer.numFrames, numFrames);
@@ -128,22 +149,28 @@ TestFluidBufNMF : FluidUnitTest {
 					((numFrames / hopSize) + 1).asInteger
 				);
 
-				//RESYNTH
-				resultBuffer.loadToFloatArray(action: { | resultArray |
-					result[\resynthSize] = TestResult(resultArray.size, expectedResynthArray.size);
-					result[\resynth] = TestResultEquals(resultArray, expectedResynthArray, tolerance);
+				server.sync;
+
+				resultBuffer.loadToFloatArray(action: { | resynthArray |
+					var resynthArraySort = TestFluidBufNMF.nmfArraySort(resynthArray, components, components * numFrames);
+					//expectedResynthArraySort.postln;
+					//resynthArray.postln;
+					result[\resynth] = TestResultEquals(expectedResynthArraySort, resynthArraySort, 0.01);
 				});
 
-				//BASES
-				basesBuffer.loadToFloatArray(action: { | resultArray |
-					result[\basesSize] = TestResult(resultArray.size, expectedBasesArray.size);
-					result[\bases] = TestResultEquals(resultArray, expectedBasesArray, tolerance);
+
+				basesBuffer.loadToFloatArray(action: { | basesArray |
+					var basesArraySort = TestFluidBufNMF.nmfArraySort(basesArray, components, (fftSize / 2) + 1);
+					//expectedBasesArraySort.postln;
+					//basesArraySort.postln;
+					result[\bases] = TestResultEquals(expectedBasesArraySort, basesArraySort, 0.01);
 				});
 
-				//ACTIVATIONS
-				activationsBuffer.loadToFloatArray(action: { | resultArray |
-					result[\activationsSize] = TestResult(resultArray.size, expectedActivationsArray.size);
-					result[\activations] = TestResult(resultArray, expectedActivationsArray, tolerance);
+				activationsBuffer.loadToFloatArray(action: { | activationsArray |
+					var activationsArraySort = TestFluidBufNMF.nmfArraySort(activationsArray, components, (numFrames / hopSize) + 1);
+					//expectedActivationsArraySort.postln;
+					//activationsArraySort.postln;
+					result[\activations] = TestResultEquals(expectedActivationsArraySort, activationsArraySort, 0.2);
 				});
 
 				server.sync;
