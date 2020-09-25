@@ -172,17 +172,17 @@
 					var resynthArraySort, basesArraySort, activationsArraySort;
 
 					c.loadToFloatArray(action: { | array |
-						resynthArraySort = TestFluidBufNMF.nmfArraySort(array, components, components * numFrames)
+						resynthArraySort = TestFluidBufNMF.nmfArraySort(array, components)
 					});
 
 
 					x.loadToFloatArray(action: { | array |
-						basesArraySort = TestFluidBufNMF.nmfArraySort(array, components, (fftSize / 2) + 1)
+						basesArraySort = TestFluidBufNMF.nmfArraySort(array, components)
 					});
 
 
 					y.loadToFloatArray(action: { | array |
-						activationsArraySort = TestFluidBufNMF.nmfArraySort(array, components, (numFrames / hopSize) + 1)
+						activationsArraySort = TestFluidBufNMF.nmfArraySort(array, components)
 					});
 
 					server.sync;

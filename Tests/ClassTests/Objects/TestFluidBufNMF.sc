@@ -15,7 +15,7 @@ TestFluidBufNMF : FluidUnitTest {
 		);
 	}
 
-	*nmfArraySort { | array, components, scaleFactor |
+	*nmfArraySort { | array, components |
 		var count = 0;
 		var arraySort = Array.fill(components, { 0 });
 
@@ -28,7 +28,7 @@ TestFluidBufNMF : FluidUnitTest {
 		});
 
 		arraySort.sort;
-		arraySort = arraySort / scaleFactor;
+		arraySort = arraySort / array.size;
 		^arraySort;
 	}
 
@@ -147,7 +147,7 @@ TestFluidBufNMF : FluidUnitTest {
 				server.sync;
 
 				resultBuffer.loadToFloatArray(action: { | resynthArray |
-					var resynthArraySort = TestFluidBufNMF.nmfArraySort(resynthArray, components, components * numFrames);
+					var resynthArraySort = TestFluidBufNMF.nmfArraySort(resynthArray, components);
 					//expectedResynthArraySort.postln;
 					//resynthArray.postln;
 					result[\resynth] = TestResultEquals(expectedResynthArraySort, resynthArraySort, 0.01);
@@ -155,14 +155,14 @@ TestFluidBufNMF : FluidUnitTest {
 
 
 				basesBuffer.loadToFloatArray(action: { | basesArray |
-					var basesArraySort = TestFluidBufNMF.nmfArraySort(basesArray, components, (fftSize / 2) + 1);
+					var basesArraySort = TestFluidBufNMF.nmfArraySort(basesArray, components);
 					//expectedBasesArraySort.postln;
 					//basesArraySort.postln;
 					result[\bases] = TestResultEquals(expectedBasesArraySort, basesArraySort, 0.01);
 				});
 
 				activationsBuffer.loadToFloatArray(action: { | activationsArray |
-					var activationsArraySort = TestFluidBufNMF.nmfArraySort(activationsArray, components, (numFrames / hopSize) + 1);
+					var activationsArraySort = TestFluidBufNMF.nmfArraySort(activationsArray, components);
 					//expectedActivationsArraySort.postln;
 					//activationsArraySort.postln;
 					result[\activations] = TestResultEquals(expectedActivationsArraySort, activationsArraySort, 0.2);
