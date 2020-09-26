@@ -132,67 +132,57 @@
 		});
 	}
 
-	*generateNMF { | server, condition |
+	*generateNMF { | server, condition, averageRunsRecompile = false |
 		var nmf_eurorack, nmf_filter_match;
 
 		server = server ? Server.local;
 
 		nmf_eurorack = {
 			var components = 3;
-
 			var fftSize = 1024;
 			var windowSize = 512;
 			var hopSize = 256;
 
-			//only 5000 samples, or array would be huge to load at startup
-			var startFrame = 1000;
+			//only 5000 samples, or arrays would be huge to load at startup
 			var numFrames = 5000;
 
 			var b = Buffer.read(server, File.realpath(FluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Tremblay-AaS-SynthTwoVoices-M.wav");
 
-			var c = Buffer.new(server);
-			var x = Buffer.new(server);
-			var y = Buffer.new(server);
+			FlucomaTestSuite.averageRuns.do({ | i |
 
-			server.sync;
+				var startFrame = i * 1000;
 
-			FluidBufNMF.process(
-				server,
-				source: b,
-				resynth: c,
-				startFrame: startFrame,
-				numFrames: numFrames,
-				bases: x,
-				activations: y,
-				components: components,
-				windowSize: windowSize,
-				fftSize: fftSize,
-				hopSize: hopSize,
-				action: {
-					var resynthArray, basesArray, activationsArray;
+				var c = Buffer.new(server);
+				var x = Buffer.new(server);
+				var y = Buffer.new(server);
 
-					c.loadToFloatArray(action: { arg array; resynthArray = array });
-					x.loadToFloatArray(action: { arg array; basesArray = array });
-					y.loadToFloatArray(action: { arg array; activationsArray = array });
+				server.sync;
 
-					server.sync;
+				FluidBufNMF.process(
+					server,
+					source: b,
+					resynth: c,
+					startFrame: startFrame,
+					numFrames: numFrames,
+					bases: x,
+					activations: y,
+					components: components,
+					windowSize: windowSize,
+					fftSize: fftSize,
+					hopSize: hopSize,
+					action: {
+						var resynthArray, basesArray, activationsArray;
 
-					File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Resynth.flucoma", "w", { | f |
-						resynthArray.do({ | sample, index |
-							var sampleOut;
-							if(index < (resynthArray.size - 1), {
-								sampleOut = sample.asString ++ ","
-							}, {
-								sampleOut = sample.asString
-							});
+						c.loadToFloatArray(action: { arg array; resynthArray = array });
+						x.loadToFloatArray(action: { arg array; basesArray = array });
+						y.loadToFloatArray(action: { arg array; activationsArray = array });
 
-							f.write(sampleOut);
-						});
+						server.sync;
 
-						File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Bases.flucoma", "w", { | f |
-							basesArray.do({ | sample, index |
+						File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Resynth" ++ (i+1) ++ ".flucoma", "w", { | f |
+							resynthArray.do({ | sample, index |
 								var sampleOut;
-								if(index < (basesArray.size - 1), {
+								if(index < (resynthArray.size - 1), {
 									sampleOut = sample.asString ++ ","
 								}, {
 									sampleOut = sample.asString
@@ -201,10 +191,10 @@
 								f.write(sampleOut);
 							});
 
-							File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Activations.flucoma", "w", { | f |
-								activationsArray.do({ | sample, index |
+							File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Bases" ++ (i+1) ++ ".flucoma", "w", { | f |
+								basesArray.do({ | sample, index |
 									var sampleOut;
-									if(index < (activationsArray.size - 1), {
+									if(index < (basesArray.size - 1), {
 										sampleOut = sample.asString ++ ","
 									}, {
 										sampleOut = sample.asString
@@ -212,11 +202,26 @@
 
 									f.write(sampleOut);
 								});
+
+								File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Activations" ++ (i+1) ++ ".flucoma", "w", { | f |
+									activationsArray.do({ | sample, index |
+										var sampleOut;
+										if(index < (activationsArray.size - 1), {
+											sampleOut = sample.asString ++ ","
+										}, {
+											sampleOut = sample.asString
+										});
+
+										f.write(sampleOut);
+									});
+								});
 							});
 						});
-					});
-				}
-			);
+					}
+				);
+
+				server.sync;
+			});
 		};
 
 		nmf_filter_match = {
@@ -421,7 +426,12 @@
 
 			server.sync;
 
-			if(condition != nil, { condition.unhang })
+			if(condition != nil, { condition.unhang });
+
+			if(averageRunsRecompile == true, {
+				server.quit;
+				thisProcess.recompile();
+			});
 		});
 	}
 
