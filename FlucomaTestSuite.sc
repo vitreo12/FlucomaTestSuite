@@ -4,7 +4,7 @@ FlucomaTestSuite {
 	classvar <classCounter = 0;
 	classvar <>parallelMethods = 5;
 	classvar <running = false;
-	classvar <>averageRuns = 4;
+	classvar <averageRuns = 4;
 
 	classvar <>outToTxtFile = true;
 	classvar <>checkResultsMismatch = true;
@@ -25,6 +25,11 @@ FlucomaTestSuite {
 	}
 
 	*port { ^serverStartingPort }
+
+	*averageRuns_ { | val, generateNMF = false |
+		averageRuns = val;
+		if(generateNMF == true, { FlucomaTestSuite.generateNMF(averageRunsRecompile:true) });
+	}
 
 	*initClass {
 		this.reset;

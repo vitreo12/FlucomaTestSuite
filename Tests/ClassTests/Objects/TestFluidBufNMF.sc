@@ -1,18 +1,30 @@
 TestFluidBufNMF : FluidUnitTest {
-	classvar expectedResynthArray, expectedBasesArray, expectedActivationsArray;
+	classvar expectedResynthArrays, expectedBasesArrays, expectedActivationsArrays;
 
 	*initClass {
-		expectedResynthArray = TextFileToArray(
-			File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Resynth.flucoma"
-		);
+		var averageRuns = FlucomaTestSuite.averageRuns;
 
-		expectedBasesArray = TextFileToArray(
-			File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Bases.flucoma"
-		);
+		expectedResynthArrays = Array.newClear(averageRuns);
+		expectedBasesArrays = Array.newClear(averageRuns);
+		expectedActivationsArrays = Array.newClear(averageRuns);
 
-		expectedActivationsArray = TextFileToArray(
-			File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Activations.flucoma"
-		);
+		averageRuns.do({ | i |
+			var expectedResynthArray = TextFileToArray(
+				File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Resynth" ++ (i+1) ++ ".flucoma"
+			);
+
+			var expectedBasesArray = TextFileToArray(
+				File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Bases" ++ (i+1) ++ ".flucoma"
+			);
+
+			var expectedActivationsArray = TextFileToArray(
+				File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Activations" ++ (i+1) ++ ".flucoma"
+			);
+
+			expectedResynthArrays[i] = expectedResynthArray;
+			expectedBasesArrays[i] = expectedBasesArray;
+			expectedActivationsArrays[i] = expectedActivationsArray;
+		});
 	}
 
 	test_multiple_sines {
@@ -77,26 +89,39 @@ TestFluidBufNMF : FluidUnitTest {
 		)
 	}
 
-	test_eurorack_mono {
+	test_eurorack_mono { | averageRunsCounter |
 		var components = 3;
 		var fftSize = 1024;
 		var windowSize = 512;
 		var hopSize = 256;
 
-		//only 5000 samples, or array would be huge to load at startup
-		var startFrame = 1000;
+		var startFrame = averageRunsCounter * 1000;
 		var numFrames = 5000;
 
-		var basesBuffer = Buffer.new(server);
-		var activationsBuffer = Buffer.new(server);
+		var basesBuffer, activationsBuffer;
 
-		server.sync;
+		var expectedResynthArray, expectedBasesArray, expectedActivationsArray;
+
+		if(expectedResynthArrays.size != FlucomaTestSuite.averageRuns, { result = "failure: expectedResynthArrays' size is different than FlucomaTestSuite.averageRuns"; ^nil; });
+
+		if(expectedBasesArrays.size != FlucomaTestSuite.averageRuns, { result = "failure: expectedBasesArrays' size is different than FlucomaTestSuite.averageRuns"; ^nil; });
+
+		if(expectedActivationsArrays.size != FlucomaTestSuite.averageRuns, { result = "failure: expectedActivationsArrays' size is different than FlucomaTestSuite.averageRuns"; ^nil; });
+
+		expectedResynthArray = expectedResynthArrays[averageRunsCounter];
+		expectedBasesArray = expectedBasesArrays[averageRunsCounter];
+		expectedActivationsArray = expectedActivationsArrays[averageRunsCounter];
 
 		if(expectedResynthArray.isNil.or(
 			expectedBasesArray.isNil.or(
 				expectedActivationsArray.isNil
 			)
 		), { result = "failure: could not read binary file"; ^nil; });
+
+		basesBuffer = Buffer.new(server);
+		activationsBuffer = Buffer.new(server);
+
+		server.sync;
 
 		FluidBufNMF.process(
 			server,
@@ -111,7 +136,7 @@ TestFluidBufNMF : FluidUnitTest {
 			fftSize: fftSize,
 			hopSize: hopSize,
 			action: {
-				var tolerance = 0.001;
+				var tolerance = 0.0001;
 
 				result = Dictionary(10);
 
@@ -143,11 +168,9 @@ TestFluidBufNMF : FluidUnitTest {
 				//ACTIVATIONS
 				activationsBuffer.loadToFloatArray(action: { | resultArray |
 					result[\activationsSize] = TestResult(resultArray.size, expectedActivationsArray.size);
-					result[\activations] = TestResult(resultArray, expectedActivationsArray, tolerance);
+					result[\activations] = TestResultEquals(resultArray, expectedActivationsArray, tolerance);
 				});
-
-				server.sync;
 			}
-		)
+		);
 	}
 }

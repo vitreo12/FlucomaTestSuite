@@ -244,7 +244,7 @@ FluidUnitTest : UnitTest {
 
 			tAvg.do({ | i |
 				t = Main.elapsedTime;
-				this.perform(method.name);
+				this.perform(method.name, i);
 				t = Main.elapsedTime - t;
 				execTime = t + execTime; //accumulate exec time
 				if(i == 0, { firstResult = result });
