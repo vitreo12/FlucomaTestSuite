@@ -14,14 +14,14 @@ FluidUnitTest : UnitTest {
 	//These are used in Layers
 	classvar <multipleSinesArray, <multipleSinesNoiseArray;
 
-	//These are used in descriptors
+	//These are used in Descriptors
 	classvar <sineBurstArray;
-
-	//These are used in many place where the noise needs to be known.
-	classvar <positiveNoise;
 
 	//Samples
 	classvar <eurorackSynthArray, <drumsArray, <acousticStrumsArray;
+
+	//These are used in many place where the noise needs to be known.
+	classvar <positiveNoise;
 
 	//These are used in Slicers
 	var <oneImpulseBuffer, <impulsesBuffer, <sharpSineBuffer, <smoothSineBuffer;
@@ -34,6 +34,8 @@ FluidUnitTest : UnitTest {
 
 	//Samples
 	var <eurorackSynthBuffer, <drumsBuffer, <acousticStrumsBuffer;
+
+	var <positiveNoiseBuffer;
 
 	//Composite stereo Buffer (piano + acoustic strums)
 	var <stereoBuffer;
@@ -194,6 +196,8 @@ FluidUnitTest : UnitTest {
 		multipleSinesNoiseBuffer = Buffer.sendCollection(server, multipleSinesNoiseArray);
 
 		sineBurstBuffer = Buffer.sendCollection(server, sineBurstArray);
+
+		positiveNoiseBuffer = Buffer.sendCollection(server, positiveNoise);
 
 		this.initSampleBuffers;
 		this.initResultBuffer;
