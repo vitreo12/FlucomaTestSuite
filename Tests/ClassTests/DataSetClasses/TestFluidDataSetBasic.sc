@@ -131,7 +131,64 @@ TestFluidDataSet : FluidUnitTest {
 		cond.hang;
 		dictDS.free;
 	}
-}
 
-//merge
+	test_dict_merge {
+		var mergeDS1 = FluidDataSet(server,UniqueID.next.asSymbol);
+		var mergeDS2 = FluidDataSet(server,UniqueID.next.asSymbol);
+		var cond = Condition.new;
+
+		result = Dictionary(9);
+		server.sync;
+
+		//load a simple dataset
+		mergeDS1.load(Dictionary.newFrom(["cols", 69, "data", Dictionary.newFrom(["one", (1..69), "two", (2..70), "three", (3..71)])]), action: {
+
+			//and load another simple dataset
+			mergeDS2.load(Dictionary.newFrom(["cols", 69, "data", Dictionary.newFrom(["four", (4..72), "five", (5..73), "six", (6..74)])]), action: {
+
+				//then merge them
+				mergeDS1.merge(mergeDS2,overwrite: 0, action: {
+
+					//retrieve it and check its shape and content
+					mergeDS1.dump{|x|
+						result[\merge1DumpSize] = TestResult(x["cols"], 69);
+						result[\merge1DumpKeys] = TestResult(x["data"].keys.asArray.sort, ["one","two","three","four","five","six"].sort);
+						result[\merge1DumpData] = TestResult(["one","two","three","four","five","six"].collect{|i|x["data"][i]}, (1..6).collect{|i|i.series(i+1,i+68)});
+						//reset it to content with similar labels to mergeDS2
+						mergeDS1.load(Dictionary.newFrom(["cols", 69, "data", Dictionary.newFrom(["four", (4..72)/100, "five", (5..73)/100, "six", (6..74)/100])]), action: {
+
+							//try merging without overwrite
+							mergeDS2.merge(mergeDS1,overwrite: 0, action: {
+
+								//check shape and content
+								mergeDS2.dump{|x|
+									result[\merge2DumpSize] = TestResult(x["cols"], 69);
+									result[\merge2DumpKeys] = TestResult(x["data"].keys.asArray.sort, ["four","five","six"].sort);
+									result[\merge2DumpData] = TestResult(["four","five","six"].collect{|i|x["data"][i]}, (4..6).collect{|i|i.series(i+1,i+68)});
+
+									//merge with overwrite
+									mergeDS2.merge(mergeDS1,overwrite: 1, action: {
+
+										//chech shape and content
+										mergeDS2.dump{|x|
+											result[\merge3DumpSize] = TestResult(x["cols"], 69);
+											result[\merge3DumpKeys] = TestResult(x["data"].keys.asArray.sort, ["four","five","six"].sort);
+											result[\merge3DumpData] = TestResult(["four","five","six"].collect{|i|x["data"][i]}, (4..6).collect{|i|i.series(i+1,i+68) / 100});
+
+											//all nested conditions are done, free the process
+											cond.unhang;
+										}
+									})
+								}
+							})
+						})
+					}
+				})
+			})
+		});
+		cond.hang;
+		mergeDS1.free;
+		mergeDS2.free;
+	}
+}
 
