@@ -79,17 +79,59 @@ TestFluidDataSet : FluidUnitTest {
 		cond.hang;
 		testDS.free;
 	}
+
+	test_dict_interaction {
+		var dictDS = FluidDataSet(server,UniqueID.next.asSymbol);
+		var cond = Condition.new;
+
+		result = Dictionary(9);
+		server.sync;
+
+		//load a simple dataset
+		dictDS.load(Dictionary.newFrom(["cols", 101, "data", Dictionary.newFrom(["noise", positiveNoise, "line", (0..100), "sine", Array.fill(101,{|i|(i/2).sin})])]), action: {
+
+			//retrieve it and check its shape
+			dictDS.dump{|x|
+				result[\loadDumpSize] = TestResult(x["cols"], positiveNoise.size);
+				result[\loadDumpKeys] = TestResult(x["data"].keys.asArray.size, 3);
+
+				//check via point
+				dictDS.getPoint("noise", resultBuffer, action: {
+
+					result[\retrieveDumpSize] = TestResult(resultBuffer.numFrames, positiveNoise.size);
+					resultBuffer.getn(0, positiveNoise.size, action: {|x|
+						result[\retrieveDumpVal] = TestResultEquals(x, positiveNoise, 0.00000001);
+
+						//delete points
+						dictDS.deletePoint("noise", action: {
+
+							//check dump size and content
+							dictDS.dump{|x|
+								result[\load2DumpSize] = TestResult(x["cols"], positiveNoise.size);
+								result[\load2DumpKeys] = TestResult(x["data"].keys.asArray.size, 2);
+								result[\load2DumpDataSine] = TestResultEquals(x["data"]["sine"], Array.fill(101,{|i|(i/2).sin}), 0.00000001);
+								result[\load2DumpDataLine] = TestResultEquals(x["data"]["line"], (0..100), 0.00000001);
+
+								//clear
+								dictDS.clear;
+
+								//check
+								dictDS.dump{|x|
+									result[\clearDumpSize] = TestResult(x["cols"], 0);
+
+									//all nested conditions are done, free the process
+									cond.unhang;
+								}
+							}
+						})
+					})
+				})
+			}
+		});
+		cond.hang;
+		dictDS.free;
+	}
 }
-
-//dict interaction
-//load
-//check via point
-//check via dump
-//delete points
-//check dump
-//clear
-//check dump
-
 
 //merge
 
