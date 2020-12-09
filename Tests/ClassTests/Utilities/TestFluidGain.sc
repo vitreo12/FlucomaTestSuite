@@ -1,4 +1,4 @@
-/*
+
 TestFluidGain : FluidUnitTest {
 	test_silence {
 		var condition = Condition.new;
@@ -15,5 +15,5 @@ TestFluidGain : FluidUnitTest {
 		condition.hang;
 	}
 }
-*/
+
 

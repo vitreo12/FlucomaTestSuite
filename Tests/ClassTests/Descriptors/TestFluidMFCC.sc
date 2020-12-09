@@ -15,6 +15,8 @@ TestFluidMFCC : FluidUnitTest {
 		var numCoeffs = 13;
 		var fftsize = 256;
 		var hopsize = fftsize / 2;
+		var tolerance = 0.00001;
+		var expectedResult = true;
 
 		if(expectedResultDrumsMono.isNil, { result = "failure: could not read binary file"; ^nil; });
 
@@ -25,43 +27,44 @@ TestFluidMFCC : FluidUnitTest {
 			numCoeffs: numCoeffs,
 			fftSize: fftsize,
 			hopSize: hopsize,
+		).wait;
 
-			action: {
-				var tolerance = 0.001;
-				var expectedResult = true;
 
-				result = Dictionary(4);
 
-				result[\numChannels] = TestResult(resultBuffer.numChannels, numCoeffs);
-				result[\numFrames] = TestResult(
-					resultBuffer.numFrames,
-					((drumsBuffer.numFrames / hopsize) + 1).asInteger;
-				);
+		result = Dictionary(4);
 
-				//Abstract this in a reusable function!
-				resultBuffer.loadToFloatArray(action: { | resultArray |
-					result[\expectedSize] = TestResult(resultArray.size, expectedResultDrumsMono.size);
+		result[\numChannels] = TestResult(resultBuffer.numChannels, numCoeffs);
+		result[\numFrames] = TestResult(
+			resultBuffer.numFrames,
+			((drumsBuffer.numFrames / hopsize) + 1).asInteger;
+		);
 
-					//Compare sample by sample with a set tolerance
-					resultArray.size.do({ | i |
-						var resultArraySample = resultArray[i];
-						var expectedResultSample = expectedResultDrumsMono[i];
+		//Abstract this in a reusable function!
+		resultBuffer.loadToFloatArray(action: { | resultArray |
+			result[\expectedSize] = TestResult(resultArray.size, expectedResultDrumsMono.size);
 
-						if(abs(resultArraySample - expectedResultSample) >= tolerance, {
-							expectedResult = false
-						});
-					});
+			//Compare sample by sample with a set tolerance
+			resultArray.size.do({ | i |
+				var resultArraySample = resultArray[i];
+				var expectedResultSample = expectedResultDrumsMono[i];
 
-					server.sync;
-
-					result[\expectedResult] = TestResult(expectedResult, true);
+				if(abs(resultArraySample - expectedResultSample) >= tolerance, {
+					expectedResult = false
 				});
-			}
-		)
+			});
+
+			server.sync;
+
+			result[\expectedResult] = TestResult(expectedResult, true);
+		});
 	}
+
+
 
 	test_stereo {
 		var numCoeffs = 5;
+		var tolerance = 0.00001;
+		var expectedResult = true;
 
 		if(expectedResultStereo.isNil, { result = "failure: could not read binary file"; ^nil; });
 
@@ -70,34 +73,31 @@ TestFluidMFCC : FluidUnitTest {
 			source: stereoBuffer,
 			features: resultBuffer,
 			numCoeffs: numCoeffs,
+		).wait;
 
-			action: {
-				var tolerance = 0.001;
-				var expectedResult = true;
 
-				result = Dictionary(4);
 
-				result[\numChannels] = TestResult(resultBuffer.numChannels, numCoeffs * 2);
+		result = Dictionary(4);
 
-				//Abstract this in a reusable function!
-				resultBuffer.loadToFloatArray(action: { | resultArray |
-					result[\expectedSize] = TestResult(resultArray.size, expectedResultStereo.size);
+		result[\numChannels] = TestResult(resultBuffer.numChannels, numCoeffs * 2);
 
-					//Compare sample by sample with a set tolerance
-					resultArray.size.do({ | i |
-						var resultArraySample = resultArray[i];
-						var expectedResultSample = expectedResultStereo[i];
+		//Abstract this in a reusable function!
+		resultBuffer.loadToFloatArray(action: { | resultArray |
+			result[\expectedSize] = TestResult(resultArray.size, expectedResultStereo.size);
 
-						if(abs(resultArraySample - expectedResultSample) >= tolerance, {
-							expectedResult = false
-						});
-					});
+			//Compare sample by sample with a set tolerance
+			resultArray.size.do({ | i |
+				var resultArraySample = resultArray[i];
+				var expectedResultSample = expectedResultStereo[i];
 
-					server.sync;
-
-					result[\expectedResult] = TestResult(expectedResult, true);
+				if(abs(resultArraySample - expectedResultSample) >= tolerance, {
+					expectedResult = false
 				});
-			}
-		)
+			});
+
+			server.sync;
+
+			result[\expectedResult] = TestResult(expectedResult, true);
+		});
 	}
 }

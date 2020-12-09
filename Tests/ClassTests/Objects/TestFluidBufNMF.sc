@@ -31,9 +31,10 @@ TestFluidBufNMF : FluidUnitTest {
 		var components = 4;
 		var fftSize = 256;
 		var hopSize = fftSize / 2;
-
 		var basesBuffer = Buffer.new(server);
 		var activationsBuffer = Buffer.new(server);
+		var ampTolerance = 0.0001;
+		var nmfArray, nullSum = true;
 
 		server.sync;
 
@@ -46,47 +47,45 @@ TestFluidBufNMF : FluidUnitTest {
 			components: components,
 			windowSize: fftSize,
 			fftSize: fftSize,
-			hopSize: hopSize,
-			action: {
-				var ampTolerance = 0.0001;
-				var nmfArray, nullSum = true;
+			hopSize: hopSize
+		).wait;
 
-				result = Dictionary(5);
 
-				result[\components] = TestResult(resultBuffer.numChannels, components);
-				result[\componensNumFrames] = TestResult(resultBuffer.numFrames, multipleSinesBuffer.numFrames);
 
-				result[\basesNumFrames] = TestResult(
-					basesBuffer.numFrames,
-					((fftSize / 2) + 1).asInteger
-				);
+		result = Dictionary(5);
 
-				result[\activationsNumFrames] = TestResult(
-					activationsBuffer.numFrames,
-					((multipleSinesBuffer.numFrames / hopSize) + 1).asInteger
-				);
+		result[\components] = TestResult(resultBuffer.numChannels, components);
+		result[\componensNumFrames] = TestResult(resultBuffer.numFrames, multipleSinesBuffer.numFrames);
 
-				resultBuffer.loadToFloatArray(action: { | argNMFArray |
-					nmfArray = argNMFArray;
-				});
+		result[\basesNumFrames] = TestResult(
+			basesBuffer.numFrames,
+			((fftSize / 2) + 1).asInteger
+		);
 
-				server.sync;
+		result[\activationsNumFrames] = TestResult(
+			activationsBuffer.numFrames,
+			((multipleSinesBuffer.numFrames / hopSize) + 1).asInteger
+		);
 
-				multipleSinesArray.do({ | sample, index |
-					var nmfIndex, component1, component2, component3, component4, allComponents;
-					nmfIndex = index * 4;
-					component1 = nmfArray[nmfIndex];
-					component2 = nmfArray[nmfIndex+1];
-					component3 = nmfArray[nmfIndex+2];
-					component4 = nmfArray[nmfIndex+3];
-					allComponents = component1+component2+component3+component4;
+		resultBuffer.loadToFloatArray(action: { | argNMFArray |
+			nmfArray = argNMFArray;
+		});
 
-					if(abs(allComponents - sample) >= ampTolerance, { nullSum = false });
-				});
+		server.sync;
 
-				result[\nullSum] = TestResult(nullSum, true);
-			}
-		)
+		multipleSinesArray.do({ | sample, index |
+			var nmfIndex, component1, component2, component3, component4, allComponents;
+			nmfIndex = index * 4;
+			component1 = nmfArray[nmfIndex];
+			component2 = nmfArray[nmfIndex+1];
+			component3 = nmfArray[nmfIndex+2];
+			component4 = nmfArray[nmfIndex+3];
+			allComponents = component1+component2+component3+component4;
+
+			if(abs(allComponents - sample) >= ampTolerance, { nullSum = false });
+		});
+
+		result[\nullSum] = TestResult(nullSum, true);
 	}
 
 	test_eurorack_mono { | averageRunsCounter |
@@ -97,6 +96,7 @@ TestFluidBufNMF : FluidUnitTest {
 
 		var startFrame = averageRunsCounter * 1000;
 		var numFrames = 5000;
+		var tolerance = 0.00001;
 
 		var basesBuffer, activationsBuffer;
 
@@ -134,43 +134,40 @@ TestFluidBufNMF : FluidUnitTest {
 			components: components,
 			windowSize: windowSize,
 			fftSize: fftSize,
-			hopSize: hopSize,
-			action: {
-				var tolerance = 0.0001;
+			hopSize: hopSize
+		).wait;
 
-				result = Dictionary(10);
+		result = Dictionary(10);
 
-				result[\components] = TestResult(resultBuffer.numChannels, components);
-				result[\componensNumFrames] = TestResult(resultBuffer.numFrames, numFrames);
+		result[\components] = TestResult(resultBuffer.numChannels, components);
+		result[\componensNumFrames] = TestResult(resultBuffer.numFrames, numFrames);
 
-				result[\basesNumFrames] = TestResult(
-					basesBuffer.numFrames,
-					((fftSize / 2) + 1).asInteger
-				);
-
-				result[\activationsNumFrames] = TestResult(
-					activationsBuffer.numFrames,
-					((numFrames / hopSize) + 1).asInteger
-				);
-
-				//RESYNTH
-				resultBuffer.loadToFloatArray(action: { | resultArray |
-					result[\resynthSize] = TestResult(resultArray.size, expectedResynthArray.size);
-					result[\resynth] = TestResultEquals(resultArray, expectedResynthArray, tolerance);
-				});
-
-				//BASES
-				basesBuffer.loadToFloatArray(action: { | resultArray |
-					result[\basesSize] = TestResult(resultArray.size, expectedBasesArray.size);
-					result[\bases] = TestResultEquals(resultArray, expectedBasesArray, tolerance);
-				});
-
-				//ACTIVATIONS
-				activationsBuffer.loadToFloatArray(action: { | resultArray |
-					result[\activationsSize] = TestResult(resultArray.size, expectedActivationsArray.size);
-					result[\activations] = TestResultEquals(resultArray, expectedActivationsArray, tolerance);
-				});
-			}
+		result[\basesNumFrames] = TestResult(
+			basesBuffer.numFrames,
+			((fftSize / 2) + 1).asInteger
 		);
+
+		result[\activationsNumFrames] = TestResult(
+			activationsBuffer.numFrames,
+			((numFrames / hopSize) + 1).asInteger
+		);
+
+		//RESYNTH
+		resultBuffer.loadToFloatArray(action: { | resultArray |
+			result[\resynthSize] = TestResult(resultArray.size, expectedResynthArray.size);
+			result[\resynth] = TestResultEquals(resultArray, expectedResynthArray, tolerance);
+		});
+
+		//BASES
+		basesBuffer.loadToFloatArray(action: { | resultArray |
+			result[\basesSize] = TestResult(resultArray.size, expectedBasesArray.size);
+			result[\bases] = TestResultEquals(resultArray, expectedBasesArray, tolerance);
+		});
+
+		//ACTIVATIONS
+		activationsBuffer.loadToFloatArray(action: { | resultArray |
+			result[\activationsSize] = TestResult(resultArray.size, expectedActivationsArray.size);
+			result[\activations] = TestResultEquals(resultArray, expectedActivationsArray, tolerance);
+		});
 	}
 }

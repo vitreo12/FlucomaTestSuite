@@ -6,25 +6,24 @@ TestFluidNoveltySlice : FluidUnitTest {
 			indices: resultBuffer,
 			feature: 0,
 			windowSize: 512,
-			fftSize: 1024,
-			action: {
-				result = Dictionary(2);
-				result[\numFrames] = TestResult(resultBuffer.numFrames, 1);
+			fftSize: 1024
+		).wait;
 
-				//Check if the returned index position is correct (middle of file)
-				if(resultBuffer.numFrames == 1, {
-					resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
-						var tolerance = 0.1; //0.1% margin of error in sample position
-						var samplePositionTolerance = 1024 + ((oneImpulseBuffer.numFrames / 100) * tolerance); //also consider fft size
-						result[\sampleIndex] = TestResultEquals(
-							samples[0],
-							serverSampleRate / 2,
-							samplePositionTolerance
-						);
-					});
-				});
-			}
-		);
+		result = Dictionary(2);
+		result[\numFrames] = TestResult(resultBuffer.numFrames, 1);
+
+		//Check if the returned index position is correct (middle of file)
+		if(resultBuffer.numFrames == 1, {
+			resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
+				var tolerance = 0.1; //0.1% margin of error in sample position
+				var samplePositionTolerance = 1024 + ((oneImpulseBuffer.numFrames / 100) * tolerance); //also consider fft size
+				result[\sampleIndex] = TestResultEquals(
+					samples[0],
+					serverSampleRate / 2,
+					samplePositionTolerance
+				);
+			});
+		});
 	}
 
 	test_filterSize1 {
@@ -34,11 +33,10 @@ TestFluidNoveltySlice : FluidUnitTest {
 			indices: resultBuffer,
 			kernelSize: 31,
 			threshold: 0.1,
-			filterSize: 1,
-			action: {
-				result = TestResult(resultBuffer.numFrames, 11);
-			}
-		)
+			filterSize: 1
+		).wait;
+
+		result = TestResult(resultBuffer.numFrames, 11);
 	}
 
 	test_filterSize4 {
@@ -48,11 +46,10 @@ TestFluidNoveltySlice : FluidUnitTest {
 			indices: resultBuffer,
 			kernelSize: 31,
 			threshold: 0.1,
-			filterSize: 4,
-			action: {
-				result = TestResult(resultBuffer.numFrames, 10);
-			}
-		)
+			filterSize: 4
+		).wait;
+
+		result = TestResult(resultBuffer.numFrames, 10);
 	}
 
 	test_filterSize12 {
@@ -62,11 +59,10 @@ TestFluidNoveltySlice : FluidUnitTest {
 			indices: resultBuffer,
 			kernelSize: 31,
 			threshold: 0.1,
-			filterSize: 12,
-			action: {
-				result = TestResult(resultBuffer.numFrames, 8);
-			}
-		)
+			filterSize: 12
+		).wait;
+
+		result = TestResult(resultBuffer.numFrames, 8);
 	}
 
 	test_impulses_spectrum {
@@ -76,11 +72,10 @@ TestFluidNoveltySlice : FluidUnitTest {
 			indices: resultBuffer,
 			feature: 0,
 			windowSize: 512,
-			fftSize: 1024,
-			action: {
-				result = TestResult(resultBuffer.numFrames, 4);
-			}
-		);
+			fftSize: 1024
+		).wait;
+
+		result = TestResult(resultBuffer.numFrames, 4);
 	}
 
 	test_sharp_sine_spectrum {
@@ -92,11 +87,10 @@ TestFluidNoveltySlice : FluidUnitTest {
 			threshold: 0.38,
 			windowSize: 512,
 			fftSize: 1024,
-			minSliceLength: 4,
-			action: {
-				result = TestResult(resultBuffer.numFrames, 4);
-			}
-		);
+			minSliceLength: 4
+		).wait;
+
+		result = TestResult(resultBuffer.numFrames, 4);
 	}
 
 	test_smooth_sine_spectrum {
@@ -108,10 +102,9 @@ TestFluidNoveltySlice : FluidUnitTest {
 			threshold: 0.34,
 			windowSize: 512,
 			fftSize: 1024,
-			minSliceLength: 30,
-			action: {
-				result = TestResult(resultBuffer.numFrames, 2);
-			}
-		);
+			minSliceLength: 30
+		).wait;
+
+		result = TestResult(resultBuffer.numFrames, 2);
 	}
 }

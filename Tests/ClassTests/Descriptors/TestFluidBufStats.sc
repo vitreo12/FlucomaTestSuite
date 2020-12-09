@@ -13,6 +13,8 @@ TestFluidBufStats : FluidUnitTest {
 
 	test_drums_mono {
 		var numDerivs = 1;
+		var tolerance = 0.001;
+		var expectedResult = true;
 
 		if(expectedResultDrums.isNil, { result = "failure: could not read binary file"; ^nil; });
 
@@ -20,36 +22,38 @@ TestFluidBufStats : FluidUnitTest {
 			server,
 			source: drumsBuffer,
 			stats: resultBuffer,
-			numDerivs: numDerivs,
-			action: {
-				var tolerance = 0.001;
-				var expectedResult = true;
+			numDerivs: numDerivs
+		).wait;
 
-				result = Dictionary(3);
 
-				result[\numFrames] = TestResult(resultBuffer.numFrames, (numDerivs + 1) * 7);
 
-				//Abstract this in a reusable function!
-				resultBuffer.loadToFloatArray(action: { | resultArray |
-					result[\expectedSize] = TestResult(resultArray.size, expectedResultDrums.size);
+		result = Dictionary(3);
 
-					//Compare sample by sample with a set tolerance
-					resultArray.size.do({ | i |
-						var resultArraySample = resultArray[i];
-						var expectedResultDrumsSample = expectedResultDrums[i];
+		result[\numFrames] = TestResult(resultBuffer.numFrames, (numDerivs + 1) * 7);
 
-						if(abs(resultArraySample - expectedResultDrumsSample) >= tolerance, {
-							expectedResult = false
-						});
-					});
+		//Abstract this in a reusable function!
+		resultBuffer.loadToFloatArray(action: { | resultArray |
+			result[\expectedSize] = TestResult(resultArray.size, expectedResultDrums.size);
 
-					result[\expectedResult] = TestResult(expectedResult, true);
+			//Compare sample by sample with a set tolerance
+			resultArray.size.do({ | i |
+				var resultArraySample = resultArray[i];
+				var expectedResultDrumsSample = expectedResultDrums[i];
+
+				if(abs(resultArraySample - expectedResultDrumsSample) >= tolerance, {
+					expectedResult = false
 				});
-			}
-		)
+			});
+
+			result[\expectedResult] = TestResult(expectedResult, true);
+		});
 	}
 
+
+
 	test_stereo {
+		var tolerance = 0.001;
+		var expectedResult = true;
 		var numDerivs = 1;
 
 		if(expectedResultStereo.isNil, { result = "failure: could not read binary file"; ^nil; });
@@ -58,33 +62,30 @@ TestFluidBufStats : FluidUnitTest {
 			server,
 			source: stereoBuffer,
 			stats: resultBuffer,
-			numDerivs: numDerivs,
-			action: {
-				var tolerance = 0.001;
-				var expectedResult = true;
+			numDerivs: numDerivs
+		).wait;
 
-				result = Dictionary(3);
 
-				result[\numFrames] = TestResult(resultBuffer.numFrames, (numDerivs + 1) * 7);
+		result = Dictionary(3);
 
-				//Abstract this in a reusable function!
-				resultBuffer.loadToFloatArray(action: { | resultArray |
-					result[\expectedSize] = TestResult(resultArray.size, expectedResultStereo.size);
+		result[\numFrames] = TestResult(resultBuffer.numFrames, (numDerivs + 1) * 7);
 
-					//Compare sample by sample with a set tolerance
-					resultArray.size.do({ | i |
-						var resultArraySample = resultArray[i];
-						var expectedResultSample = expectedResultStereo[i];
+		//Abstract this in a reusable function!
+		resultBuffer.loadToFloatArray(action: { | resultArray |
+			result[\expectedSize] = TestResult(resultArray.size, expectedResultStereo.size);
 
-						if(abs(resultArraySample - expectedResultSample) >= tolerance, {
-							expectedResult = false
-						});
-					});
+			//Compare sample by sample with a set tolerance
+			resultArray.size.do({ | i |
+				var resultArraySample = resultArray[i];
+				var expectedResultSample = expectedResultStereo[i];
 
-					result[\expectedResult] = TestResult(expectedResult, true);
+				if(abs(resultArraySample - expectedResultSample) >= tolerance, {
+					expectedResult = false
 				});
-			}
-		)
+			});
+
+			result[\expectedResult] = TestResult(expectedResult, true);
+		});
 	}
 
 	test_basicStats {

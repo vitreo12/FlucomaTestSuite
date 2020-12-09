@@ -11,6 +11,8 @@ TestFluidMelBands : FluidUnitTest {
 		var numBands = 10;
 		var fftsize = 256;
 		var hopsize = fftsize / 2;
+		var tolerance = 0.001;
+		var expectedResult = true;
 
 		if(expectedResultDrums.isNil, { result = "failure: could not read binary file"; ^nil; });
 
@@ -20,38 +22,35 @@ TestFluidMelBands : FluidUnitTest {
 			features: resultBuffer,
 			numBands: numBands,
 			fftSize: fftsize,
-			hopSize: hopsize,
-			action: {
-				var tolerance = 0.001;
-				var expectedResult = true;
+			hopSize: hopsize
+		).wait;
 
-				result = Dictionary(4);
 
-				result[\numChannels] = TestResult(resultBuffer.numChannels, numBands);
-				result[\numFrames] = TestResult(
-					resultBuffer.numFrames,
-					((drumsBuffer.numFrames / hopsize) + 1).asInteger
-				);
+		result = Dictionary(4);
 
-				//Abstract this in a reusable function!
-				resultBuffer.loadToFloatArray(action: { | resultArray |
-					result[\expectedSize] = TestResult(resultArray.size, expectedResultDrums.size);
+		result[\numChannels] = TestResult(resultBuffer.numChannels, numBands);
+		result[\numFrames] = TestResult(
+			resultBuffer.numFrames,
+			((drumsBuffer.numFrames / hopsize) + 1).asInteger
+		);
 
-					//Compare sample by sample with a set tolerance
-					resultArray.size.do({ | i |
-						var resultArraySample = resultArray[i];
-						var expectedResultDrumsSample = expectedResultDrums[i];
+		//Abstract this in a reusable function!
+		resultBuffer.loadToFloatArray(action: { | resultArray |
+			result[\expectedSize] = TestResult(resultArray.size, expectedResultDrums.size);
 
-						if(abs(resultArraySample - expectedResultDrumsSample) >= tolerance, {
-							expectedResult = false
-						});
-					});
+			//Compare sample by sample with a set tolerance
+			resultArray.size.do({ | i |
+				var resultArraySample = resultArray[i];
+				var expectedResultDrumsSample = expectedResultDrums[i];
 
-					server.sync;
-
-					result[\expectedResult] = TestResult(expectedResult, true);
+				if(abs(resultArraySample - expectedResultDrumsSample) >= tolerance, {
+					expectedResult = false
 				});
-			}
-		)
+			});
+
+			server.sync;
+
+			result[\expectedResult] = TestResult(expectedResult, true);
+		});
 	}
 }

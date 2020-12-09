@@ -1,4 +1,3 @@
-/*
 TestFluidSTFTPass : FluidUnitTest {
 	test_null_sum {
 		var condition = Condition.new;
@@ -38,5 +37,5 @@ TestFluidSTFTPass : FluidUnitTest {
 		condition.hang;
 	}
 }
-*/
+
 

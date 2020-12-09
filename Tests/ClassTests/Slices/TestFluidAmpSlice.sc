@@ -10,22 +10,21 @@ TestFluidAmpSlice : FluidUnitTest {
 			slowRampDown: 220,
 			onThreshold: 10,
 			offThreshold: 7,
-			floor: -60,
-			action: {
-				result = Dictionary(2);
+			floor: -60
+		).wait;
 
-				result[\numFrames] = TestResult(resultBuffer.numFrames, 1);
+		result = Dictionary(2);
 
-				//Check if the returned index position is correct (middle of file)
-				if(resultBuffer.numFrames == 1, {
-					resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
-						var tolerance = 0.1; //0.1% margin of error in sample position
-						var samplePositionTolerance = (oneImpulseBuffer.numFrames / 100) * tolerance;
-						result[\sampleIndex] = TestResultEquals(samples[0], serverSampleRate / 2, samplePositionTolerance);
-					});
-				});
-			}
-		);
+		result[\numFrames] = TestResult(resultBuffer.numFrames, 1);
+
+		//Check if the returned index position is correct (middle of file)
+		if(resultBuffer.numFrames == 1, {
+			resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
+				var tolerance = 0.1; //0.1% margin of error in sample position
+				var samplePositionTolerance = (oneImpulseBuffer.numFrames / 100) * tolerance;
+				result[\sampleIndex] = TestResultEquals(samples[0], serverSampleRate / 2, samplePositionTolerance);
+			});
+		});
 	}
 
 	test_impulses_num_slices_schmitt {
@@ -39,11 +38,10 @@ TestFluidAmpSlice : FluidUnitTest {
 			slowRampDown: 220,
 			onThreshold: 10,
 			offThreshold: 7,
-			floor: -60,
-			action: {
-				result = TestResult(resultBuffer.numFrames, 4);
-			}
-		);
+			floor: -60
+		).wait;
+
+		result = TestResult(resultBuffer.numFrames, 4);
 	}
 
 	test_impulses_num_slices_minslicelength {
@@ -58,11 +56,10 @@ TestFluidAmpSlice : FluidUnitTest {
 			onThreshold: 10,
 			offThreshold: 10,
 			floor: -60,
-			minSliceLength: 800,
-			action: {
-				result = TestResult(resultBuffer.numFrames, 4);
-			}
-		);
+			minSliceLength: 800
+		).wait;
+
+		result = TestResult(resultBuffer.numFrames, 4);
 	}
 
 	test_sharp_sine_num_slices_schmitt {
@@ -76,11 +73,10 @@ TestFluidAmpSlice : FluidUnitTest {
 			slowRampDown: 220,
 			onThreshold: 10,
 			offThreshold: 5,
-			floor: -60,
-			action: {
-				result = TestResult(resultBuffer.numFrames, 4);
-			}
-		);
+			floor: -60
+		).wait;
+
+		result = TestResult(resultBuffer.numFrames, 4);
 	}
 
 	test_sharp_sine_num_slices_minslicelength {
@@ -95,10 +91,9 @@ TestFluidAmpSlice : FluidUnitTest {
 			onThreshold: 10,
 			offThreshold: 10,
 			floor: -60,
-			minSliceLength: 800,
-			action: {
-				result = TestResult(resultBuffer.numFrames, 4);
-			}
-		);
+			minSliceLength: 800
+		).wait;
+
+		result = TestResult(resultBuffer.numFrames, 4);
 	}
 }
