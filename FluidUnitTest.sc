@@ -42,8 +42,8 @@ FluidUnitTest : UnitTest {
 
 	//Per-method
 	var <completed = false;
-	var <>result = "";       //This is the result on every iteration
-	var <>firstResult = "";  //This is the true result of the test: the one from first iteration
+	var <>result;       //This is the result on every iteration
+	var <>firstResult;  //This is the true result of the test: the one from first iteration
 	var <>execTime = 0;
 
 	var <resultBuffer;
@@ -214,8 +214,8 @@ FluidUnitTest : UnitTest {
 		});
 
 		completed = false;
-		result = "";
-		firstResult = "";
+		result = nil;
+		firstResult = nil;
 		execTime = 0;
 		serverOptions.sampleRate = serverSampleRate;
 		server = Server(
@@ -233,6 +233,20 @@ FluidUnitTest : UnitTest {
 	tearDown {
 		server.quit({
 			completed = true;
+		});
+	}
+
+	checkValidResult {
+		result.class.postln;
+		if((result.isString.not).and(result.class != Dictionary), {
+			result = ("failure: result is not a Dictionary or a String, but a " ++ result.class.asString);
+		}, {
+			//If a dict, also check that it's not empty
+			if(result.class == Dictionary, {
+				if(result.size == 0, {
+					result = "failure: result is an empty Dictionary";
+				});
+			});
 		});
 	}
 
@@ -256,6 +270,7 @@ FluidUnitTest : UnitTest {
 				this.perform(method.name, i);
 				t = Main.elapsedTime - t;
 				execTime = t + execTime; //accumulate exec time
+				this.checkValidResult; //check result validity
 				if(i == 0, { firstResult = result });
 				if(FlucomaTestSuite.checkResultsMismatch == true, {
 					results[i] = result;
