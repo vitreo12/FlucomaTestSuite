@@ -1,5 +1,7 @@
 TestFluidHPSS : FluidUnitTest {
 	test_eurorack_mode0 {
+		var ampTolerance = 0.0001;
+		var harmonicArray, percussiveArray, residualArray, nullSum = true;
 		var residualBuffer = Buffer.new(server);
 		var percussiveBuffer = Buffer.new(server);
 
@@ -12,42 +14,40 @@ TestFluidHPSS : FluidUnitTest {
 			harmonic: resultBuffer,
 			percussive: percussiveBuffer,
 			residual: residualBuffer,
-			maskingMode:0,
-			action: {
-				var ampTolerance = 0.0001;
-				var harmonicArray, percussiveArray, residualArray, nullSum = true;
+			maskingMode:0
+		).wait;
 
-				resultBuffer.loadToFloatArray(action: { | argHarmonicArray |
-					harmonicArray = argHarmonicArray;
-				});
+		resultBuffer.loadToFloatArray(action: { | argHarmonicArray |
+			harmonicArray = argHarmonicArray;
+		});
 
-				percussiveBuffer.loadToFloatArray(action: { | argPercussiveArray |
-					percussiveArray = argPercussiveArray;
-				});
+		percussiveBuffer.loadToFloatArray(action: { | argPercussiveArray |
+			percussiveArray = argPercussiveArray;
+		});
 
-				residualBuffer.loadToFloatArray(action: { | argResidualArray |
-					residualArray = argResidualArray;
-				});
+		residualBuffer.loadToFloatArray(action: { | argResidualArray |
+			residualArray = argResidualArray;
+		});
 
-				server.sync;
+		server.sync;
 
-				result = Dictionary(4);
+		result = Dictionary(4);
 
-				result[\harmonicNumFrames] = TestResult(resultBuffer.numFrames, eurorackSynthArray.size);
-				result[\percussiveNumFrames] = TestResult(percussiveBuffer.numFrames, eurorackSynthArray.size);
-				result[\residualNumFrames]   = TestResult(residualBuffer.numFrames, eurorackSynthArray.size);
+		result[\harmonicNumFrames] = TestResult(resultBuffer.numFrames, eurorackSynthArray.size);
+		result[\percussiveNumFrames] = TestResult(percussiveBuffer.numFrames, eurorackSynthArray.size);
+		result[\residualNumFrames]   = TestResult(residualBuffer.numFrames, eurorackSynthArray.size);
 
-				//If at least one sample is above tolerance, result is false
-				((harmonicArray + percussiveArray + residualArray) - eurorackSynthArray).do({ | sample |
-					if(abs(sample) >= ampTolerance, { nullSum = false });
-				});
+		//If at least one sample is above tolerance, result is false
+		((harmonicArray + percussiveArray + residualArray) - eurorackSynthArray).do({ | sample |
+			if(abs(sample) >= ampTolerance, { nullSum = false });
+		});
 
-				result[\nullSum] = TestResult(nullSum, true);
-			}
-		);
+		result[\nullSum] = TestResult(nullSum, true);
 	}
 
 	test_eurorack_mode1 {
+		var ampTolerance = 0.000001;
+		var harmonicArray, percussiveArray, residualArray, nullSum = true;
 		var residualBuffer = Buffer.new(server);
 		var percussiveBuffer = Buffer.new(server);
 
@@ -60,42 +60,41 @@ TestFluidHPSS : FluidUnitTest {
 			harmonic: resultBuffer,
 			percussive: percussiveBuffer,
 			residual: residualBuffer,
-			maskingMode:1,
-			action: {
-				var ampTolerance = 0.0001;
-				var harmonicArray, percussiveArray, residualArray, nullSum = true;
+			maskingMode:1
+		).wait;
 
-				resultBuffer.loadToFloatArray(action: { | argHarmonicArray |
-					harmonicArray = argHarmonicArray;
-				});
+		resultBuffer.loadToFloatArray(action: { | argHarmonicArray |
+			harmonicArray = argHarmonicArray;
+		});
 
-				percussiveBuffer.loadToFloatArray(action: { | argPercussiveArray |
-					percussiveArray = argPercussiveArray;
-				});
+		percussiveBuffer.loadToFloatArray(action: { | argPercussiveArray |
+			percussiveArray = argPercussiveArray;
+		});
 
-				residualBuffer.loadToFloatArray(action: { | argResidualArray |
-					residualArray = argResidualArray;
-				});
+		residualBuffer.loadToFloatArray(action: { | argResidualArray |
+			residualArray = argResidualArray;
+		});
 
-				server.sync;
+		server.sync;
 
-				result = Dictionary(4);
+		result = Dictionary(4);
 
-				result[\harmonicNumFrames] = TestResult(resultBuffer.numFrames, eurorackSynthArray.size);
-				result[\percussiveNumFrames] = TestResult(percussiveBuffer.numFrames, eurorackSynthArray.size);
-				result[\residualNumFrames]   = TestResult(residualBuffer.numFrames, eurorackSynthArray.size);
+		result[\harmonicNumFrames] = TestResult(resultBuffer.numFrames, eurorackSynthArray.size);
+		result[\percussiveNumFrames] = TestResult(percussiveBuffer.numFrames, eurorackSynthArray.size);
+		result[\residualNumFrames]   = TestResult(residualBuffer.numFrames, eurorackSynthArray.size);
 
-				//If at least one sample is above tolerance, result is false
-				((harmonicArray + percussiveArray + residualArray) - eurorackSynthArray).do({ | sample |
-					if(abs(sample) >= ampTolerance, { nullSum = false });
-				});
+		//If at least one sample is above tolerance, result is false
+		((harmonicArray + percussiveArray + residualArray) - eurorackSynthArray).do({ | sample |
+			if(abs(sample) >= ampTolerance, { nullSum = false });
+		});
 
-				result[\nullSum] = TestResult(nullSum, true);
-			}
-		);
+		result[\nullSum] = TestResult(nullSum, true);
+
 	}
 
 	test_eurorack_mode2 {
+		var ampTolerance = 0.000001;
+		var harmonicArray, percussiveArray, residualArray, nullSum = true;
 		var residualBuffer = Buffer.new(server);
 		var percussiveBuffer = Buffer.new(server);
 
@@ -119,38 +118,34 @@ TestFluidHPSS : FluidUnitTest {
 			percThreshAmp2: 26.5,
 			windowSize: 4096,
 			hopSize: 512,
-			maskingMode:2,
-			action: {
-				var ampTolerance = 0.0001;
-				var harmonicArray, percussiveArray, residualArray, nullSum = true;
+			maskingMode:2
+		).wait;
 
-				resultBuffer.loadToFloatArray(action: { | argHarmonicArray |
-					harmonicArray = argHarmonicArray;
-				});
+		resultBuffer.loadToFloatArray(action: { | argHarmonicArray |
+			harmonicArray = argHarmonicArray;
+		});
 
-				percussiveBuffer.loadToFloatArray(action: { | argPercussiveArray |
-					percussiveArray = argPercussiveArray;
-				});
+		percussiveBuffer.loadToFloatArray(action: { | argPercussiveArray |
+			percussiveArray = argPercussiveArray;
+		});
 
-				residualBuffer.loadToFloatArray(action: { | argResidualArray |
-					residualArray = argResidualArray;
-				});
+		residualBuffer.loadToFloatArray(action: { | argResidualArray |
+			residualArray = argResidualArray;
+		});
 
-				server.sync;
+		server.sync;
 
-				result = Dictionary(4);
+		result = Dictionary(4);
 
-				result[\harmonicNumFrames] = TestResult(resultBuffer.numFrames, eurorackSynthArray.size);
-				result[\percussiveNumFrames] = TestResult(percussiveBuffer.numFrames, eurorackSynthArray.size);
-				result[\residualNumFrames]   = TestResult(residualBuffer.numFrames, eurorackSynthArray.size);
+		result[\harmonicNumFrames] = TestResult(resultBuffer.numFrames, eurorackSynthArray.size);
+		result[\percussiveNumFrames] = TestResult(percussiveBuffer.numFrames, eurorackSynthArray.size);
+		result[\residualNumFrames]   = TestResult(residualBuffer.numFrames, eurorackSynthArray.size);
 
-				//If at least one sample is above tolerance, result is false
-				((harmonicArray + percussiveArray + residualArray) - eurorackSynthArray).do({ | sample |
-					if(abs(sample) >= ampTolerance, { nullSum = false });
-				});
+		//If at least one sample is above tolerance, result is false
+		((harmonicArray + percussiveArray + residualArray) - eurorackSynthArray).do({ | sample |
+			if(abs(sample) >= ampTolerance, { nullSum = false });
+		});
 
-				result[\nullSum] = TestResult(nullSum, true);
-			}
-		);
+		result[\nullSum] = TestResult(nullSum, true);
 	}
 }

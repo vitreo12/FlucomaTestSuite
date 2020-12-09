@@ -132,7 +132,7 @@ TestFluidBufStats : FluidUnitTest {
 					result[\expectedResult] = TestResult(expectedResult, true);
 					if (expectedResult == false, {result[\failed] = "failure: " ++ failed.asString});
 				});
-		});
+		}).wait;
 	}
 
 	test_advancedFeatures {
@@ -143,6 +143,7 @@ TestFluidBufStats : FluidUnitTest {
 		var outlierResults3 = [ 5.0, 10005.0, 2.0, 2.0, 0.0, 0.0, 1.75, 1.75, 2.0, 10002.0, 5.0, 10005.0, 8.0, 10008.0, -1.0, -1.0, 2.3804762363434, 2.3804762363434, 0.44479486346245, 0.44479486346245, 1.9204152822495, 1.9204152822495, -4.0, -4.0, -2.0, -2.0, 3.0, 3.0 ];
 		var weightsResults = [ 5.6666665077209, 8203.6669921875, 14.220485687256, 3601.3337402344, 6.2717032432556, -1.499999165535, 41.239387512207, 3.2499990463257, 1.0, 1001.0, 3.0, 10003.0, 99.0, 10009.0, -18.266666412354, -802.2666015625, 42.191482543945, 4956.2670898438, -0.86550408601761, -0.04432737454772, 3.7293791770935, 3.2059283256531, -98.0, -9008.0, -3.0, -3.0, 95.0, 9004.0 ];
 		var bothResults = [ 4.5999999046326, 1.3564660549164, 0.36539962887764, 1.9102079868317, 3.0, 4.0, 7.0, -0.91999995708466, 2.4762940406799, 0.16924792528152, 1.7558281421661, -4.0, -2.0, 3.0 ];
+		var cond = Condition.new;
 
 		server.sync;//needs to sync because of a newly created buffer (the action did not work)
 
@@ -174,10 +175,12 @@ TestFluidBufStats : FluidUnitTest {
 					result[\expectedResultOutliers] = TestResult(expectedResult, true);
 					if (expectedResult == false, {result[\failedOutliers] = "failure: " ++ failed.asString});
 
+					cond.unhang;
+
 				});
 		});
 
-		server.sync;//checking the first test is finished
+		cond.hang;//checking the first test is finished
 
 		FluidBufStats.process(
 			server,
@@ -206,10 +209,12 @@ TestFluidBufStats : FluidUnitTest {
 					result[\expectedResultOutliers2] = TestResult(expectedResult, true);
 					if (expectedResult == false, {result[\failedOutliers2] = "failure: " ++ failed.asString});
 
+					cond.unhang;
+
 				});
 		});
 
-		server.sync;//checking the first test is finished
+		cond.hang;//checking the second test is finished
 
 		FluidBufStats.process(
 			server,
@@ -237,10 +242,12 @@ TestFluidBufStats : FluidUnitTest {
 					result[\expectedResultOutliers3] = TestResult(expectedResult, true);
 					if (expectedResult == false, {result[\failedOutliers3] = "failure: " ++ failed.asString});
 
+					cond.unhang;
+
 				});
 		});
 
-		server.sync;//checking the first test is finished
+		cond.hang;//checking the third test is finished
 
 		FluidBufStats.process(
 			server,
@@ -268,10 +275,12 @@ TestFluidBufStats : FluidUnitTest {
 					result[\expectedResultWeighted] = TestResult(expectedResult, true);
 					if (expectedResult == false, {result[\failedWeighted] = "failure: " ++ failed.asString});
 
+					cond.unhang;
+
 				});
 		});
 
-		server.sync;//checking the first test is finished
+		cond.hang;//checking the fourth test is finished
 
 		FluidBufStats.process(
 			server,
@@ -301,6 +310,6 @@ TestFluidBufStats : FluidUnitTest {
 					if (expectedResult == false, {result[\failedBoth] = "failure: " ++ failed.asString});
 
 				});
-		});
+		}).wait;
 	}
 }

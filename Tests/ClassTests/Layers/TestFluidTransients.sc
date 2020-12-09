@@ -3,7 +3,9 @@ TestFluidTransients : FluidUnitTest {
 	var <residualBuffer;
 
 	test_eurorack_null_sum {
-		residualBuffer = Buffer.new(server);
+		var ampTolerance = 0.000001;
+		var transientsArray, residualArray, nullSum = true;
+		var residualBuffer = Buffer.new(server);
 		server.sync;
 
 		//Null summing test
@@ -11,33 +13,30 @@ TestFluidTransients : FluidUnitTest {
 			server,
 			eurorackSynthBuffer,
 			transients: resultBuffer,
-			residual: residualBuffer,
-			action: {
-				var ampTolerance = 0.0001;
-				var transientsArray, residualArray, nullSum = true;
+			residual: residualBuffer
+		).wait;
 
-				resultBuffer.loadToFloatArray(action: { | argTransientsArray |
-					transientsArray = argTransientsArray;
-				});
+		resultBuffer.loadToFloatArray(action: { | argTransientsArray |
+			transientsArray = argTransientsArray;
+		});
 
-				residualBuffer.loadToFloatArray(action: { | argResidualArray |
-					residualArray = argResidualArray;
-				});
+		residualBuffer.loadToFloatArray(action: { | argResidualArray |
+			residualArray = argResidualArray;
+		});
 
-				server.sync;
+		server.sync;
 
-				result = Dictionary(3);
+		result = Dictionary(3);
 
-				result[\transientsNumFrames] = TestResult(resultBuffer.numFrames, eurorackSynthArray.size);
-				result[\residualNumFrames]   = TestResult(residualBuffer.numFrames, eurorackSynthArray.size);
+		result[\transientsNumFrames] = TestResult(resultBuffer.numFrames, eurorackSynthArray.size);
+		result[\residualNumFrames]   = TestResult(residualBuffer.numFrames, eurorackSynthArray.size);
 
-				//If at least one sample is above tolerance, result is false
-				((transientsArray + residualArray) - eurorackSynthArray).do({ | sample |
-					if(abs(sample) >= ampTolerance, { nullSum = false });
-				});
+		//If at least one sample is above tolerance, result is false
+		((transientsArray + residualArray) - eurorackSynthArray).do({ | sample |
+			if(abs(sample) >= ampTolerance, { nullSum = false });
+		});
 
-				result[\nullSum] = TestResult(nullSum, true);
-			}
-		);
+		result[\nullSum] = TestResult(nullSum, true);
+
 	}
 }

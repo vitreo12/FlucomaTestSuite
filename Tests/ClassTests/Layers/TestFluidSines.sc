@@ -12,7 +12,10 @@ TestFluidSines : FluidUnitTest {
 	}
 
 	test_multiple_sines_null_sum {
-		residualBuffer = Buffer.new(server);
+		var ampTolerance = 0.000001;
+		var sinesArray, residualArray, nullSum = true;
+		var residualBuffer = Buffer.new(server);
+
 		server.sync;
 
 		//Null summing test
@@ -20,38 +23,39 @@ TestFluidSines : FluidUnitTest {
 			server,
 			multipleSinesBuffer,
 			sines: resultBuffer,
-			residual: residualBuffer,
-			action: {
-				var ampTolerance = 0.0001;
-				var sinesArray, residualArray, nullSum = true;
+			residual: residualBuffer
+		).wait;
 
-				resultBuffer.loadToFloatArray(action: { | argSinesArray |
-					sinesArray = argSinesArray;
-				});
 
-				residualBuffer.loadToFloatArray(action: { | argResidualArray |
-					residualArray = argResidualArray;
-				});
+		resultBuffer.loadToFloatArray(action: { | argSinesArray |
+			sinesArray = argSinesArray;
+		});
 
-				server.sync;
+		residualBuffer.loadToFloatArray(action: { | argResidualArray |
+			residualArray = argResidualArray;
+		});
 
-				result = Dictionary(3);
+		server.sync;
 
-				result[\sinesNumFrames]    = TestResult(resultBuffer.numFrames, serverSampleRate);
-				result[\residualNumFrames] = TestResult(residualBuffer.numFrames, serverSampleRate);
+		result = Dictionary(3);
 
-				//If at least one sample is above tolerance, result is false
-				((sinesArray + residualArray) - multipleSinesArray).do({ | sample |
-					if(abs(sample) >= ampTolerance, { nullSum = false });
-				});
+		result[\sinesNumFrames]    = TestResult(resultBuffer.numFrames, serverSampleRate);
+		result[\residualNumFrames] = TestResult(residualBuffer.numFrames, serverSampleRate);
 
-				result[\nullSum] = TestResult(nullSum, true);
-			}
-		);
+		//If at least one sample is above tolerance, result is false
+		((sinesArray + residualArray) - multipleSinesArray).do({ | sample |
+			if(abs(sample) >= ampTolerance, { nullSum = false });
+		});
+
+		result[\nullSum] = TestResult(nullSum, true);
+
 	}
 
 	test_multiple_sines_noise_null_sum {
-		residualBuffer = Buffer.new(server);
+		var ampTolerance = 0.0001;
+		var sinesArray, residualArray, nullSum = true;
+		var residualBuffer = Buffer.new(server);
+
 		server.sync;
 
 		//Null summing test
@@ -59,38 +63,39 @@ TestFluidSines : FluidUnitTest {
 			server,
 			multipleSinesNoiseBuffer,
 			sines: resultBuffer,
-			residual: residualBuffer,
-			action: {
-				var ampTolerance = 0.0001;
-				var sinesArray, residualArray, nullSum = true;
+			residual: residualBuffer
+		).wait;
 
-				resultBuffer.loadToFloatArray(action: { | argSinesArray |
-					sinesArray = argSinesArray;
-				});
 
-				residualBuffer.loadToFloatArray(action: { | argResidualArray |
-					residualArray = argResidualArray;
-				});
+		resultBuffer.loadToFloatArray(action: { | argSinesArray |
+			sinesArray = argSinesArray;
+		});
 
-				server.sync;
+		residualBuffer.loadToFloatArray(action: { | argResidualArray |
+			residualArray = argResidualArray;
+		});
 
-				result = Dictionary(3);
+		server.sync;
 
-				result[\sinesNumFrames]    = TestResult(resultBuffer.numFrames, serverSampleRate);
-				result[\residualNumFrames] = TestResult(residualBuffer.numFrames, serverSampleRate);
+		result = Dictionary(3);
 
-				//If at least one sample is above tolerance, result is false
-				((sinesArray + residualArray) - multipleSinesNoiseArray).do({ | sample |
-					if(abs(sample) >= ampTolerance, { nullSum = false });
-				});
+		result[\sinesNumFrames]    = TestResult(resultBuffer.numFrames, serverSampleRate);
+		result[\residualNumFrames] = TestResult(residualBuffer.numFrames, serverSampleRate);
 
-				result[\nullSum] = TestResult(nullSum, true);
-			}
-		);
+		//If at least one sample is above tolerance, result is false
+		((sinesArray + residualArray) - multipleSinesNoiseArray).do({ | sample |
+			if(abs(sample) >= ampTolerance, { nullSum = false });
+		});
+
+		result[\nullSum] = TestResult(nullSum, true);
+
 	}
 
 	test_eurorack_null_sum {
-		residualBuffer = Buffer.new(server);
+		var ampTolerance = 0.0001;
+		var sinesArray, residualArray, nullSum = true;
+		var residualBuffer = Buffer.new(server);
+
 		server.sync;
 
 		//Null summing test
@@ -98,38 +103,38 @@ TestFluidSines : FluidUnitTest {
 			server,
 			eurorackSynthBuffer,
 			sines: resultBuffer,
-			residual: residualBuffer,
-			action: {
-				var ampTolerance = 0.0001;
-				var sinesArray, residualArray, nullSum = true;
+			residual: residualBuffer
+		).wait;
 
-				resultBuffer.loadToFloatArray(action: { | argSinesArray |
-					sinesArray = argSinesArray;
-				});
+		resultBuffer.loadToFloatArray(action: { | argSinesArray |
+			sinesArray = argSinesArray;
+		});
 
-				residualBuffer.loadToFloatArray(action: { | argResidualArray |
-					residualArray = argResidualArray;
-				});
+		residualBuffer.loadToFloatArray(action: { | argResidualArray |
+			residualArray = argResidualArray;
+		});
 
-				server.sync;
+		server.sync;
 
-				result = Dictionary(3);
+		result = Dictionary(3);
 
-				result[\sinesNumFrames] = TestResult(resultBuffer.numFrames, eurorackSynthArray.size);
-				result[\residualNumFrames]   = TestResult(residualBuffer.numFrames, eurorackSynthArray.size);
+		result[\sinesNumFrames] = TestResult(resultBuffer.numFrames, eurorackSynthArray.size);
+		result[\residualNumFrames]   = TestResult(residualBuffer.numFrames, eurorackSynthArray.size);
 
-				//If at least one sample is above tolerance, result is false
-				((sinesArray + residualArray) - eurorackSynthArray).do({ | sample |
-					if(abs(sample) >= ampTolerance, { nullSum = false });
-				});
+		//If at least one sample is above tolerance, result is false
+		((sinesArray + residualArray) - eurorackSynthArray).do({ | sample |
+			if(abs(sample) >= ampTolerance, { nullSum = false });
+		});
 
-				result[\nullSum] = TestResult(nullSum, true);
-			}
-		);
+		result[\nullSum] = TestResult(nullSum, true);
 	}
 
 	test_eurorack_output {
-		residualBuffer = Buffer.new(server);
+		var ampTolerance = 0.0001;
+		var sinesArray, residualArray;
+		var nullSum = true;
+		var residualBuffer = Buffer.new(server);
+
 		server.sync;
 
 		//Null summing test
@@ -141,35 +146,29 @@ TestFluidSines : FluidUnitTest {
 			numFrames: 22050,
 			windowSize: 1024,
 			hopSize: 256,
-			fftSize: 8192,
-			action: {
-				var ampTolerance = 0.0001;
-				var sinesArray, residualArray;
-				var nullSum = true;
+			fftSize: 8192
+		).wait;
+		resultBuffer.loadToFloatArray(action: { | argSinesArray |
+			sinesArray = argSinesArray;
+		});
 
-				resultBuffer.loadToFloatArray(action: { | argSinesArray |
-					sinesArray = argSinesArray;
-				});
+		residualBuffer.loadToFloatArray(action: { | argResidualArray |
+			residualArray = argResidualArray;
+		});
 
-				residualBuffer.loadToFloatArray(action: { | argResidualArray |
-					residualArray = argResidualArray;
-				});
+		server.sync;
 
-				server.sync;
+		result = Dictionary(3);
 
-				result = Dictionary(3);
+		result[\sinesNumFrames] = TestResult(resultBuffer.numFrames, 22050);
+		result[\residualNumFrames]   = TestResult(residualBuffer.numFrames, 22050);
 
-				result[\sinesNumFrames] = TestResult(resultBuffer.numFrames, 22050);
-				result[\residualNumFrames]   = TestResult(residualBuffer.numFrames, 22050);
+		//If at least one sample is above tolerance, result is false
+		sinesArray.do({ | sample, index |
+			if(abs(sample - expectedSinesArray[index] ) >= ampTolerance, { nullSum = false });
+			if(abs(residualArray[index] - expectedResidualArray[index] ) >= ampTolerance, { nullSum = false })
+		});
 
-				//If at least one sample is above tolerance, result is false
-				sinesArray.do({ | sample, index |
-					if(abs(sample - expectedSinesArray[index] ) >= ampTolerance, { nullSum = false });
-					if(abs(residualArray[index] - expectedResidualArray[index] ) >= ampTolerance, { nullSum = false })
-				});
-
-				result[\nullSum] = TestResult(nullSum, true);
-			}
-		);
+		result[\nullSum] = TestResult(nullSum, true);
 	}
 }
