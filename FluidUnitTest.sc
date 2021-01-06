@@ -237,7 +237,6 @@ FluidUnitTest : UnitTest {
 	}
 
 	checkValidResult {
-		result.class.postln;
 		if((result.isString.not).and(result.class != Dictionary), {
 			result = ("failure: result is not a Dictionary or a String, but a " ++ result.class.asString);
 		}, {

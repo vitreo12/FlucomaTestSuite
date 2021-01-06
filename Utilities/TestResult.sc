@@ -26,10 +26,9 @@ TestResultEquals {
 				condition.do({ | entry |
 					if(entry.not, {
 						^("failure: compared arrays mismatch");
-					}, {
-						^("success");
 					});
 				});
+				^("success");
 			}, {
 				if(condition.not, {
 					^("failure: " ++ a ++ " exceeds " ++ b ++ " by +/- " ++ tolerance);
