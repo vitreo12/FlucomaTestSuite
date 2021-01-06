@@ -21,7 +21,7 @@ TestFluidDataSet : FluidUnitTest {
 
 					result[\retrieve1pointSize] = TestResult(resultBuffer.numFrames, positiveNoise.size);
 					resultBuffer.getn(0, positiveNoise.size, action: {|x|
-						result[\retrieve1pointVal] = TestResultEquals(x, positiveNoise, 0.00000001);
+						result[\retrieve1pointVal] = TestResultEquals(x, positiveNoise, 0.000001);
 
 						//add another point
 						testDS.addPoint(\label2, linBuf, action: {
@@ -35,7 +35,7 @@ TestFluidDataSet : FluidUnitTest {
 								testDS.getPoint(\label2, resultBuffer, action: {
 									result[\retrieve2pointSize] = TestResult(resultBuffer.numFrames, positiveNoise.size);
 									resultBuffer.getn(0, positiveNoise.size, action: {|x|
-										result[\retrieve2pointVal] = TestResultEquals(x, (0..100), 0.00000001);
+										result[\retrieve2pointVal] = TestResultEquals(x, (0..100), 0.000001);
 
 										//modify a point
 										testDS.updatePoint(\label2, sinBuf, action: {
@@ -43,12 +43,12 @@ TestFluidDataSet : FluidUnitTest {
 											//check the modified point
 											testDS.getPoint(\label2, resultBuffer, action: {
 												resultBuffer.getn(0, positiveNoise.size, action: {|x|
-													result[\retrieveSinePointVal] = TestResultEquals(x, Array.fill(101,{|i|(i/2).sin}), 0.00000001);
+													result[\retrieveSinePointVal] = TestResultEquals(x, Array.fill(101,{|i|(i/2).sin}), 0.000001);
 
 													//check the other point
 													testDS.getPoint(\label, resultBuffer, action: {
 														resultBuffer.getn(0, positiveNoise.size, action: {|x|
-															result[\retrieveOldPointVal] = TestResultEquals(x, positiveNoise, 0.00000001);
+															result[\retrieveOldPointVal] = TestResultEquals(x, positiveNoise, 0.000001);
 
 															//delete one point
 															testDS.deletePoint(\label, action: {
@@ -57,7 +57,7 @@ TestFluidDataSet : FluidUnitTest {
 																testDS.dump{|x|
 																	result[\delete2pointCols] = TestResult(x["cols"], positiveNoise.size);
 																	result[\delete2pointRows] = TestResult(x["data"].keys.asArray.size, 1);
-																	result[\delete2pointVals] = TestResultEquals(x["data"]["label2"], Array.fill(101,{|i|(i/2).sin}), 0.00000001);
+																	result[\delete2pointVals] = TestResultEquals(x["data"]["label2"], Array.fill(101,{|i|(i/2).sin}), 0.000001);
 
 																	//all nested conditions are done, free the process
 																	cond.unhang;
@@ -100,7 +100,7 @@ TestFluidDataSet : FluidUnitTest {
 
 					result[\retrieveDumpSize] = TestResult(resultBuffer.numFrames, positiveNoise.size);
 					resultBuffer.getn(0, positiveNoise.size, action: {|x|
-						result[\retrieveDumpVal] = TestResultEquals(x, positiveNoise, 0.00000001);
+						result[\retrieveDumpVal] = TestResultEquals(x, positiveNoise, 0.000001);
 
 						//delete points
 						dictDS.deletePoint("noise", action: {
@@ -109,7 +109,7 @@ TestFluidDataSet : FluidUnitTest {
 							dictDS.dump{|x|
 								result[\load2DumpSize] = TestResult(x["cols"], positiveNoise.size);
 								result[\load2DumpKeys] = TestResult(x["data"].keys.asArray.size, 2);
-								result[\load2DumpDataSine] = TestResultEquals(x["data"]["sine"], Array.fill(101,{|i|(i/2).sin}), 0.00000001);
+								result[\load2DumpDataSine] = TestResultEquals(x["data"]["sine"], Array.fill(101,{|i|(i/2).sin}), 0.000001);
 								result[\load2DumpDataLine] = TestResultEquals(x["data"]["line"], (0..100), 0.00000001);
 
 								//clear
