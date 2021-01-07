@@ -23,7 +23,7 @@ TestFluidNMFFilter : FluidUnitTest {
 	test_null_sum {
 		var loadToFloatArrayCondition = Condition();
 
-		var tolerance = 0.001;
+		var tolerance = 0.0001;
 
 		var sine500Array, sine5000Array, sinesArray;
 		var sine500Func, sine5000Func, sinesFunc;
@@ -34,7 +34,7 @@ TestFluidNMFFilter : FluidUnitTest {
 		server.sync;
 
 		sine500Func  = {FluidNMFFilter.ar(SinOsc.ar(500), e, 2)};
-		sine5000Func = {FluidNMFFilter.ar(SinOsc.ar(500), e, 2)};
+		sine5000Func = {FluidNMFFilter.ar(SinOsc.ar(5000), e, 2)};
 		sinesFunc    = {FluidNMFFilter.ar(SinOsc.ar([500, 5000]).sum, e, 2)};
 
 		result = Dictionary(3);

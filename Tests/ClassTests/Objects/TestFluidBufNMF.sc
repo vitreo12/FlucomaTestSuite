@@ -33,7 +33,7 @@ TestFluidBufNMF : FluidUnitTest {
 		var hopSize = fftSize / 2;
 		var basesBuffer = Buffer.new(server);
 		var activationsBuffer = Buffer.new(server);
-		var ampTolerance = 0.0001;
+		var ampTolerance = 0.00001;
 		var nmfArray, nullSum = true;
 
 		server.sync;
