@@ -1,34 +1,35 @@
 TestFluidBufCompose : FluidUnitTest {
-	test_one_impulse {
-		var sample1, sample2;
+	test_basic_param {
+		result = Dictionary(3);
+
+		resultBuffer.zero;
+		server.sync; //must zero otherwise will keep the values of the previous pass and that adds up at the synth end.
 
 		FluidBufCompose.process(
 			server,
-			source: oneImpulseBuffer,
+			source: stereoBuffer,
 			destination: resultBuffer,
-			destStartChan: 0
-		).wait;
+		);//.wait; //this wait was needed because we were not checking the ID of the returned call
 
 		FluidBufCompose.process(
 			server,
-			source: oneImpulseBuffer,
+			source: eurorackSynthBuffer,
 			destination: resultBuffer,
-			destStartChan: 1
+			destGain: 1.0
 		).wait;
 
-		result = Dictionary(4);
 		result[\channels] = TestResult(resultBuffer.numChannels, 2);
-		result[\numFrames] = TestResult(resultBuffer.numFrames, serverSampleRate);
+		result[\numFrames] = TestResult(resultBuffer.numFrames, eurorackSynthArray.size);
 
-		//Check the two impulses are in the middle of the buffer. Buffer data is interleaved.
-		resultBuffer.getn(resultBuffer.numFrames-2, 2, { | samples |
-			sample1 = samples[0];
-			sample2 = samples[1];
+		resultBuffer.loadToFloatArray(action: { | resultArray |
+			var paddedStereoArray = (stereoArray ++ 0.dup((eurorackSynthArray.size * 2 ) - stereoArray.size));
+			var padedSynthArray = [eurorackSynthArray.flatten, 0].lace(eurorackSynthArray.size * 2);//zero padding the stereo feed then adding the zero interleaved synth on the left
+			var expectedArray = paddedStereoArray + padedSynthArray;
+
+			result[\content] = TestResultEquals(resultArray, expectedArray, 1e-5);
 		});
 
-		server.sync;
-
-		result[\sample1] = TestResult(sample1, 1.0);
-		result[\sample2] = TestResult(sample2, 1.0);
 	}
+
 }
+
