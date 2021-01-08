@@ -23,9 +23,10 @@ TestResultEquals {
 		}, {
 			var condition = (a - b).abs <= tolerance;
 			if(condition.isSequenceableCollection, {
-				condition.do({ | entry |
+				// (a - b).abs.maxItem.postln;
+				condition.do({ | entry, i |
 					if(entry.not, {
-						^("failure: compared arrays mismatch");
+						^("failure: compared arrays first mismatch at " ++ i);
 					});
 				});
 				^("success");

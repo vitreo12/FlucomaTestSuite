@@ -20,25 +20,19 @@ FluidUnitTest : UnitTest {
 	//Samples
 	classvar <eurorackSynthArray, <drumsArray, <acousticStrumsArray;
 
+	//Composite stereo Buffer (piano + acoustic strums)
+	classvar <stereoArray;
+
 	//These are used in many place where the noise needs to be known.
 	classvar <positiveNoise;
 
-	//These are used in Slicers
+	//TAll their respective buffers
 	var <oneImpulseBuffer, <impulsesBuffer, <sharpSineBuffer, <smoothSineBuffer;
-
-	//These are used in Layers
 	var <multipleSinesBuffer, <multipleSinesNoiseBuffer;
-
-	//These are used in Descriptors
 	var <sineBurstBuffer;
-
-	//Samples
 	var <eurorackSynthBuffer, <drumsBuffer, <acousticStrumsBuffer;
-
-	var <positiveNoiseBuffer;
-
-	//Composite stereo Buffer (piano + acoustic strums)
 	var <stereoBuffer;
+	var <positiveNoiseBuffer;
 
 	//Per-method
 	var <completed = false;
@@ -181,6 +175,11 @@ FluidUnitTest : UnitTest {
 			});
 		});
 
+		if(stereoArray.isNil, {
+			stereoBuffer.loadToFloatArray(action: { | argStereoArray |
+				stereoArray = argStereoArray;
+			});
+		});
 		server.sync;
 	}
 
