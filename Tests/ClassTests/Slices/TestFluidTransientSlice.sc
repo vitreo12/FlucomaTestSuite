@@ -94,12 +94,10 @@ TestFluidTransientSlice : FluidUnitTest {
 		).wait;
 
 		result = Dictionary(2);
-		resultBuffer.numFrames.postln;
 		result[\numSlices] = TestResult(resultBuffer.numFrames, 18);
 
 		//Check if the returned index position is correct (middle of file)
 		resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
-			samples.postln;
 			result[\sampleIndex] = TestResultEquals(
 				samples,
 				[ 140, 19182, 34704, 47217, 58297, 68182, 86941, 105688, 117356, 122134, 139498, 150485, 161516, 167571, 179043, 186293, 205047, 220493 ],
