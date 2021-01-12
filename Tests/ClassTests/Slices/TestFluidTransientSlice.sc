@@ -1,25 +1,4 @@
 TestFluidTransientSlice : FluidUnitTest {
-	// test_one_impulse {
-	// 	FluidBufTransientSlice.process(
-	// 		server,
-	// 		oneImpulseBuffer,
-	// 		indices: resultBuffer
-	// 	).wait;
-	// 	result = Dictionary(2);
-	// 	result[\numSlices] = TestResult(resultBuffer.numFrames, 1);
-	//
-	// 	//Check if the returned index position is correct (middle of file)
-	// 	if(resultBuffer.numFrames == 1, {
-	// 		resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
-	// 			result[\sampleIndex] = TestResultEquals(
-	// 				samples[0],
-	// 				serverSampleRate / 2,
-	// 				8//very tight tolerance of half the window size in samples!
-	// 			);
-	// 		});
-	// 	});
-	// }
-
 	test_impulse_stereo {
 		FluidBufTransientSlice.process(
 			server,
@@ -27,9 +6,10 @@ TestFluidTransientSlice : FluidUnitTest {
 			indices: resultBuffer
 		).wait;
 
-		result = Dictionary(2);
+		result = Dictionary(3);
 
 		result[\numSlices] = TestResult(resultBuffer.numFrames, 4);
+		result[\numChannels] = TestResult(resultBuffer.numChannels, 1);
 
 		//Check if the returned index position is correct (middle of file)
 		if(resultBuffer.numFrames == 4, {
