@@ -26,8 +26,6 @@ TestFluidTransients : FluidUnitTest {
 
 		server.sync;
 
-		result = Dictionary(3);
-
 		result[\transientsNumFrames] = TestResult(resultBuffer.numFrames, eurorackSynthArray.size);
 		result[\residualNumFrames]   = TestResult(residualBuffer.numFrames, eurorackSynthArray.size);
 

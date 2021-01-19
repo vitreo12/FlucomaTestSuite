@@ -213,7 +213,7 @@ FluidUnitTest : UnitTest {
 		});
 
 		completed = false;
-		result = nil;
+		result = Dictionary();
 		firstResult = nil;
 		execTime = 0;
 		serverOptions.sampleRate = serverSampleRate;

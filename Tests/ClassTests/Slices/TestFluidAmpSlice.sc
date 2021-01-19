@@ -12,8 +12,6 @@ TestFluidAmpSlice : FluidUnitTest {
 			offThreshold: 5
 		).wait;
 
-		result = Dictionary(3);
-
 		result[\numSlices] = TestResult(resultBuffer.numFrames, 4);
 		result[\numChannels] = TestResult(resultBuffer.numChannels, 1);
 
@@ -43,8 +41,6 @@ TestFluidAmpSlice : FluidUnitTest {
 			floor: -60
 		).wait;
 
-		result = Dictionary(2);
-
 		result[\numSlices] = TestResult(resultBuffer.numFrames, 13);
 		resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
 			samples.postln;
@@ -69,8 +65,6 @@ TestFluidAmpSlice : FluidUnitTest {
 			offThreshold: 5,
 			floor: -60
 		).wait;
-
-		result = Dictionary(2);
 
 		result[\numSlices] = TestResult(resultBuffer.numFrames, 4);
 
@@ -98,8 +92,6 @@ TestFluidAmpSlice : FluidUnitTest {
 			minSliceLength: 800
 		).wait;
 
-		result = Dictionary(2);
-
 		result[\numSlices] = TestResult(resultBuffer.numFrames, 4);
 		resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
 			result[\sampleIndex] = TestResultEquals(
@@ -124,8 +116,6 @@ TestFluidAmpSlice : FluidUnitTest {
 			floor: -60,
 			minSliceLength: 15000
 		).wait;
-
-		result = Dictionary(2);
 
 		result[\numSlices] = TestResult(resultBuffer.numFrames, 2);
 		resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
@@ -152,8 +142,6 @@ TestFluidAmpSlice : FluidUnitTest {
 			minSliceLength: 4410,
 			highPassFreq: 20
 		).wait;
-
-		result = Dictionary(2);
 
 		result[\numSlices] = TestResult(resultBuffer.numFrames, 23);
 		resultBuffer.getn(0, resultBuffer.numFrames, { | samples |

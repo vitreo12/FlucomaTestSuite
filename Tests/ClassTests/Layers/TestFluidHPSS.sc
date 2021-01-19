@@ -31,8 +31,6 @@ TestFluidHPSS : FluidUnitTest {
 
 		server.sync;
 
-		result = Dictionary(4);
-
 		result[\harmonicNumFrames] = TestResult(resultBuffer.numFrames, eurorackSynthArray.size);
 		result[\percussiveNumFrames] = TestResult(percussiveBuffer.numFrames, eurorackSynthArray.size);
 		result[\residualNumFrames]   = TestResult(residualBuffer.numFrames, eurorackSynthArray.size);
@@ -76,8 +74,6 @@ TestFluidHPSS : FluidUnitTest {
 		});
 
 		server.sync;
-
-		result = Dictionary(4);
 
 		result[\harmonicNumFrames] = TestResult(resultBuffer.numFrames, eurorackSynthArray.size);
 		result[\percussiveNumFrames] = TestResult(percussiveBuffer.numFrames, eurorackSynthArray.size);
@@ -134,8 +130,6 @@ TestFluidHPSS : FluidUnitTest {
 		});
 
 		server.sync;
-
-		result = Dictionary(4);
 
 		result[\harmonicNumFrames] = TestResult(resultBuffer.numFrames, eurorackSynthArray.size);
 		result[\percussiveNumFrames] = TestResult(percussiveBuffer.numFrames, eurorackSynthArray.size);

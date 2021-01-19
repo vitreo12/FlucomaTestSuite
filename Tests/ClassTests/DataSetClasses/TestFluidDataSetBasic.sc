@@ -4,7 +4,6 @@ TestFluidDataSet : FluidUnitTest {
 		var cond = Condition.new;
 		var linBuf = Buffer.loadCollection(server,(0..100));
 		var sinBuf = Buffer.loadCollection(server,Array.fill(101,{|i|(i/2).sin}));
-		result = Dictionary(13);
 
 		server.sync;
 
@@ -84,7 +83,6 @@ TestFluidDataSet : FluidUnitTest {
 		var dictDS = FluidDataSet(server,UniqueID.next.asSymbol);
 		var cond = Condition.new;
 
-		result = Dictionary(9);
 		server.sync;
 
 		//load a simple dataset
@@ -137,7 +135,6 @@ TestFluidDataSet : FluidUnitTest {
 		var mergeDS2 = FluidDataSet(server,UniqueID.next.asSymbol);
 		var cond = Condition.new;
 
-		result = Dictionary(9);
 		server.sync;
 
 		//load a simple dataset

@@ -38,8 +38,6 @@ TestFluidNMFMatch : FluidUnitTest {
 		sine5000Func = {FluidNMFMatch.kr(SinOsc.ar(5000), e, 2)};
 		sinesFunc    = {FluidNMFMatch.kr(SinOsc.ar([500, 5000]).sum, e, 2)};
 
-		result = Dictionary(3);
-
 		sine500Func.loadToFloatArray(0.1, server, { | array |
 			sine500Array = array;
 			loadToFloatArrayCondition.unhang;

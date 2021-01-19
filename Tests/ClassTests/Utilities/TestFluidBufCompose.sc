@@ -1,7 +1,5 @@
 TestFluidBufCompose : FluidUnitTest {
 	test_basic_param {
-		result = Dictionary(3);
-
 		resultBuffer.zero;
 		server.sync; //must zero otherwise will keep the values of the previous pass and that adds up at the synth end.
 
@@ -31,8 +29,6 @@ TestFluidBufCompose : FluidUnitTest {
 	}
 
 	test_rectangle_selections_and_gains {
-		result = Dictionary(3);
-
 		resultBuffer.zero;
 		server.sync;
 
@@ -68,8 +64,6 @@ TestFluidBufCompose : FluidUnitTest {
 	}
 
 	test_mono_expansion_and_wrap_around {
-		result = Dictionary(3);
-
 		resultBuffer.zero;
 		server.sync;
 
@@ -107,8 +101,6 @@ TestFluidBufCompose : FluidUnitTest {
 	}
 
 	test_mono_selection {
-		result = Dictionary(3);
-
 		resultBuffer.zero;
 		server.sync;
 

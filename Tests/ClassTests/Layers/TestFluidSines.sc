@@ -37,8 +37,6 @@ TestFluidSines : FluidUnitTest {
 
 		server.sync;
 
-		result = Dictionary(3);
-
 		result[\sinesNumFrames]    = TestResult(resultBuffer.numFrames, serverSampleRate);
 		result[\residualNumFrames] = TestResult(residualBuffer.numFrames, serverSampleRate);
 
@@ -77,8 +75,6 @@ TestFluidSines : FluidUnitTest {
 
 		server.sync;
 
-		result = Dictionary(3);
-
 		result[\sinesNumFrames]    = TestResult(resultBuffer.numFrames, serverSampleRate);
 		result[\residualNumFrames] = TestResult(residualBuffer.numFrames, serverSampleRate);
 
@@ -115,8 +111,6 @@ TestFluidSines : FluidUnitTest {
 		});
 
 		server.sync;
-
-		result = Dictionary(3);
 
 		result[\sinesNumFrames] = TestResult(resultBuffer.numFrames, eurorackSynthArray.size);
 		result[\residualNumFrames]   = TestResult(residualBuffer.numFrames, eurorackSynthArray.size);
@@ -157,8 +151,6 @@ TestFluidSines : FluidUnitTest {
 		});
 
 		server.sync;
-
-		result = Dictionary(3);
 
 		result[\sinesNumFrames] = TestResult(resultBuffer.numFrames, 22050);
 		result[\residualNumFrames]   = TestResult(residualBuffer.numFrames, 22050);

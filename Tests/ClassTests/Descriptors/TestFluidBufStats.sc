@@ -25,10 +25,6 @@ TestFluidBufStats : FluidUnitTest {
 			numDerivs: numDerivs
 		).wait;
 
-
-
-		result = Dictionary(3);
-
 		result[\numFrames] = TestResult(resultBuffer.numFrames, (numDerivs + 1) * 7);
 
 		//Abstract this in a reusable function!
@@ -64,9 +60,6 @@ TestFluidBufStats : FluidUnitTest {
 			stats: resultBuffer,
 			numDerivs: numDerivs
 		).wait;
-
-
-		result = Dictionary(3);
 
 		result[\numFrames] = TestResult(resultBuffer.numFrames, (numDerivs + 1) * 7);
 
@@ -112,8 +105,6 @@ TestFluidBufStats : FluidUnitTest {
 				var expectedResult = true;
 				var failed = Array.new;
 
-				result = Dictionary(5);
-
 				result[\numFrames] = TestResult(resultBuffer.numFrames, 2 * 7);
 
 				result[\numChans] = TestResult(resultBuffer.numChannels, 5);
@@ -147,8 +138,6 @@ TestFluidBufStats : FluidUnitTest {
 		var cond = Condition.new;
 
 		server.sync;//needs to sync because of a newly created buffer (the action did not work)
-
-		result = Dictionary(10);
 
 		FluidBufStats.process(
 			server,

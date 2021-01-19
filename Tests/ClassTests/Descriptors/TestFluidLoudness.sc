@@ -8,8 +8,6 @@ TestFluidLoudness : FluidUnitTest {
 			features: resultBuffer
 		).wait;
 
-		result = Dictionary(2);
-
 		result[\numChannels] = TestResult(resultBuffer.numChannels, 2);
 
 		//index 16 should be the start of the frame of the sine

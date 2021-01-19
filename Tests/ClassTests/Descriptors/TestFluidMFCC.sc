@@ -29,10 +29,6 @@ TestFluidMFCC : FluidUnitTest {
 			hopSize: hopsize,
 		).wait;
 
-
-
-		result = Dictionary(4);
-
 		result[\numChannels] = TestResult(resultBuffer.numChannels, numCoeffs);
 		result[\numFrames] = TestResult(
 			resultBuffer.numFrames,
@@ -74,10 +70,6 @@ TestFluidMFCC : FluidUnitTest {
 			features: resultBuffer,
 			numCoeffs: numCoeffs,
 		).wait;
-
-
-
-		result = Dictionary(4);
 
 		result[\numChannels] = TestResult(resultBuffer.numChannels, numCoeffs * 2);
 

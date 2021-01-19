@@ -50,10 +50,6 @@ TestFluidBufNMF : FluidUnitTest {
 			hopSize: hopSize
 		).wait;
 
-
-
-		result = Dictionary(5);
-
 		result[\components] = TestResult(resultBuffer.numChannels, components);
 		result[\componensNumFrames] = TestResult(resultBuffer.numFrames, multipleSinesBuffer.numFrames);
 
@@ -136,8 +132,6 @@ TestFluidBufNMF : FluidUnitTest {
 			fftSize: fftSize,
 			hopSize: hopSize
 		).wait;
-
-		result = Dictionary(10);
 
 		result[\components] = TestResult(resultBuffer.numChannels, components);
 		result[\componensNumFrames] = TestResult(resultBuffer.numFrames, numFrames);

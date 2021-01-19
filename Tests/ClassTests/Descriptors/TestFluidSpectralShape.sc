@@ -24,7 +24,6 @@ TestFluidSpectralShape : FluidUnitTest {
 			hopSize: hopsize
 		).wait;
 
-		result = Dictionary(4);
 		result[\numStats] = TestResult(resultBuffer.numChannels, 7);
 		result[\numFrames] = TestResult(
 			resultBuffer.numFrames,

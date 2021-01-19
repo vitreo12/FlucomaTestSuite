@@ -195,6 +195,10 @@ FlucomaTestSuite {
 		this.runTestClass(class, txtFile)
 	}
 
+	*run { | class, txtFile |
+		this.runTestClass(class, txtFile);
+	}
+
 	*runAllTests { | txtFile |
 		if(running, {
 			"The FluCoMa test suite is already running. Run 'FlucomaTestSuite.stop' to interrupt it.".error;

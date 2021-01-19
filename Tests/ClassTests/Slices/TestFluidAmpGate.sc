@@ -9,8 +9,6 @@ TestFluidAmpGate : FluidUnitTest {
 			onThreshold: -30
 		).wait;
 
-		result = Dictionary(3);
-
 		result[\numSlices] = TestResult(resultBuffer.numFrames, 4);
 		result[\numChannels] = TestResult(resultBuffer.numChannels, 2);
 
@@ -36,8 +34,6 @@ TestFluidAmpGate : FluidUnitTest {
 			offThreshold:-12
 		).wait;
 
-		result = Dictionary(3);
-
 		result[\numSlices] = TestResult(resultBuffer.numFrames, 50);
 		result[\numChannels] = TestResult(resultBuffer.numChannels, 2);
 
@@ -60,8 +56,6 @@ TestFluidAmpGate : FluidUnitTest {
 			onThreshold:-12,
 			offThreshold:-16
 		).wait;
-
-		result = Dictionary(3);
 
 		result[\numSlices] = TestResult(resultBuffer.numFrames, 2);
 		result[\numChannels] = TestResult(resultBuffer.numChannels, 2);
@@ -87,8 +81,6 @@ TestFluidAmpGate : FluidUnitTest {
 			minSliceLength:441
 		).wait;
 
-		result = Dictionary(3);
-
 		result[\numSlices] = TestResult(resultBuffer.numFrames, 8);
 		result[\numChannels] = TestResult(resultBuffer.numChannels, 2);
 
@@ -112,8 +104,6 @@ TestFluidAmpGate : FluidUnitTest {
 			offThreshold:-12,
 			minSilenceLength: 441
 		).wait;
-
-		result = Dictionary(3);
 
 		result[\numSlices] = TestResult(resultBuffer.numFrames, 8);
 		result[\numChannels] = TestResult(resultBuffer.numChannels, 2);
@@ -139,8 +129,6 @@ TestFluidAmpGate : FluidUnitTest {
 			minLengthAbove: 441
 		).wait;
 
-		result = Dictionary(3);
-
 		result[\numSlices] = TestResult(resultBuffer.numFrames, 2);
 		result[\numChannels] = TestResult(resultBuffer.numChannels, 2);
 
@@ -164,8 +152,6 @@ TestFluidAmpGate : FluidUnitTest {
 			offThreshold:-12,
 			minLengthBelow: 441
 		).wait;
-
-		result = Dictionary(3);
 
 		result[\numSlices] = TestResult(resultBuffer.numFrames, 2);
 		result[\numChannels] = TestResult(resultBuffer.numChannels, 2);
@@ -191,8 +177,6 @@ TestFluidAmpGate : FluidUnitTest {
 			lookAhead: 441
 		).wait;
 
-		result = Dictionary(3);
-
 		result[\numSlices] = TestResult(resultBuffer.numFrames, 2);
 		result[\numChannels] = TestResult(resultBuffer.numChannels, 2);
 
@@ -216,8 +200,6 @@ TestFluidAmpGate : FluidUnitTest {
 			offThreshold: -12,
 			lookBack: 441
 		).wait;
-
-		result = Dictionary(3);
 
 		result[\numSlices] = TestResult(resultBuffer.numFrames, 24);
 		result[\numChannels] = TestResult(resultBuffer.numChannels, 2);
@@ -244,8 +226,6 @@ TestFluidAmpGate : FluidUnitTest {
 			lookAhead: 441
 		).wait;
 
-		result = Dictionary(3);
-
 		result[\numSlices] = TestResult(resultBuffer.numFrames, 2);
 		result[\numChannels] = TestResult(resultBuffer.numChannels, 2);
 
@@ -271,8 +251,6 @@ TestFluidAmpGate : FluidUnitTest {
 			lookBack:441,
 			highPassFreq:40
 		).wait;
-
-		result = Dictionary(3);
 
 		result[\numSlices] = TestResult(resultBuffer.numFrames, 18);
 		result[\numChannels] = TestResult(resultBuffer.numChannels, 2);
@@ -302,7 +280,6 @@ TestFluidAmpGate : FluidUnitTest {
 
 		gateChangeIdx = gateArray.differentiate.selectIndices{|i|i!=0};
 
-		result = Dictionary(3);
 		result[\numSlices] = TestResult(gateChangeIdx.size, 4);
 		result[\edgeValues] = TestResultEquals(gateArray[0,gateArray.size-1],[0,0],0);
 		result[\changeIndices] = TestResultEquals(gateChangeIdx,[353, 1998, 2558, 4203] * serverSampleRate / 44100, 1);//TODO: test at 48k
@@ -324,7 +301,6 @@ TestFluidAmpGate : FluidUnitTest {
 
 		gateChangeIdx = gateArray.differentiate.selectIndices{|i|i!=0};
 
-		result = Dictionary(3);
 		result[\numSlices] = TestResult(gateChangeIdx.size, 8);
 		result[\edgeValues] = TestResultEquals(gateArray[0,gateArray.size-1],[0,0],0);
 		result[\changeIndices] = TestResultEquals(gateChangeIdx,[1844, 21449, 38836, 50363, 54756, 65450, 70272, 81769], 1);//TODO: test at 48k

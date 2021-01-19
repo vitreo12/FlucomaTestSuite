@@ -25,9 +25,6 @@ TestFluidMelBands : FluidUnitTest {
 			hopSize: hopsize
 		).wait;
 
-
-		result = Dictionary(4);
-
 		result[\numChannels] = TestResult(resultBuffer.numChannels, numBands);
 		result[\numFrames] = TestResult(
 			resultBuffer.numFrames,

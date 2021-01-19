@@ -6,8 +6,6 @@ TestFluidTransientSlice : FluidUnitTest {
 			indices: resultBuffer
 		).wait;
 
-		result = Dictionary(3);
-
 		result[\numSlices] = TestResult(resultBuffer.numFrames, 4);
 		result[\numChannels] = TestResult(resultBuffer.numChannels, 1);
 
@@ -30,8 +28,6 @@ TestFluidTransientSlice : FluidUnitTest {
 			indices: resultBuffer
 		).wait;
 
-		result = Dictionary(2);
-
 		result[\numSlices] = TestResult(resultBuffer.numFrames, 3);
 
 		//Check if the returned index position is correct (middle of file)
@@ -53,7 +49,6 @@ TestFluidTransientSlice : FluidUnitTest {
 			indices: resultBuffer
 		).wait;
 
-		result = Dictionary(2);
 		result[\numSlices] = TestResult(resultBuffer.numFrames, 53);
 
 		//Check if the returned index position is correct (middle of file)
@@ -73,7 +68,6 @@ TestFluidTransientSlice : FluidUnitTest {
 			indices: resultBuffer,numFrames: 220500, order: 200, blockSize: 2048, padSize: 1024, skew: 1, threshFwd: 3, threshBack: 1, windowSize: 15, clumpLength: 30, minSliceLength: 4410
 		).wait;
 
-		result = Dictionary(2);
 		result[\numSlices] = TestResult(resultBuffer.numFrames, 18);
 
 		//Check if the returned index position is correct (middle of file)

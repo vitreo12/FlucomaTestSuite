@@ -9,7 +9,6 @@ TestFluidNoveltySlice : FluidUnitTest {
 			fftSize: 1024
 		).wait;
 
-		result = Dictionary(2);
 		result[\numFrames] = TestResult(resultBuffer.numFrames, 1);
 
 		//Check if the returned index position is correct (middle of file)

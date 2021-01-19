@@ -9,7 +9,6 @@ TestFluidOnsetSlice : FluidUnitTest {
 			metric: 0
 		).wait;
 
-		result = Dictionary(2);
 		result[\numFrames] = TestResult(resultBuffer.numFrames, 1);
 
 		//Check if the returned index position is correct (middle of file)
@@ -28,7 +27,6 @@ TestFluidOnsetSlice : FluidUnitTest {
 			metric: 1
 		).wait;
 
-		result = Dictionary(2);
 		result[\numFrames] = TestResult(resultBuffer.numFrames, 1);
 
 		//Check if the returned index position is correct (middle of file)
@@ -47,7 +45,6 @@ TestFluidOnsetSlice : FluidUnitTest {
 			metric: 2
 		).wait;
 
-		result = Dictionary(2);
 		result[\numFrames] = TestResult(resultBuffer.numFrames, 1);
 
 		//Check if the returned index position is correct (middle of file)
@@ -66,7 +63,6 @@ TestFluidOnsetSlice : FluidUnitTest {
 			metric: 3
 		).wait;
 
-		result = Dictionary(2);
 		result[\numFrames] = TestResult(resultBuffer.numFrames, 1);
 
 		//Check if the returned index position is correct (middle of file)
@@ -85,7 +81,6 @@ TestFluidOnsetSlice : FluidUnitTest {
 			metric: 4
 		).wait;
 
-		result = Dictionary(2);
 		result[\numFrames] = TestResult(resultBuffer.numFrames, 1);
 
 		//Check if the returned index position is correct (middle of file)
@@ -104,7 +99,6 @@ TestFluidOnsetSlice : FluidUnitTest {
 			metric: 8
 		).wait;
 
-		result = Dictionary(2);
 		result[\numFrames] = TestResult(resultBuffer.numFrames, 1);
 
 		//Check if the returned index position is correct (middle of file)
@@ -123,7 +117,6 @@ TestFluidOnsetSlice : FluidUnitTest {
 			metric: 9
 		).wait;
 
-		result = Dictionary(2);
 		result[\numFrames] = TestResult(resultBuffer.numFrames, 1);
 
 		//Check if the returned index position is correct (middle of file)
@@ -145,8 +138,6 @@ TestFluidOnsetSlice : FluidUnitTest {
 			hopSize: 64
 		).wait;
 
-		result = Dictionary(3);
-
 		result[\numSlices] = TestResult(resultBuffer.numFrames, 4);
 		result[\numChannels] = TestResult(resultBuffer.numChannels, 1);
 
@@ -167,7 +158,6 @@ TestFluidOnsetSlice : FluidUnitTest {
 			indices: resultBuffer, metric: 0
 		).wait;
 
-		result = Dictionary(2);
 		result[\numFrames] = TestResult(resultBuffer.numFrames, 25);
 
 		//Check if the returned index position is correct (middle of file)
@@ -188,7 +178,6 @@ TestFluidOnsetSlice : FluidUnitTest {
 			metric: 1, threshold:20, windowSize: 512, hopSize: 128, minSliceLength: 20
 		).wait;
 
-		result = Dictionary(2);
 		result[\numFrames] = TestResult(resultBuffer.numFrames, 23);
 
 		//Check if the returned index position is correct (middle of file)
@@ -209,7 +198,6 @@ TestFluidOnsetSlice : FluidUnitTest {
 			metric: 2, threshold:0.2, windowSize: 1000, hopSize: 220, minSliceLength: 2
 		).wait;
 
-		result = Dictionary(2);
 		result[\numFrames] = TestResult(resultBuffer.numFrames, 24);
 
 		//Check if the returned index position is correct (middle of file)
@@ -230,7 +218,6 @@ TestFluidOnsetSlice : FluidUnitTest {
 			metric: 3, threshold:2, windowSize: 800, hopSize: 330, minSliceLength: 2
 		).wait;
 
-		result = Dictionary(2);
 		result[\numFrames] = TestResult(resultBuffer.numFrames, 27);
 
 		//Check if the returned index position is correct (middle of file)
@@ -251,7 +238,6 @@ TestFluidOnsetSlice : FluidUnitTest {
 			metric: 4, threshold:20, windowSize: 2000, hopSize: 100, minSliceLength: 10
 		).wait;
 
-		result = Dictionary(2);
 		result[\numFrames] = TestResult(resultBuffer.numFrames, 25);
 
 		//Check if the returned index position is correct (middle of file)
@@ -272,7 +258,6 @@ TestFluidOnsetSlice : FluidUnitTest {
 			metric: 5, threshold:0.07, windowSize: 1000, hopSize: 200, minSliceLength: 5
 		).wait;
 
-		result = Dictionary(2);
 		result[\numFrames] = TestResult(resultBuffer.numFrames, 19);
 
 		//Check if the returned index position is correct (middle of file)
@@ -293,7 +278,6 @@ TestFluidOnsetSlice : FluidUnitTest {
 			metric: 6, threshold:0.1, windowSize: 2000, hopSize: 200, minSliceLength: 5
 		).wait;
 
-		result = Dictionary(2);
 		result[\numFrames] = TestResult(resultBuffer.numFrames, 18);
 
 		//Check if the returned index position is correct (middle of file)
@@ -314,7 +298,6 @@ TestFluidOnsetSlice : FluidUnitTest {
 			metric:  7, threshold:0.1, windowSize: 1500, hopSize: 300, minSliceLength: 5
 		).wait;
 
-		result = Dictionary(2);
 		result[\numFrames] = TestResult(resultBuffer.numFrames, 26);
 
 		//Check if the returned index position is correct (middle of file)
@@ -335,7 +318,6 @@ TestFluidOnsetSlice : FluidUnitTest {
 			metric: 8, threshold:0.1, windowSize: 512, hopSize: 50, minSliceLength: 50
 		).wait;
 
-		result = Dictionary(2);
 		result[\numFrames] = TestResult(resultBuffer.numFrames, 29);
 
 		//Check if the returned index position is correct (middle of file)
@@ -356,7 +338,6 @@ TestFluidOnsetSlice : FluidUnitTest {
 			metric: 9, threshold:0.2, windowSize: 1950, hopSize: 40, minSliceLength: 50
 		).wait;
 
-		result = Dictionary(2);
 		result[\numFrames] = TestResult(resultBuffer.numFrames, 23);
 
 		//Check if the returned index position is correct (middle of file)
@@ -379,7 +360,6 @@ TestFluidOnsetSlice : FluidUnitTest {
 			metric: 8, threshold:0.1, windowSize: 512, hopSize: 50, minSliceLength: 50, filterSize: 7
 		).wait;
 
-		result = Dictionary(6);
 		result[\numFrames7] = TestResult(resultBuffer.numFrames, 36);
 
 		//Check if the returned index position is correct (middle of file)
@@ -442,7 +422,6 @@ TestFluidOnsetSlice : FluidUnitTest {
 			metric: 5, threshold:0.07, windowSize: 1000, hopSize: 200, minSliceLength: 5, frameDelta: 100
 		).wait;
 
-		result = Dictionary(2);
 		result[\numFrames] = TestResult(resultBuffer.numFrames, 16);
 
 		//Check if the returned index position is correct (middle of file)
