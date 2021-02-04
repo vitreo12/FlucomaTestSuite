@@ -79,4 +79,26 @@ TestFluidTransientSlice : FluidUnitTest {
 			);
 		});
 	}
+
+	test_AUDIO_SLICE_ARCHETYPE {
+		var loadToFloatArrayCondition = Condition.new;
+		var gateArray, indicesArray;
+
+		{
+			FluidTransientSlice.ar(PlayBuf.ar(1,eurorackSynthBuffer), order: 200, blockSize: 2048, padSize: 1024, skew: 1, threshFwd: 3, threshBack: 1, windowSize: 15, clumpLength: 30, minSliceLength: 4410);
+		}.loadToFloatArray(4, server, { | array |
+			gateArray = array;
+			loadToFloatArrayCondition.unhang;
+		});
+
+		loadToFloatArrayCondition.hang;
+		server.sync;
+
+		indicesArray = gateArray.selectIndices{|i|i!=0};
+
+		result[\numSlices] = TestResult(indicesArray.size, 14);
+		result[\edgeValues] = TestResultEquals(gateArray[0,gateArray.size-1],[0,0],0);
+		result[\changeIndices] = TestResultEquals(indicesArray,[ 3012, 22054, 37576, 50089, 61169, 71054, 89813, 108560, 120228, 125006, 142370, 153357, 164388, 170443 ], 1);//TODO: test at 48k
+	}
 }
+
