@@ -31,6 +31,14 @@ FlucomaTestSuite {
 		if(generateNMF == true, { FlucomaTestSuite.generateNMF(averageRunsRecompile:true) });
 	}
 
+	*maxWaitTime {
+		^FluidUnitTest.maxWaitTime;
+	}
+
+	*maxWaitTime_ { | val |
+		FluidUnitTest.maxWaitTime = val;
+	}
+
 	*initClass {
 		this.reset;
 	}
