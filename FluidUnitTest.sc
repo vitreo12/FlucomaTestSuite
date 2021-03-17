@@ -266,7 +266,6 @@ FluidUnitTest : UnitTest {
 			tAvg.do({ | i |
 				//If any of the runs takes more than maxWaitTime, tearDown and set failed result.
 				fork {
-					this.maxWaitTime.asString.error;
 					this.maxWaitTime.wait; //Call the instance function, which can be overridden per unit test
 					if((FlucomaTestSuite.running == true).and(completed == false), {
 						("Exceeded maximum wait time for server " ++ server.name ++ ": " ++ this.maxWaitTime.asString).error;
