@@ -279,9 +279,6 @@ FluidUnitTest : UnitTest {
 			//Average time
 			execTime = execTime / tAvg;
 
-			//All done. Sync with server
-			server.sync;
-
 			//Compare every result with each other
 			if(FlucomaTestSuite.checkResultsMismatch == true, {
 				results.do({ | tempResult |
@@ -305,6 +302,7 @@ FluidUnitTest : UnitTest {
 
 			//If hasn't been already shut down from a .checkSpeed call
 			if((server.serverRunning).and(completed == false), {
+				server.sync;
 				this.tearDown;
 			});
 		};
