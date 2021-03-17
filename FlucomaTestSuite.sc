@@ -32,11 +32,11 @@ FlucomaTestSuite {
 	}
 
 	*maxWaitTime {
-		^FluidUnitTest.maxWaitTimeGlobal;
+		^FluidUnitTest.maxWaitTime;
 	}
 
 	*maxWaitTime_ { | val |
-		FluidUnitTest.maxWaitTimeGlobal = val;
+		FluidUnitTest.maxWaitTime = val;
 	}
 
 	*initClass {
