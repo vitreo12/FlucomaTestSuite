@@ -264,7 +264,7 @@ FluidUnitTest : UnitTest {
 			server.sync;
 
 			tAvg.do({ | i |
-				this.checkSpeed; //each method run shouldn't take more than 30 secs
+				this.checkSpeed; //each method run shouldn't take more than maxWaitTime (30 by default) secs
 				t = Main.elapsedTime;
 				this.perform(method.name, i);
 				t = Main.elapsedTime - t;
@@ -276,16 +276,13 @@ FluidUnitTest : UnitTest {
 				});
 			});
 
+			//Average time
 			execTime = execTime / tAvg;
 
+			//All done. Sync with server
 			server.sync;
 
-			//If hasn't been already shut down from the maxWaitTime mechanism
-			if((server.serverRunning).and(completed == false), {
-				this.tearDown;
-			});
-
-			//Compare every result with each other!
+			//Compare every result with each other
 			if(FlucomaTestSuite.checkResultsMismatch == true, {
 				results.do({ | tempResult |
 					results.do({ | compTempResult |
@@ -305,6 +302,11 @@ FluidUnitTest : UnitTest {
 					});
 				})
 			});
+
+			//If hasn't been already shut down from a .checkSpeed call
+			if((server.serverRunning).and(completed == false), {
+				this.tearDown;
+			});
 		};
 	}
 
@@ -319,6 +321,7 @@ FluidUnitTest : UnitTest {
 			if((FlucomaTestSuite.running == true).and(completed == false), {
 				("Exceeded maximum wait time for server " ++ server.name ++ ": " ++ waitTime.asString).error;
 				firstResult = "failure: exceeded maximum wait time: " ++ waitTime.asString;
+				execTime = waitTime;
 				SpinRoutine.waitFor(
 					condition:{ (server.serverRunning).and(completed == false) },
 					onComplete: { this.tearDown; },
