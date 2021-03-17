@@ -264,6 +264,21 @@ FluidUnitTest : UnitTest {
 			server.sync;
 
 			tAvg.do({ | i |
+				//If any of the runs takes more than maxWaitTime, tearDown and set failed result.
+				fork {
+					this.maxWaitTime.asString.error;
+					this.maxWaitTime.wait; //Call the instance function, which can be overridden per unit test
+					if((FlucomaTestSuite.running == true).and(completed == false), {
+						("Exceeded maximum wait time for server " ++ server.name ++ ": " ++ this.maxWaitTime.asString).error;
+						firstResult = "failure: run number " ++ i.asString ++ " exceeded maximum wait time: " ++ this.maxWaitTime.asString;
+						SpinRoutine.waitFor(
+							condition:{ (server.serverRunning).and(completed == false) },
+							onComplete: { this.tearDown; },
+							breakCondition: { completed = true } //happens if test completed normally.
+						);
+					});
+				};
+
 				t = Main.elapsedTime;
 				this.perform(method.name, i);
 				t = Main.elapsedTime - t;
@@ -279,7 +294,10 @@ FluidUnitTest : UnitTest {
 
 			server.sync;
 
-			this.tearDown;
+			//If hasn't been already shut down from the maxWaitTime mechanism
+			if((server.serverRunning).and(completed == false), {
+				this.tearDown;
+			});
 
 			//Compare every result with each other!
 			if(FlucomaTestSuite.checkResultsMismatch == true, {
@@ -302,18 +320,13 @@ FluidUnitTest : UnitTest {
 				})
 			});
 		};
+	}
 
-		//If it takes more than maxWaitTime, tearDown and set failed result
-		fork {
-			maxWaitTime.wait;
-			if((FlucomaTestSuite.running == true).and(completed == false), {
-				("Exceeded maximum wait time for server " ++ server.name ++ ".").error;
-				firstResult = "failure: exceeded maximum wait time: " ++ maxWaitTime.asString;
-				SpinRoutine.waitFor({ (server.serverRunning).and(completed == false) }, {
-					this.tearDown;
-				});
-			});
-		}
+	//Note that this is an instance method: returns global one.
+	//Can be overridden per unit test for a custom value.
+	//If not specified, this returns the global maxWaitTime
+	maxWaitTime {
+		^maxWaitTime;
 	}
 }
 

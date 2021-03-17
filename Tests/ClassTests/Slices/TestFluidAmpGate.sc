@@ -1,4 +1,9 @@
 TestFluidAmpGate : FluidUnitTest {
+	//Return the desired max wait time. 10 seconds here.
+	maxWaitTime {
+		^10;
+	}
+
 	test_impulse_stereo {
 		FluidBufAmpGate.process(
 			server,
