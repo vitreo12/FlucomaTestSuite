@@ -276,32 +276,32 @@ FluidUnitTest : UnitTest {
 				});
 			});
 
-			//Average time
-			execTime = execTime / tAvg;
-
-			//Compare every result with each other
-			if(FlucomaTestSuite.checkResultsMismatch == true, {
-				results.do({ | tempResult |
-					results.do({ | compTempResult |
-						if(tempResult.class == Dictionary, {
-							tempResult.keysValuesDo({ | entry, tempResultVal |
-								var compTempResultVal = compTempResult[entry];
-								if(tempResultVal != compTempResultVal, {
-									//Invalidate firstResult's entry, which is what's taken in FlucomaTestSuite
-									firstResult[entry] = "failure: invalid result across runs on same server";
-								});
-							});
-						}, {
-							if(tempResult != compTempResult, {
-								firstResult = "failure: invalid result across runs on same server";
-							});
-						});
-					});
-				})
-			});
-
 			//If hasn't been already shut down from a .checkSpeed call
 			if((server.serverRunning).and(completed == false), {
+				//Average time
+				execTime = execTime / tAvg;
+
+				//Compare every result with each other
+				if(FlucomaTestSuite.checkResultsMismatch == true, {
+					results.do({ | tempResult |
+						results.do({ | compTempResult |
+							if(tempResult.class == Dictionary, {
+								tempResult.keysValuesDo({ | entry, tempResultVal |
+									var compTempResultVal = compTempResult[entry];
+									if(tempResultVal != compTempResultVal, {
+										//Invalidate firstResult's entry, which is what's taken in FlucomaTestSuite
+										firstResult[entry] = "failure: invalid result across runs on same server";
+									});
+								});
+							}, {
+								if(tempResult != compTempResult, {
+									firstResult = "failure: invalid result across runs on same server";
+								});
+							});
+						});
+					})
+				});
+
 				server.sync;
 				this.tearDown;
 			});
