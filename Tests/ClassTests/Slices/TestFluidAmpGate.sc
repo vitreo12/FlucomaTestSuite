@@ -1,8 +1,5 @@
 TestFluidAmpGate : FluidUnitTest {
 	test_impulse_stereo {
-		//Must be called before the .process
-		this.checkSpeed(1);
-
 		FluidBufAmpGate.process(
 			server,
 			impulsesBuffer,

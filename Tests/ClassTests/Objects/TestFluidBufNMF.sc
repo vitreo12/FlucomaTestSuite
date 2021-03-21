@@ -164,4 +164,32 @@ TestFluidBufNMF : FluidUnitTest {
 			result[\activations] = TestResultEquals(resultArray, expectedActivationsArray, tolerance);
 		});
 	}
+
+	test_compute_time {
+		var basesBuffer = Buffer.new(server);
+		var activationsBuffer = Buffer.new(server);
+		var resynthBuffer = Buffer.new(server);
+
+		server.sync;
+
+		//Must be called before the .process
+		this.checkSpeed(4);
+
+		FluidBufNMF.process(
+			server,
+			source: eurorackSynthBuffer,
+			bases: basesBuffer,
+			resynth: resynthBuffer,
+			activations: activationsBuffer,
+			components: 5,
+			windowSize: 512,
+			fftSize: 1024,
+			hopSize: 256
+		).wait;
+
+		//basic sanity
+		result[\activationsSize] = TestResult(activationsBuffer.numChannels, 5);
+		result[\basesSize] = TestResult(basesBuffer.numChannels, 5);
+		result[\resynthSize] = TestResult(resynthBuffer.numChannels, 5);
+	}
 }
