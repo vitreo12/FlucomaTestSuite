@@ -158,19 +158,19 @@ TestFluidNoveltySlice : FluidUnitTest {
 			eurorackSynthBuffer,
 			indices: resultBuffer,
 			feature: 2,
-			kernelSize: 17,
+			kernelSize: 9,
 			filterSize: 5,
-			threshold: 0.01315,
+			threshold: 0.037767,
 			windowSize: 2048,
 			hopSize: 64,
 			minSliceLength: 50
 		).wait;
 
-		result[\numSlices] = TestResult(resultBuffer.numFrames, 30);
+		result[\numSlices] = TestResult(resultBuffer.numFrames, 25);
 		resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
 			result[\sampleIndex] = TestResultEquals(
 				samples,
-				[ 0, 116544, 142848, 179968, 187328, 191488, 195968, 200704, 228992, 254912, 263616, 347136, 350528, 353920, 357312, 360768, 364672, 368064, 371520, 403072, 406592, 410112, 414976, 418880, 422400, 469696, 475264, 481664, 485824, 491072 ],
+				[ 0, 86976, 116544, 178304, 204992, 229056, 254976, 262848, 266432, 347136, 350464, 353984, 357312, 360832, 364736, 368064, 371584, 401408, 404672, 408192, 411712, 414976, 418688, 422208, 452160 ],
 				1
 			);
 		});
