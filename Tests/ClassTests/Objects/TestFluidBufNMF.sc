@@ -173,7 +173,7 @@ TestFluidBufNMF : FluidUnitTest {
 		server.sync;
 
 		//Must be called before the .process
-		this.checkSpeed(4);
+		this.checkSpeed(10);
 
 		FluidBufNMF.process(
 			server,
