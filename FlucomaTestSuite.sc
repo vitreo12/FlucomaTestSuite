@@ -80,7 +80,9 @@ FlucomaTestSuite {
 			classString != "FluidBufNMF").and(
 			classString != "FluidBufScale").and(
 			classString != "FluidBufThresh").and(
-			classString != "FluidBufFlatten"), {
+			classString != "FluidBufFlatten").and(
+			classString != "FluidBufSelect").and(
+			classString != "FluidBufSelectEvery"), {
 			classString = classString.replace("Buf", "");
 		});
 
