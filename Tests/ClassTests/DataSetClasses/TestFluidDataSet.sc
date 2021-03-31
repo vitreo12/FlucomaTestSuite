@@ -1,6 +1,6 @@
 TestFluidDataSet : FluidUnitTest {
 	test_buffer_interaction {
-		var testDS = FluidDataSet(server,UniqueID.next.asSymbol);
+		var testDS = FluidDataSet(server);
 		var cond = Condition.new;
 		var linBuf = Buffer.loadCollection(server,(0..100));
 		var sinBuf = Buffer.loadCollection(server,Array.fill(101,{|i|(i/2).sin}));
@@ -80,7 +80,7 @@ TestFluidDataSet : FluidUnitTest {
 	}
 
 	test_dict_interaction {
-		var dictDS = FluidDataSet(server,UniqueID.next.asSymbol);
+		var dictDS = FluidDataSet(server);
 		var cond = Condition.new;
 
 		server.sync;
@@ -131,8 +131,8 @@ TestFluidDataSet : FluidUnitTest {
 	}
 
 	test_dict_merge {
-		var mergeDS1 = FluidDataSet(server,UniqueID.next.asSymbol);
-		var mergeDS2 = FluidDataSet(server,UniqueID.next.asSymbol);
+		var mergeDS1 = FluidDataSet(server);
+		var mergeDS2 = FluidDataSet(server);
 		var cond = Condition.new;
 
 		server.sync;
@@ -186,6 +186,97 @@ TestFluidDataSet : FluidUnitTest {
 		cond.hang;
 		mergeDS1.free;
 		mergeDS2.free;
+	}
+
+	test_to_from_buffer {
+		var sourceDS = FluidDataSet(server);
+		var destDS = FluidDataSet(server);
+		var num2ids = FluidLabelSet(server);
+		var tempBuf = Buffer(server);
+		var cond = Condition.new;
+
+		server.sync;
+
+		//TEST1:load a simple dataset
+		sourceDS.load(Dictionary.newFrom(["cols", 9, "data", Dictionary.newFrom(["teens", (11..19), "tweenties", (21..29), "thiries", (31..39)])]), action: {
+
+			// dump to a buffer without a labelset name
+			sourceDS.toBuffer(tempBuf, action: {
+				result[\dump1chan] = TestResult(tempBuf.numChannels, 9);
+				result[\dump1frames] = TestResult(tempBuf.numFrames, 3);
+
+				//check the data
+				tempBuf.getn(0, tempBuf.numChannels * tempBuf.numFrames, action: { |x|
+					result[\dump1order] = TestResultEquals(x, [(11..19), (31..39) , (21..29)].flat, 0.1); //order is alphabetical of labels for now
+
+					//TEST2: dump to a buffer, transposing, without a labelset name
+					sourceDS.toBuffer(tempBuf, 1, action: {
+						result[\dump2chan] = TestResult(tempBuf.numChannels, 3);
+						result[\dump2frames] = TestResult(tempBuf.numFrames, 9);
+
+						//check the data
+						tempBuf.getn(0, tempBuf.numChannels * tempBuf.numFrames, action: { |x|
+							result[\dump2order] = TestResultEquals(x, [(11..19), (31..39) , (21..29)].flop.flat, 0.1); //order is alphabetical of labels for now
+
+							//TEST3: dump to a buffer, with a labelset name
+							sourceDS.toBuffer(tempBuf,labelSet: num2ids, action: {
+								result[\dump3chan] = TestResult(tempBuf.numChannels, 9);
+								result[\dump3frames] = TestResult(tempBuf.numFrames, 3);
+
+								//check the labelset
+								num2ids.dump{ |x|
+									result[\dump3order] = TestResult(x["data"].getPairs, [ "2", [ "tweenties" ], "0", [ "teens" ], "1", [ "thiries" ] ]); //order is alphabetical of labels for now
+
+									//TEST4: set the buffer in a known order
+									tempBuf.sendCollection([(11..19) , (21..29), (31..39)].flat, action:{
+
+										//import from a buffer without a labelset name
+										destDS.fromBuffer(tempBuf, 1, action: {
+											//get the dataset
+											destDS.dump{|x|
+												//check the shape
+												result[\import1nbIds] = TestResult(x["data"].keys.asArray.size, 9);
+												result[\import1cols] =  TestResult(x["cols"], 3);
+												// check the data
+												result[\dump1order] = TestResultEquals(x["data"].keys.asArray.sort.collect{|y|x["data"][y]}.flat, [(11..19) , (21..29) , (31..39)].flop.flat, 0.1);
+
+
+
+												//TEST5: set the buffer in a known order with labels
+												tempBuf.sendCollection([(11..19) , (21..29), (31..39)].flat, action:{
+													num2ids.load(Dictionary.newFrom(["cols", 1, "data", Dictionary.newFrom(["0", "zero", "1", "un", "2", "deux"])]), action: {
+														//import from a buffer without a labelset name
+														destDS.fromBuffer(tempBuf, labelSet: num2ids, action: {
+															//get the dataset
+															destDS.dump{|x|
+																//check the shape
+																result[\import2nbIds] = TestResult(x["data"].keys.asArray.size, 3);
+																result[\import2cols] =  TestResult(x["cols"], 9);
+																// check the data
+																result[\dump2order] = TestResultEquals(["zero", "un", "deux" ].collect{|y|x["data"][y]}.flat, [(11..19) , (21..29) , (31..39)].flat, 0.1);
+																//free the world
+																cond.unhang;
+															};
+														});
+													});
+												});
+											};
+										});
+									});
+								};
+							});
+						});
+					});
+				});
+			});
+		});
+
+		cond.hang;
+		sourceDS.free;
+		destDS.free;
+		num2ids.free;
+		tempBuf.free;
+		cond.free;
 	}
 }
 
