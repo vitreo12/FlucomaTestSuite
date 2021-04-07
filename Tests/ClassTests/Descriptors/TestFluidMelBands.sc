@@ -26,6 +26,7 @@ TestFluidMelBands : FluidUnitTest {
 		).wait;
 
 		result[\numChannels] = TestResult(resultBuffer.numChannels, numBands);
+
 		result[\numFrames] = TestResult(
 			resultBuffer.numFrames,
 			((drumsBuffer.numFrames / hopsize) + 1).asInteger
@@ -50,4 +51,6 @@ TestFluidMelBands : FluidUnitTest {
 			result[\expectedResult] = TestResult(expectedResult, true);
 		});
 	}
+
+	// add a UT for different overlap and padding
 }
