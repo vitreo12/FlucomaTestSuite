@@ -142,11 +142,11 @@ TestFluidNoveltySlice : FluidUnitTest {
 			minSliceLength: 50
 		).wait;
 
-		result[\numSlices] = TestResult(resultBuffer.numFrames, 20);
+		result[\numSlices] = TestResult(resultBuffer.numFrames, 19);
 		resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
 			result[\sampleIndex] = TestResultEquals(
 				samples,
-				[ 0, 32960, 103936, 115584, 177280, 184576, 203328, 222016, 236288, 254528, 345024, 350592, 366592, 399168, 412096, 453504, 463680, 479808, 492864, 510720 ],
+				[ 32960, 103936, 115584, 177280, 184576, 203328, 222016, 236288, 254528, 345024, 350592, 366592, 399168, 412096, 453504, 463680, 479808, 492864, 510720 ],
 				1
 			);
 		});
@@ -166,11 +166,11 @@ TestFluidNoveltySlice : FluidUnitTest {
 			minSliceLength: 50
 		).wait;
 
-		result[\numSlices] = TestResult(resultBuffer.numFrames, 25);
+		result[\numSlices] = TestResult(resultBuffer.numFrames, 24);
 		resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
 			result[\sampleIndex] = TestResultEquals(
 				samples,
-				[ 0, 86976, 116544, 178304, 204992, 229056, 254976, 262848, 266432, 347136, 350464, 353984, 357312, 360832, 364736, 368064, 371584, 401408, 404672, 408192, 411712, 414976, 418688, 422208, 452160 ],
+				[ 86976, 116544, 178304, 204992, 229056, 254976, 262848, 266432, 347136, 350464, 353984, 357312, 360832, 364736, 368064, 371584, 401408, 404672, 408192, 411712, 414976, 418688, 422208, 452160 ],
 				1
 			);
 		});
@@ -194,7 +194,7 @@ TestFluidNoveltySlice : FluidUnitTest {
 		resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
 			result[\sampleIndex] = TestResultEquals(
 				samples,
-				[ 0, 17088, 22720, 32704, 56320, 115776, 120128, 177472, 227456, 254912, 258368, 263616, 285568, 304832, 333696, 399360, 411968, 462976, 470016, 475264, 481536, 486144, 491456, 511744 ],
+				[ 1088, 17088, 22720, 32704, 56320, 115776, 120128, 177472, 227456, 254912, 258368, 263616, 285568, 304832, 333696, 399360, 411968, 462976, 470016, 475264, 481536, 486144, 491456, 511744 ],
 				1
 			);
 		});
