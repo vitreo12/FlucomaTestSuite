@@ -204,7 +204,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 		resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
 			result[\sampleIndices] = TestResultEquals(
 				samples,
-				[ 1700.0, 8080.0, 38660.0, 51200.0, 69900.0, 88160.0, 114560.0, 151740.0, 157460.0, 176600.0, 202340.0, 221040.0, 240180.0, 252720.0, 259320.0, 283960.0, 289680.0, 296500.0, 302880.0, 327080.0, 353480.0, 372620.0, 390440.0, 417280.0 ],
+				[ 1760, 8580, 38720, 51260, 69960, 88220, 114620, 151800, 157520, 176660, 202400, 221100, 240240, 252780, 259380, 284020, 289740, 296560, 302940, 326920, 353540, 372680, 390500, 417340 ],
 				1
 			);
 		});
@@ -218,13 +218,13 @@ TestFluidOnsetSlice : FluidUnitTest {
 			metric: 3, threshold:2, windowSize: 800, hopSize: 330, minSliceLength: 2
 		).wait;
 
-		result[\numFrames] = TestResult(resultBuffer.numFrames, 25);
+		result[\numFrames] = TestResult(resultBuffer.numFrames, 27);
 
 		//Check if the returned index position is correct (middle of file)
 		resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
 			result[\sampleIndices] = TestResultEquals(
 				samples,
-				[ 0.0, 1580.0, 69890.0, 88040.0, 100580.0, 114440.0, 126980.0, 146120.0, 151730.0, 189350.0, 202220.0, 239840.0, 252710.0, 259310.0, 277460.0, 283730.0, 289670.0, 302870.0, 353360.0, 372500.0, 390320.0, 403850.0, 417050.0, 429920.0, 449060.0 ],
+				[ 0, 1650, 69960, 88110, 100650, 114510, 127050, 146190, 151800, 189420, 202290, 220770, 239910, 252780, 259380, 277530, 283800, 289740, 302940, 326700, 353430, 372570, 378840, 403920, 417120, 429990, 449130 ],
 				1
 			);
 		});
@@ -258,13 +258,13 @@ TestFluidOnsetSlice : FluidUnitTest {
 			metric: 5, threshold:0.07, windowSize: 1000, hopSize: 200, minSliceLength: 5
 		).wait;
 
-		result[\numFrames] = TestResult(resultBuffer.numFrames, 16);
+		result[\numFrames] = TestResult(resultBuffer.numFrames, 19);
 
 		//Check if the returned index position is correct (middle of file)
 		resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
 			result[\sampleIndices] = TestResultEquals(
 				samples,
-				[ 11500.0, 38900.0, 41300.0, 89700.0, 90900.0, 94900.0, 183700.0, 200500.0, 242700.0, 252900.0, 279500.0, 287900.0, 290100.0, 299100.0, 327500.0, 393100.0 ],
+				[ 11200, 39000, 93800, 114800, 159200, 160600, 178000, 179800, 242200, 281000, 284200, 287600, 290000, 297800, 299200, 301000, 303000, 393000, 397600 ],
 				1
 			);
 		});
@@ -304,7 +304,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 		resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
 			result[\sampleIndices] = TestResultEquals(
 				samples,
-				[ 1950.0, 8550.0, 38850.0, 51150.0, 70050.0, 88350.0, 114750.0, 151950.0, 157650.0, 165150.0, 176550.0, 202350.0, 221250.0, 240150.0, 252750.0, 259350.0, 276750.0, 283950.0, 289950.0, 296550.0, 302850.0, 327150.0, 353550.0, 372750.0, 390450.0, 417450.0 ],
+				[ 1800, 8400, 38700, 51300, 70200, 88200, 114600, 151800, 157500, 165000, 176700, 202500, 221100, 240300, 252900, 259500, 276900, 284100, 289800, 296400, 303000, 327300, 353700, 372600, 390600, 417300 ],
 				1
 			);
 		});
@@ -324,7 +324,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 		resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
 			result[\sampleIndices] = TestResultEquals(
 				samples,
-				[1744.0, 4994.0, 7944.0, 38544.0, 51194.0, 54894.0, 69894.0, 88144.0, 114594.0, 151794.0, 154544.0, 157344.0, 176544.0, 202344.0, 220944.0, 240044.0, 252694.0, 259344.0, 276794.0, 283894.0, 289744.0, 296344.0, 302844.0, 326894.0, 353494.0, 372594.0, 379044.0, 390344.0, 417244.0 ],
+				[ 1750, 5200, 7900, 38550, 51200, 54650, 69900, 88150, 114600, 151800, 154550, 157300, 176550, 202350, 206100, 220950, 240050, 252700, 259350, 276800, 283900, 289750, 296350, 302850, 326900, 353500, 372600, 390350, 417250 ],
 				1
 			);
 		});
@@ -344,7 +344,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 		resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
 			result[\sampleIndices] = TestResultEquals(
 				samples,
-				[ 2105.0, 9385.0, 39545.0, 51705.0, 89185.0, 115065.0, 152185.0, 158265.0, 177505.0, 202785.0, 241105.0, 253185.0, 259865.0, 277825.0, 284865.0, 290225.0, 297585.0, 303305.0, 327465.0, 353985.0, 373145.0, 391345.0, 417745.0 ],
+				[ 2040, 9000, 39560, 51760, 89200, 115000, 152200, 158280, 177480, 202720, 240760, 253120, 259800, 277840, 284880, 290200, 297560, 303360, 327440, 354040, 373560, 391360, 417600 ],
 				1
 			);
 		});
@@ -360,13 +360,13 @@ TestFluidOnsetSlice : FluidUnitTest {
 			metric: 8, threshold:0.1, windowSize: 512, hopSize: 50, minSliceLength: 50, filterSize: 7
 		).wait;
 
-		result[\numFrames7] = TestResult(resultBuffer.numFrames, 34);
+		result[\numFrames7] = TestResult(resultBuffer.numFrames, 36);
 
 		//Check if the returned index position is correct (middle of file)
 		resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
 			result[\sampleIndices7] = TestResultEquals(
 				samples,
-				[ 1744.0, 7894.0, 38544.0, 51194.0, 54894.0, 69894.0, 76794.0, 88144.0, 100844.0, 114594.0, 151794.0, 154544.0, 157344.0, 161744.0, 164344.0, 176544.0, 202344.0, 220944.0, 228394.0, 240044.0, 252694.0, 259344.0, 276794.0, 283894.0, 289744.0, 296344.0, 302844.0, 326894.0, 353494.0, 372594.0, 378994.0, 390344.0, 417244.0, 430244.0 ],
+				[ 1750, 5200, 7850, 38550, 51200, 54650, 69900, 76800, 88150, 100800, 114600, 151800, 157300, 166200, 176550, 202350, 206100, 220950, 228450, 240050, 252700, 259350, 276800, 283900, 289750, 296350, 302850, 326900, 332050, 353500, 372600, 379000, 390350, 404050, 417250, 430250 ],
 				1
 			);
 			cond.unhang;
@@ -381,13 +381,13 @@ TestFluidOnsetSlice : FluidUnitTest {
 			metric: 8, threshold:0.1, windowSize: 512, hopSize: 50, minSliceLength: 50, filterSize: 29
 		).wait;
 
-		result[\numFrames29] = TestResult(resultBuffer.numFrames, 39);
+		result[\numFrames29] = TestResult(resultBuffer.numFrames, 38);
 
 		//Check if the returned index position is correct (middle of file)
 		resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
 			result[\sampleIndices29] = TestResultEquals(
 				samples,
-				[ 1744.0, 7844.0, 13744.0, 38544.0, 46394.0, 51194.0, 69894.0, 76794.0, 88144.0, 100794.0, 114594.0, 127294.0, 151794.0, 157344.0, 164344.0, 176544.0, 189644.0, 202344.0, 220944.0, 228394.0, 240044.0, 252694.0, 259344.0, 265794.0, 276594.0, 283894.0, 289744.0, 296344.0, 302844.0, 326894.0, 332044.0, 353494.0, 372594.0, 378994.0, 390344.0, 404044.0, 417244.0, 430194.0, 449294.0 ],
+				[ 1750, 7850, 13750, 38550, 46400, 51200, 69900, 76800, 88150, 100800, 114600, 127300, 151800, 157300, 164350, 176550, 189650, 202350, 220950, 228400, 240000, 252700, 259350, 276600, 283900, 289750, 296350, 302850, 326900, 332050, 353500, 372600, 379000, 390350, 404050, 417250, 430200, 449350 ],
 				1
 			);
 			cond.unhang;
@@ -408,7 +408,7 @@ TestFluidOnsetSlice : FluidUnitTest {
 		resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
 			result[\sampleIndices3] = TestResultEquals(
 				samples,
-				[ 1744.0, 4294.0, 7994.0, 38794.0, 51194.0, 54894.0, 69944.0, 88194.0, 114594.0, 151794.0, 154544.0, 157544.0, 176744.0, 202344.0, 220944.0, 240144.0, 252694.0, 259344.0, 276794.0, 283994.0, 289744.0, 296544.0, 302844.0, 326994.0, 353494.0, 372594.0, 390444.0, 417244.0 ],
+				[ 1750, 5200, 8400, 38800, 51200, 53750, 69950, 88200, 114600, 151800, 157300, 176750, 202350, 204950, 220950, 240150, 252700, 259350, 276800, 284000, 289750, 296550, 302850, 326950, 353500, 372600, 390450, 417250 ],
 				1
 			);
 		});
@@ -419,16 +419,16 @@ TestFluidOnsetSlice : FluidUnitTest {
 			server,
 			drumsBuffer,
 			indices: resultBuffer,
-			metric: 5, threshold:0.07, windowSize: 1000, hopSize: 200, minSliceLength: 5, frameDelta: 100
+			metric: 5, threshold:0.06, windowSize: 1000, hopSize: 200, minSliceLength: 5, filterSize:7, frameDelta: 100
 		).wait;
 
-		result[\numFrames] = TestResult(resultBuffer.numFrames, 19);
+		result[\numFrames] = TestResult(resultBuffer.numFrames, 24);
 
 		//Check if the returned index position is correct (middle of file)
 		resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
 			result[\sampleIndices] = TestResultEquals(
 				samples,
-				[  11200.0, 39000.0, 93800.0, 114800.0, 159200.0, 160600.0, 178000.0, 179800.0, 242200.0, 281000.0, 284200.0, 287600.0, 290000.0, 297800.0, 299200.0, 301000.0, 303000.0, 393000.0, 397600.0 ],
+				[ 39000, 41600, 91200, 114800, 151400, 160600, 176800, 179800, 181600, 182800, 200200, 242200, 278800, 281000, 284000, 290000, 298200, 299800, 301000, 302400, 353200, 393000, 396000, 417400 ],
 				1
 			);
 		});
