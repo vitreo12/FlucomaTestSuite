@@ -41,13 +41,28 @@ TestFluidBufSTFT : FluidUnitTest {
 		result[\numFrameRes] = TestResult(resultBuffer.numFrames, 2048);
 
 		resultBuffer.loadToFloatArray(action: { | resultArray |
-			resultArray.postln;
 			result[\contentRes] = TestResultEquals(resultArray[..1999], knownArray , 1e-5); //resynthesis ok for the right lenght
 		});
 	}
 
-	// test_edgy_winds {
-	//
-	// }
-}
+	test_edgy_winds {
+		FluidBufSTFT.process(
+			server,
+			source: sineBurstBuffer,
+			magnitude: resultBuffer,
+			windowSize: 480,
+			hopSize: 120,
+			padding: 2
+		).wait;
 
+		result[\numChannels] = TestResult(resultBuffer.numChannels, 257);
+		result[\numFrameRes] = TestResult(resultBuffer.numFrames, 149);
+
+		resultBuffer.loadToFloatArray(action: { | resultArray |
+			result[\contentStart] = TestResultEquals(resultArray[..(257*68 - 1)], 0.dup(257*68 - 1) , 1e-6); //resynthesis ok for the right lenght
+			result[\contentEdgeLeft] = TestResultEquals(resultArray[(257*68)..(257*68)+28], [6.2611198425293, 6.2468914985657, 6.188316822052, 6.0471043586731, 5.7841420173645, 5.3804588317871, 4.8490295410156, 4.2356357574463, 3.610271692276, 3.0501759052277, 2.6144499778748, 2.3169622421265, 2.1212692260742, 1.9718714952469, 1.8316833972931, 1.6933869123459, 1.5676848888397, 1.4651021957397, 1.3848612308502, 1.3169702291489, 1.2519750595093, 1.1875596046448, 1.1274397373199, 1.0756748914719, 1.0322338342667, 0.99340492486954, 0.95557153224945, 0.91807854175568, 0.88282757997513] , 1e-6);
+			result[\contentEdgeRight] = TestResultEquals(resultArray[(257*79)..(257*79)+28], [9.6583080291748, 9.51185131073, 9.0810480117798, 8.3928260803223, 7.4951486587524, 6.4586849212646, 5.3748898506165, 4.3484878540039, 3.4817357063293, 2.8455631732941, 2.4416923522949, 2.1961843967438, 2.0157871246338, 1.8474299907684, 1.6856715679169, 1.5463873147964, 1.4388147592545, 1.3553031682968, 1.2811180353165, 1.2083116769791, 1.13909471035, 1.0791044235229, 1.0296446084976, 0.98653066158295, 0.94501012563705, 0.90411847829819, 0.86620444059372, 0.83326476812363, 0.80451095104218] , 1e-6);
+			result[\contentEnd] = TestResultEquals(resultArray[(257*80)..], 0.dup(17733) , 1e-6); //resynthesis ok for the right lenght
+		})
+	}
+}
