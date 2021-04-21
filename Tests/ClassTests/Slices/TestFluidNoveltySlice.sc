@@ -5,8 +5,8 @@ TestFluidNoveltySlice : FluidUnitTest {
 			impulsesBuffer,
 			indices: resultBuffer,
 			feature: 0,
-			threshold:0.4,
-			hopSize: 64
+			threshold:0.5,
+			windowSize: 128
 		).wait;
 
 		result[\numSlices] = TestResult(resultBuffer.numFrames, 4);
@@ -17,8 +17,8 @@ TestFluidNoveltySlice : FluidUnitTest {
 			resultBuffer.getn(0, 4, { | samples |
 				result[\sampleIndex] = TestResultEquals(
 					samples,
-					((0..3) * (serverSampleRate / 4).asInteger),
-					30// the interaction of filter and kernel and feature make it hard to match. we are very early.
+					((0..3) * (serverSampleRate / 4).asInteger) + 1000,
+					128// the interaction of filter and kernel and feature make it hard to match. we are very early.
 				);
 			});
 		});
@@ -58,7 +58,7 @@ TestFluidNoveltySlice : FluidUnitTest {
 		resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
 			result[\sampleIndex] = TestResultEquals(
 				samples,
-				[ 0, 291840, 563712, 617472, 669696, 722432, 774144, 826368, 974336, 1000448 ],
+				[ 0, 292352, 564224, 617984, 670208, 722944, 774656, 826880, 974848, 1000960 ],
 				1
 			);
 		});
@@ -78,7 +78,7 @@ TestFluidNoveltySlice : FluidUnitTest {
 		resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
 			result[\sampleIndex] = TestResultEquals(
 				samples,
-				[ 0, 291840, 563712, 617472, 722944, 774144, 826880, 1000448 ],
+				[ 512, 292352, 564224, 617984, 723456, 774656, 827392, 1000960 ],
 				1
 			);
 		});
@@ -142,11 +142,11 @@ TestFluidNoveltySlice : FluidUnitTest {
 			minSliceLength: 50
 		).wait;
 
-		result[\numSlices] = TestResult(resultBuffer.numFrames, 19);
+		result[\numSlices] = TestResult(resultBuffer.numFrames, 20);
 		resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
 			result[\sampleIndex] = TestResultEquals(
 				samples,
-				[ 32960, 103936, 115584, 177280, 184576, 203328, 222016, 236288, 254528, 345024, 350592, 366592, 399168, 412096, 453504, 463680, 479808, 492864, 510720 ],
+				[ 320, 34880, 105856, 117504, 179200, 186496, 205248, 223936, 238208, 256448, 346944, 352512, 368512, 401088, 414016, 455424, 465600, 481728, 494784, 512640 ],
 				1
 			);
 		});
@@ -166,11 +166,11 @@ TestFluidNoveltySlice : FluidUnitTest {
 			minSliceLength: 50
 		).wait;
 
-		result[\numSlices] = TestResult(resultBuffer.numFrames, 24);
+		result[\numSlices] = TestResult(resultBuffer.numFrames, 25);
 		resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
 			result[\sampleIndex] = TestResultEquals(
 				samples,
-				[ 86976, 116544, 178304, 204992, 229056, 254976, 262848, 266432, 347136, 350464, 353984, 357312, 360832, 364736, 368064, 371584, 401408, 404672, 408192, 411712, 414976, 418688, 422208, 452160 ],
+				[ 0, 88896, 118464, 180224, 206912, 230976, 256896, 264768, 268352, 349056, 352384, 355904, 359232, 362752, 366656, 369984, 373504, 403328, 406592, 410112, 413632, 416896, 420608, 424128, 454080 ],
 				1
 			);
 		});
@@ -194,7 +194,7 @@ TestFluidNoveltySlice : FluidUnitTest {
 		resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
 			result[\sampleIndex] = TestResultEquals(
 				samples,
-				[ 1088, 17088, 22720, 32704, 56320, 115776, 120128, 177472, 227456, 254912, 258368, 263616, 285568, 304832, 333696, 399360, 411968, 462976, 470016, 475264, 481536, 486144, 491456, 511744 ],
+				[ 0, 19008, 24640, 34624, 58240, 117696, 122048, 179392, 229376, 256832, 260288, 265536, 287488, 306752, 335616, 401280, 413888, 464896, 471936, 477184, 483456, 488064, 493376, 513664 ],
 				1
 			);
 		});
