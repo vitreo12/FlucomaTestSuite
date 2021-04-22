@@ -8,21 +8,27 @@
 
 			this.generateMFCC(server, c);
 			c.hang;
+			"*** Generated MFCC ***".postln;
 
 			this.generateNMF(server, c);
 			c.hang;
+			"*** Generated NMF ***".postln;
 
 			this.generateBufStats(server, c);
 			c.hang;
+			"*** Generated BufStats ***".postln;
 
 			this.generateSpectralShape(server, c);
 			c.hang;
+			"*** Generated SpectralShape ***".postln;
 
 			this.generateMelBands(server, c);
 			c.hang;
+			"*** Generated MelBands ***".postln;
 
 			this.generateSines(server, c);
 			c.hang;
+			"*** Generated Sines ***".postln;
 
 			"*** Generated Flucoma Binaries ***".postln;
 
@@ -38,6 +44,8 @@
 		server = server ? Server.local;
 
 		mfcc_stereo = {
+			var outArray;
+
 			var numCoeffs = 5;
 
 			var b = Buffer.read(server, File.realpath(FluidBufMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Tremblay-SA-UprightPianoPedalWide.wav");
@@ -55,31 +63,29 @@
 				server,
 				source: b,
 				features: c,
-				numCoeffs: numCoeffs,
-				action: {
-					var outArray;
+				numCoeffs: numCoeffs
+			).wait;
 
-					c.loadToFloatArray(action: { arg array; outArray = array });
+			c.loadToFloatArray(action: { arg array; outArray = array });
 
-					server.sync;
+			server.sync;
 
-					File.use(File.realpath(TestFluidMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "MFCC_stereo.flucoma", "w", { | f |
-						outArray.do({ | sample, index |
-							var sampleOut;
-							if(index < (outArray.size - 1), {
-								sampleOut = sample.asString ++ ","
-							}, {
-								sampleOut = sample.asString
-							});
-
-							f.write(sampleOut);
-						});
+			File.use(File.realpath(TestFluidMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "MFCC_stereo.flucoma", "w", { | f |
+				outArray.do({ | sample, index |
+					var sampleOut;
+					if(index < (outArray.size - 1), {
+						sampleOut = sample.asString ++ ","
+					}, {
+						sampleOut = sample.asString
 					});
-				}
-			);
+
+					f.write(sampleOut);
+				});
+			});
 		};
 
 		mfcc_mono = {
+			var outArray;
 			var numCoeffs = 13;
 			var fftsize = 256;
 			var hopsize = fftsize / 2;
@@ -95,28 +101,25 @@
 				features: c,
 				numCoeffs: numCoeffs,
 				fftSize: fftsize,
-				hopSize: hopsize,
-				action: {
-					var outArray;
+				hopSize: hopsize
+			).wait;
 
-					c.loadToFloatArray(action: { arg array; outArray = array });
+			c.loadToFloatArray(action: { arg array; outArray = array });
 
-					server.sync;
+			server.sync;
 
-					File.use(File.realpath(TestFluidMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "MFCC_drums_mono.flucoma", "w", { | f |
-						outArray.do({ | sample, index |
-							var sampleOut;
-							if(index < (outArray.size - 1), {
-								sampleOut = sample.asString ++ ","
-							}, {
-								sampleOut = sample.asString
-							});
-
-							f.write(sampleOut);
-						});
+			File.use(File.realpath(TestFluidMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "MFCC_drums_mono.flucoma", "w", { | f |
+				outArray.do({ | sample, index |
+					var sampleOut;
+					if(index < (outArray.size - 1), {
+						sampleOut = sample.asString ++ ","
+					}, {
+						sampleOut = sample.asString
 					});
-				}
-			);
+
+					f.write(sampleOut);
+				});
+			});
 		};
 
 		server.waitForBoot({
@@ -156,6 +159,8 @@
 				var x = Buffer.new(server);
 				var y = Buffer.new(server);
 
+				var resynthArray, basesArray, activationsArray;
+
 				server.sync;
 
 				FluidBufNMF.process(
@@ -170,19 +175,42 @@
 					windowSize: windowSize,
 					fftSize: fftSize,
 					hopSize: hopSize,
-					action: {
-						var resynthArray, basesArray, activationsArray;
+				).wait;
 
-						c.loadToFloatArray(action: { arg array; resynthArray = array });
-						x.loadToFloatArray(action: { arg array; basesArray = array });
-						y.loadToFloatArray(action: { arg array; activationsArray = array });
+				c.loadToFloatArray(action: { arg array; resynthArray = array });
+				x.loadToFloatArray(action: { arg array; basesArray = array });
+				y.loadToFloatArray(action: { arg array; activationsArray = array });
 
-						server.sync;
+				server.sync;
 
-						File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Resynth" ++ (i+1) ++ ".flucoma", "w", { | f |
-							resynthArray.do({ | sample, index |
+				File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Resynth" ++ (i+1) ++ ".flucoma", "w", { | f |
+					resynthArray.do({ | sample, index |
+						var sampleOut;
+						if(index < (resynthArray.size - 1), {
+							sampleOut = sample.asString ++ ","
+						}, {
+							sampleOut = sample.asString
+						});
+
+						f.write(sampleOut);
+					});
+
+					File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Bases" ++ (i+1) ++ ".flucoma", "w", { | f |
+						basesArray.do({ | sample, index |
+							var sampleOut;
+							if(index < (basesArray.size - 1), {
+								sampleOut = sample.asString ++ ","
+							}, {
+								sampleOut = sample.asString
+							});
+
+							f.write(sampleOut);
+						});
+
+						File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Activations" ++ (i+1) ++ ".flucoma", "w", { | f |
+							activationsArray.do({ | sample, index |
 								var sampleOut;
-								if(index < (resynthArray.size - 1), {
+								if(index < (activationsArray.size - 1), {
 									sampleOut = sample.asString ++ ","
 								}, {
 									sampleOut = sample.asString
@@ -190,35 +218,9 @@
 
 								f.write(sampleOut);
 							});
-
-							File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Bases" ++ (i+1) ++ ".flucoma", "w", { | f |
-								basesArray.do({ | sample, index |
-									var sampleOut;
-									if(index < (basesArray.size - 1), {
-										sampleOut = sample.asString ++ ","
-									}, {
-										sampleOut = sample.asString
-									});
-
-									f.write(sampleOut);
-								});
-
-								File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Activations" ++ (i+1) ++ ".flucoma", "w", { | f |
-									activationsArray.do({ | sample, index |
-										var sampleOut;
-										if(index < (activationsArray.size - 1), {
-											sampleOut = sample.asString ++ ","
-										}, {
-											sampleOut = sample.asString
-										});
-
-										f.write(sampleOut);
-									});
-								});
-							});
 						});
-					}
-				);
+					});
+				});
 
 				server.sync;
 			});
@@ -251,12 +253,9 @@
 
 			server.sync;
 
-			FluidBufCompose.process(server, b, destination: d);
-			FluidBufCompose.process(server, c, destStartFrame: 44100, destination: d, destGain: 1);
-
-			server.sync;
-
-			FluidBufNMF.process(server, d, bases: e, components: 2);
+			FluidBufCompose.process(server, b, destination: d).wait;
+			FluidBufCompose.process(server, c, destStartFrame: 44100, destination: d, destGain: 1).wait;
+			FluidBufNMF.process(server, d, bases: e, components: 2).wait;
 
 			server.sync;
 
@@ -441,6 +440,7 @@
 		server = server ? Server.local;
 
 		buf_stats_stereo = {
+			var outArray;
 			var numDerivs = 1;
 
 			var b = Buffer.read(server, File.realpath(FluidBufMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Tremblay-SA-UprightPianoPedalWide.wav");
@@ -450,7 +450,7 @@
 
 			server.sync;
 
-			FluidBufCompose.process(server, b2, numFrames:b.numFrames, startFrame:555000, destStartChan:1, destination:b);
+			FluidBufCompose.process(server, b2, numFrames:b.numFrames, startFrame:555000, destStartChan:1, destination:b).wait;
 
 			server.sync;
 
@@ -458,31 +458,29 @@
 				server,
 				source: b,
 				stats: c,
-				numDerivs: numDerivs,
-				action: {
-					var outArray;
+				numDerivs: numDerivs
+			).wait;
 
-					c.loadToFloatArray(action: { arg array; outArray = array });
+			c.loadToFloatArray(action: { arg array; outArray = array });
 
-					server.sync;
+			server.sync;
 
-					File.use(File.realpath(TestFluidBufStats.class.filenameSymbol).dirname.withTrailingSlash ++ "BufStats_stereo.flucoma", "w", { | f |
-						outArray.do({ | sample, index |
-							var sampleOut;
-							if(index < (outArray.size - 1), {
-								sampleOut = sample.asString ++ ","
-							}, {
-								sampleOut = sample.asString
-							});
-
-							f.write(sampleOut);
-						});
+			File.use(File.realpath(TestFluidBufStats.class.filenameSymbol).dirname.withTrailingSlash ++ "BufStats_stereo.flucoma", "w", { | f |
+				outArray.do({ | sample, index |
+					var sampleOut;
+					if(index < (outArray.size - 1), {
+						sampleOut = sample.asString ++ ","
+					}, {
+						sampleOut = sample.asString
 					});
-				}
-			);
+
+					f.write(sampleOut);
+				});
+			});
 		};
 
 		buf_stats_mono = {
+			var outArray;
 			var numDerivs = 1;
 
 			var b = Buffer.read(server, File.realpath(FluidBufMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Nicol-LoopE-M.wav");
@@ -494,28 +492,25 @@
 				server,
 				source: b,
 				stats: c,
-				numDerivs: numDerivs,
-				action: {
-					var outArray;
+				numDerivs: numDerivs
+			).wait;
 
-					c.loadToFloatArray(action: { arg array; outArray = array });
+			c.loadToFloatArray(action: { arg array; outArray = array });
 
-					server.sync;
+			server.sync;
 
-					File.use(File.realpath(TestFluidBufStats.class.filenameSymbol).dirname.withTrailingSlash ++ "BufStats_mono.flucoma", "w", { | f |
-						outArray.do({ | sample, index |
-							var sampleOut;
-							if(index < (outArray.size - 1), {
-								sampleOut = sample.asString ++ ","
-							}, {
-								sampleOut = sample.asString
-							});
-
-							f.write(sampleOut);
-						});
+			File.use(File.realpath(TestFluidBufStats.class.filenameSymbol).dirname.withTrailingSlash ++ "BufStats_mono.flucoma", "w", { | f |
+				outArray.do({ | sample, index |
+					var sampleOut;
+					if(index < (outArray.size - 1), {
+						sampleOut = sample.asString ++ ","
+					}, {
+						sampleOut = sample.asString
 					});
-				}
-			);
+
+					f.write(sampleOut);
+				});
+			});
 		};
 
 		server.waitForBoot({
@@ -535,6 +530,7 @@
 		server = server ? Server.local;
 
 		server.waitForBoot({
+			var outArray;
 			var fftsize = 256;
 			var hopsize = fftsize / 2;
 
@@ -548,28 +544,26 @@
 				source: b,
 				features: c,
 				fftSize: fftsize,
-				hopSize: hopsize,
-				action: {
-					var outArray;
+				hopSize: hopsize
+			).wait;
 
-					c.loadToFloatArray(action: { arg array; outArray = array });
 
-					server.sync;
+			c.loadToFloatArray(action: { arg array; outArray = array });
 
-					File.use(File.realpath(TestFluidSpectralShape.class.filenameSymbol).dirname.withTrailingSlash ++ "SpectralShape.flucoma", "w", { | f |
-						outArray.do({ | sample, index |
-							var sampleOut;
-							if(index < (outArray.size - 1), {
-								sampleOut = sample.asString ++ ","
-							}, {
-								sampleOut = sample.asString
-							});
+			server.sync;
 
-							f.write(sampleOut);
-						});
+			File.use(File.realpath(TestFluidSpectralShape.class.filenameSymbol).dirname.withTrailingSlash ++ "SpectralShape.flucoma", "w", { | f |
+				outArray.do({ | sample, index |
+					var sampleOut;
+					if(index < (outArray.size - 1), {
+						sampleOut = sample.asString ++ ","
+					}, {
+						sampleOut = sample.asString
 					});
-				}
-			);
+
+					f.write(sampleOut);
+				});
+			});
 
 			server.sync;
 
@@ -581,6 +575,7 @@
 		server = server ? Server.local;
 
 		server.waitForBoot({
+			var outArray;
 			var numBands = 10;
 			var fftsize = 256;
 			var hopsize = fftsize / 2;
@@ -596,28 +591,25 @@
 				features: c,
 				numBands: numBands,
 				fftSize: fftsize,
-				hopSize: hopsize,
-				action: {
-					var outArray;
+				hopSize: hopsize
+			).wait;
 
-					c.loadToFloatArray(action: { arg array; outArray = array });
+			c.loadToFloatArray(action: { arg array; outArray = array });
 
-					server.sync;
+			server.sync;
 
-					File.use(File.realpath(TestFluidMelBands.class.filenameSymbol).dirname.withTrailingSlash ++ "MelBands.flucoma", "w", { | f |
-						outArray.do({ | sample, index |
-							var sampleOut;
-							if(index < (outArray.size - 1), {
-								sampleOut = sample.asString ++ ","
-							}, {
-								sampleOut = sample.asString
-							});
-
-							f.write(sampleOut);
-						});
+			File.use(File.realpath(TestFluidMelBands.class.filenameSymbol).dirname.withTrailingSlash ++ "MelBands.flucoma", "w", { | f |
+				outArray.do({ | sample, index |
+					var sampleOut;
+					if(index < (outArray.size - 1), {
+						sampleOut = sample.asString ++ ","
+					}, {
+						sampleOut = sample.asString
 					});
-				}
-			);
+
+					f.write(sampleOut);
+				});
+			});
 
 			server.sync;
 
@@ -629,6 +621,7 @@
 		server = server ? Server.local;
 
 		server.waitForBoot({
+			var sinesArray, residArray;
 			var fftSize = 8192;
 			var windowSize = 1024;
 			var hopSize = 256;
@@ -650,42 +643,39 @@
 				numFrames: numFrames,
 				windowSize: windowSize,
 				fftSize: fftSize,
-				hopSize: hopSize,
-				action: {
-					var sinesArray, residArray;
+				hopSize: hopSize
+			).wait;
 
-					x.loadToFloatArray(action: { arg array; sinesArray = array });
-					y.loadToFloatArray(action: { arg array; residArray = array });
+			x.loadToFloatArray(action: { arg array; sinesArray = array });
+			y.loadToFloatArray(action: { arg array; residArray = array });
 
-					server.sync;
+			server.sync;
 
-					File.use(File.realpath(TestFluidSines.class.filenameSymbol).dirname.withTrailingSlash ++ "Sines_sines.flucoma", "w", { | f |
-						sinesArray.do({ | sample, index |
-							var sampleOut;
-							if(index < (sinesArray.size - 1), {
-								sampleOut = sample.asString ++ ","
-							}, {
-								sampleOut = sample.asString
-							});
-
-							f.write(sampleOut);
-						});
-
-						File.use(File.realpath(TestFluidSines.class.filenameSymbol).dirname.withTrailingSlash ++ "Sines_resid.flucoma", "w", { | f |
-							residArray.do({ | sample, index |
-								var sampleOut;
-								if(index < (residArray.size - 1), {
-									sampleOut = sample.asString ++ ","
-								}, {
-									sampleOut = sample.asString
-								});
-
-								f.write(sampleOut);
-							});
-						});
+			File.use(File.realpath(TestFluidSines.class.filenameSymbol).dirname.withTrailingSlash ++ "Sines_sines.flucoma", "w", { | f |
+				sinesArray.do({ | sample, index |
+					var sampleOut;
+					if(index < (sinesArray.size - 1), {
+						sampleOut = sample.asString ++ ","
+					}, {
+						sampleOut = sample.asString
 					});
-				}
-			);
+
+					f.write(sampleOut);
+				});
+
+				File.use(File.realpath(TestFluidSines.class.filenameSymbol).dirname.withTrailingSlash ++ "Sines_resid.flucoma", "w", { | f |
+					residArray.do({ | sample, index |
+						var sampleOut;
+						if(index < (residArray.size - 1), {
+							sampleOut = sample.asString ++ ","
+						}, {
+							sampleOut = sample.asString
+						});
+
+						f.write(sampleOut);
+					});
+				});
+			});
 
 			server.sync;
 
