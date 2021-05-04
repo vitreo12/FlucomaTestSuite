@@ -1,0 +1,4 @@
+- What does "blocking" do when in a .kr call? I assume it is used to create "chains of Fluid
+  effects" within a UGen graph? I see it's used within FluidProcessSlices / FluidSliceCorpus, but do
+  these "chains" work in normal SC Synths? How is that handled?
+
