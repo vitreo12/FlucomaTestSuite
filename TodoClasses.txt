@@ -5,7 +5,7 @@ FluidBufNNDSVD.sc
 FluidDataSet.sc X
 FluidDataSetQuery.sc X
 FluidDataSetWr.sc X
-FluidKDTree.sc
+FluidKDTree.sc X
 FluidKMeans.sc
 FluidKNNClassifier.sc
 FluidKNNRegressor.sc
