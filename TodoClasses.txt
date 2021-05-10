@@ -2,10 +2,9 @@ FluidAudioTransport.sc
 FluidBufAudioTransport.sc
 FluidBufNMFCross.sc
 FluidBufNNDSVD.sc
-FluidCorpusBuilders.sc
-FluidDataSet.sc
-FluidDataSetQuery.sc
-FluidDataSetWr.sc
+FluidDataSet.sc X
+FluidDataSetQuery.sc X
+FluidDataSetWr.sc X
 FluidKDTree.sc
 FluidKMeans.sc
 FluidKNNClassifier.sc
