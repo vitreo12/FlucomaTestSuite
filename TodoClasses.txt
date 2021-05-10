@@ -9,7 +9,7 @@ FluidKDTree.sc
 FluidKMeans.sc
 FluidKNNClassifier.sc
 FluidKNNRegressor.sc
-FluidLabelSet.sc
+FluidLabelSet.sc X
 FluidManipulationJSON.sc
 FluidMDS.sc
 FluidMessageResponse.sc
