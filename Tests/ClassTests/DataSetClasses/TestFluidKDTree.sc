@@ -98,4 +98,108 @@ TestFluidKDTree : FluidUnitTest {
 		ds.free;
 		tree.free;
 	}
+
+	test_synth_query {
+		var d = Dictionary.with(
+			*[\cols -> 2, \data -> Dictionary.newFrom(array_2d)
+		]);
+
+		var ds = FluidDataSet(server);
+		var tree = FluidKDTree(server, numNeighbours: 5);
+
+		var inputBuffer = Buffer.alloc(server,2);
+		var outputBuffer = Buffer.alloc(server,10);//5 neighbours * 2D data points
+
+		var synth;
+
+		var condition = Condition();
+
+		ds.load(d);
+
+		server.sync;
+
+		tree.fit(ds);
+
+		server.sync;
+
+		synth = {
+			var trig = Impulse.kr(4);
+			var point = [0.4, 0.4];
+			point.collect{| p, i | BufWr.kr([p], inputBuffer,i)};
+			tree.kr(trig, inputBuffer, outputBuffer, 5, nil);
+			Silent.ar;
+		}.play(server);
+
+		//Let it run for half a second
+		0.5.wait;
+
+		synth.free;
+
+		server.sync;
+
+		outputBuffer.loadToFloatArray(action: { | x |
+			x = x.as(Array);
+			result[\outArray] = TestResultEquals(x, [ 0.36987999081612, 0.44471049308777, 0.37921088933945, 0.46449166536331, 0.34067383408546, 0.36279657483101, 0.43512481451035, 0.33033752441406, 0.31664887070656, 0.42393130064011 ], 0.0001);
+		});
+
+		server.sync;
+		ds.free;
+		tree.free;
+	}
+
+	test_synth_query_lookup {
+		var d = Dictionary.with(
+			*[\cols -> 2, \data -> Dictionary.newFrom(array_2d)
+		]);
+
+		var d_lookup = Dictionary.with(
+			*[\cols -> 1, \data -> Dictionary.newFrom(
+				100.collect{|i| [i, [ i ]]}.flatten)
+		]);
+
+		var ds = FluidDataSet(server);
+		var ds_lookup = FluidDataSet(server);
+		var tree = FluidKDTree(server, numNeighbours: 5);
+
+		var inputBuffer = Buffer.alloc(server,2);
+		var outputBuffer = Buffer.alloc(server,5);//5 neighbours * 1D points
+
+		var synth;
+
+		var condition = Condition();
+
+		ds.load(d);
+		ds_lookup.load(d_lookup);
+
+		server.sync;
+
+		tree.fit(ds);
+
+		server.sync;
+
+		synth = {
+			var trig = Impulse.kr(4);
+			var point = [0.4, 0.4];
+			point.collect{| p, i | BufWr.kr([p],inputBuffer,i)};
+			tree.kr(trig, inputBuffer, outputBuffer, 5, ds_lookup);
+			Silent.ar;
+		}.play(server);
+
+		//Let it run for half a second
+		0.5.wait;
+
+		synth.free;
+
+		server.sync;
+
+		outputBuffer.loadToFloatArray(action: { | x |
+			x = x.as(Array);
+			result[\outArray] = TestResultEquals(x, [ 82.0, 76.0, 88.0, 5.0, 2.0 ], 0.0001);
+		});
+
+		server.sync;
+		ds.free;
+		ds_lookup.free;
+		tree.free;
+	}
 }
