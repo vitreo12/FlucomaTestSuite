@@ -7,7 +7,7 @@ TestResult {
 				^("failure: " ++ errorMessage);
 			}, {
 				if((a.isSequenceableCollection).and(b.isSequenceableCollection), {
-					^("failure: compared arrays mismatch");
+					^("failure: compared arrays mismatch. Got " ++ a ++ " but expected " ++ b);
 				}, {
 					^("failure: got " ++ a ++ " but expected " ++ b);
 				});

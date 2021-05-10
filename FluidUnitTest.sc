@@ -269,6 +269,7 @@ FluidUnitTest : UnitTest {
 				this.perform(method.name, i);
 				t = Main.elapsedTime - t;
 				execTime = t + execTime; //accumulate exec time
+				server.sync; //sync the last command from test
 				this.checkValidResult; //check result validity
 				if(i == 0, { firstResult = result });
 				if(FlucomaTestSuite.checkResultsMismatch == true, {
