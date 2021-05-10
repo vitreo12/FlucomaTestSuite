@@ -26,7 +26,7 @@ TestResultEquals {
 				// (a - b).abs.maxItem.postln;
 				condition.do({ | entry, i |
 					if(entry.not, {
-						^("failure: compared arrays first mismatch at " ++ i);
+						^("failure: compared arrays first mismatch at index: " ++ i ++ ". Got " ++ a ++ " but expected " ++ b);
 					});
 				});
 				^("success");
