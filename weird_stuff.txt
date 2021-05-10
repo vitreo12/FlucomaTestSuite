@@ -1,1 +1,0 @@
-- KDE nearest returns array of symbols, not numbers
