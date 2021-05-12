@@ -536,6 +536,12 @@
 
 			var b = Buffer.read(server, File.realpath(FluidBufSpectralShape.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Nicol-LoopE-M.wav");
 			var c = Buffer.new(server);
+			var d = Buffer.read(server, File.realpath(FluidBufSpectralShape.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Tremblay-SA-UprightPianoPedalWide.wav");
+			var e = Buffer.read(server, File.realpath(FluidBufTransients.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Tremblay-AaS-AcousticStrums-M.wav");
+
+			server.sync;
+
+			FluidBufCompose.process(server, e, numFrames: d.numFrames, startFrame: 555000, destStartChan: 1, destination: d);
 
 			server.sync;
 
@@ -546,7 +552,6 @@
 				fftSize: fftsize,
 				hopSize: hopsize
 			).wait;
-
 
 			c.loadToFloatArray(action: { arg array; outArray = array });
 
@@ -566,6 +571,32 @@
 			});
 
 			server.sync;
+
+			FluidBufSpectralShape.process(
+				server,
+				source: d,
+				features: c,
+				windowSize: 999,
+				hopSize: 333,
+				padding: 2
+			).wait;
+
+			c.loadToFloatArray(action: { arg array; outArray = array });
+
+			server.sync;
+
+			File.use(File.realpath(TestFluidSpectralShape.class.filenameSymbol).dirname.withTrailingSlash ++ "SpectralShapeStereo.flucoma", "w", { | f |
+				outArray.do({ | sample, index |
+					var sampleOut;
+					if(index < (outArray.size - 1), {
+						sampleOut = sample.asString ++ ","
+					}, {
+						sampleOut = sample.asString
+					});
+
+					f.write(sampleOut);
+				});
+			});
 
 			if(condition != nil, { condition.unhang })
 		});
