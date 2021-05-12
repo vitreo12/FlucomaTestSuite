@@ -43,7 +43,6 @@ TestFluidAmpSlice : FluidUnitTest {
 
 		result[\numSlices] = TestResult(resultBuffer.numFrames, 13);
 		resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
-			samples.postln;
 			result[\sampleIndex] = TestResultEquals(
 				samples,
 				[ 1001, 1455, 1493, 11028, 11412, 11450, 22053, 22399, 22437, 22475, 33078, 33462, 33500 ],

@@ -17,7 +17,6 @@ TestFluidBufThresh : FluidUnitTest {
 		result[\numFrames] = TestResult(resultBuffer.numFrames, 100);
 
 		resultBuffer.loadToFloatArray(action: { | resultArray |
-			resultArray.postln;
 			result[\content] = TestResultEquals(resultArray, knownArray.collect{|x| if(x >= 0.495, {x}, {0})}, 1e-5);
 		});
 	}
