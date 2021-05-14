@@ -2,9 +2,7 @@ TestFluidMLPClassifier : FluidUnitTest {
 	classvar correct_labelsdict;
 
 	*initClass {
-		correct_labelsdict = Dictionary(256);
-
-		[ ("mlpclass_test2_41" -> [ "green" ]), ("mlpclass_test1_34" -> [ "orange" ]), ("mlpclass_test0_44" -> [ "red" ]), ("mlpclass_test2_35" -> [ "green" ]), ("mlpclass_test3_10" -> [ "blue" ]),
+		correct_labelsdict = [ ("mlpclass_test2_41" -> [ "green" ]), ("mlpclass_test1_34" -> [ "orange" ]), ("mlpclass_test0_44" -> [ "red" ]), ("mlpclass_test2_35" -> [ "green" ]), ("mlpclass_test3_10" -> [ "blue" ]),
   ("mlpclass_test2_45" -> [ "green" ]), ("mlpclass_test3_55" -> [ "blue" ]), ("mlpclass_test1_56" -> [ "orange" ]), ("mlpclass_test1_0" -> [ "orange" ]), ("mlpclass_test3_42" -> [ "blue" ]),
   ("mlpclass_test0_0" -> [ "red" ]), ("mlpclass_test0_49" -> [ "red" ]), ("mlpclass_test1_40" -> [ "orange" ]), ("mlpclass_test0_59" -> [ "red" ]), ("mlpclass_test2_55" -> [ "green" ]),
   ("mlpclass_test2_60" -> [ "green" ]), ("mlpclass_test0_41" -> [ "red" ]), ("mlpclass_test2_11" -> [ "green" ]), ("mlpclass_test2_30" -> [ "green" ]), ("mlpclass_test3_63" -> [ "blue" ]),
@@ -55,7 +53,7 @@ TestFluidMLPClassifier : FluidUnitTest {
   ("mlpclass_test2_51" -> [ "green" ]), ("mlpclass_test3_17" -> [ "blue" ]), ("mlpclass_test3_47" -> [ "blue" ]), ("mlpclass_test3_57" -> [ "blue" ]), ("mlpclass_test2_10" -> [ "green" ]),
   ("mlpclass_test1_6" -> [ "orange" ]), ("mlpclass_test3_15" -> [ "blue" ]), ("mlpclass_test0_58" -> [ "red" ]), ("mlpclass_test0_3" -> [ "red" ]), ("mlpclass_test3_33" -> [ "blue" ]),
   ("mlpclass_test1_17" -> [ "orange" ]), ("mlpclass_test2_44" -> [ "green" ]), ("mlpclass_test1_36" -> [ "orange" ]), ("mlpclass_test0_60" -> [ "red" ]), ("mlpclass_test1_12" -> [ "orange" ]),
-			("mlpclass_test2_58" -> [ "green" ]) ].do { | entry | correct_labelsdict.add(entry) }
+			("mlpclass_test2_58" -> [ "green" ]) ].asDict.as(Dictionary)
 	}
 
 	test_2d_points {
