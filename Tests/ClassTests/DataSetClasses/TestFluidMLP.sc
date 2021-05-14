@@ -197,5 +197,66 @@ TestFluidMLPClassifier : FluidUnitTest {
 }
 
 TestFluidMLPRegressor : FluidUnitTest {
+	test_sine_ramp {
+		var condition = Condition();
+		var source = FluidDataSet(server);
+		var target = FluidDataSet(server);
+		var test = FluidDataSet(server);
+		var output = FluidDataSet(server);
+		var tmpbuf = Buffer.alloc(server,1);
+		var regressor = FluidMLPRegressor(server).hidden_([2]).activation_(FluidMLPRegressor.tanh).outputActivation_(FluidMLPRegressor.tanh).maxIter_(1000).learnRate_(0.1).momentum_(0.1).batchSize_(1).validation_(0);
 
+		var sourcedata = 128.collect{|i|i/128};
+		var targetdata = 128.collect{|i| sin(2*pi*i/128) };
+		var testdata = 128.collect{|i|(i/128)**2};
+
+		var outputdata;
+
+		var inbuf = Buffer.loadCollection(server,[0.5]);
+		var outbuf = Buffer.new(server);
+
+		source.load(
+			Dictionary.with(
+				*[\cols -> 1,\data -> Dictionary.newFrom(
+					sourcedata.collect{|x, i| [i.asString, [x]]}.flatten)]);
+		);
+
+		target.load(
+			Dictionary.with(
+				*[\cols -> 1,\data -> Dictionary.newFrom(
+					targetdata.collect{|x, i| [i.asString, [x]]}.flatten)]);
+		);
+
+		test.load(
+			Dictionary.with(
+				*[\cols -> 1,\data -> Dictionary.newFrom(
+					testdata.collect{|x, i| [i.asString, [x]]}.flatten)]);
+		);
+
+		server.sync;
+
+		regressor.fit(source, target);
+
+		/*
+		outputdata = Array(128);
+		regressor.predict(test, output, action:{
+			output.dump{|x|
+				128.do{|i|
+					outputdata.add(x["data"][i.asString][0])
+				};
+				condition.unhang;
+			}
+		});
+
+		condition.hang;
+
+		regressor.predictPoint(inbuf,outbuf,{|x|
+			x.getn(0,1,{|y|
+				y.postln;
+				condition.unhang;
+		};)});
+
+		condition.hang;
+		*/
+	}
 }
