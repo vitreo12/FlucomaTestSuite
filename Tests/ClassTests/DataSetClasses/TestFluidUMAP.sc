@@ -118,6 +118,9 @@ TestFluidUMAP : FluidUnitTest {
 
 		//This will fail!! How can I compare the two???
 		//Entries are volatile, not always the same...
+		//And it's not a seeding problem, as the results are different
+		//even on the first run of each server everytime... So
+		//generateBinaries wouldn't work either
 		result[\normalizedDict] = TestResultEqualsDict(normalizedDict, target_normalizedDict);
 	}
 }
