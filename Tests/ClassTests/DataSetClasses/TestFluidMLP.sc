@@ -73,6 +73,24 @@ TestFluidMLPClassifier : FluidUnitTest {
 
 		var testset;
 		var labelsdict;
+		var labels_errors = 0;
+		var inbuf = Buffer.loadCollection(server,0.5.dup);
+
+		//This is for the rt test
+		var outCluster1 = Buffer.alloc(server, 1);
+		//var outCluster2 = Buffer.alloc(server, 1);
+		//var outCluster3 = Buffer.alloc(server, 1);
+		var outCluster4 = Buffer.alloc(server, 1);
+		var synth1, /*synth2, synth3,*/ synth4;
+		var synthFun = {
+			var trig = Impulse.kr(5);
+			var inputPoint = LocalBuf(2);
+			var point = \point.ir([0, 0]);
+			var outCluster = \outCluster.ir(-1);
+			point.collect{ |p,i| BufWr.kr([p],inputPoint,i)};
+			classifier.kr(trig,inputPoint,outCluster);
+			Silent.ar;
+		};
 
 		4.do{ |i|
 			64.do{ |j|
@@ -109,14 +127,72 @@ TestFluidMLPClassifier : FluidUnitTest {
 
 		condition.hang;
 
+		result[\labelsdict_size] = TestResult(labelsdict.size, 256);
+
 		labelsdict.keysValuesDo { | key, entry |
 			var correct_entry = correct_labelsdict[key];
 			if(correct_entry != nil, {
-				("entry: " ++ entry).postln;
-				("correct: " ++ correct_entry).postln;
-				if(entry != correct_entry, { "mismatch".error });
-			}, { "nil entry".error })
-		}
+				if(entry != correct_entry, { labels_errors = labels_errors + 1 });
+			}, { labels_errors = labels_errors + 1 })
+		};
+
+		if(labels_errors < 5, {
+			result[\labelsdict_match] = "success"
+		}, {
+			result[\labelsdict_match] = "failure: there are more than 5 mismatches"
+		});
+
+		// single point transform on arbitrary value
+		classifier.predictPoint(inbuf,{ | x |
+			result[\predictPoint] = TestResult(x, \red);
+			condition.unhang;
+		});
+
+		condition.hang;
+
+		//Now test real-time synth querying for all clusters
+
+		//First cluster
+		synth1 = synthFun.play(server, args:[\point, [0.5, 0.5], \outCluster, outCluster1.bufnum]);
+
+		//Second cluster
+		//synth2 = synthFun.play(server, args:[\point, [-0.5, 0.5], \outCluster, outCluster2.bufnum]);
+
+		//Third cluster
+		//synth3 = synthFun.play(server, args:[\point, [0.5, -0.5], \outCluster, outCluster3.bufnum]);
+
+		//Fourth cluster
+		synth4 = synthFun.play(server, args:[\point, [-0.5, -0.5], \outCluster, outCluster4.bufnum]);
+
+		//Let them run half a second
+		0.5.wait;
+		synth1.free; /*synth2.free; synth3.free;*/ synth4.free;
+		server.sync;
+
+		outCluster1.loadToFloatArray(action: { | x |
+			result[\cluster1] = TestResult(x.as(Array), [0.0])
+		});
+
+		/*
+		outCluster2.loadToFloatArray(action: { | x |
+		result[\cluster2] = TestResult(x.as(Array), [1.0])
+		});
+
+		outCluster3.loadToFloatArray(action: { | x |
+		result[\cluster3] = TestResult(x.as(Array), [2.0])
+		});
+		*/
+
+		outCluster4.loadToFloatArray(action: { | x |
+			result[\cluster4] = TestResult(x.as(Array), [3.0])
+		});
+
+		server.sync;
+		classifier.free;
+		sourcedata.free;
+		labels.free;
+		testdata.free;
+		predictedlabels.free;
 	}
 }
 
