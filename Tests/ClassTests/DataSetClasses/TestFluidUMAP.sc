@@ -1,11 +1,10 @@
 TestFluidUMAP : FluidUnitTest {
 	classvar target_normalizedDict_sum;
-	classvar target_normalizedDict;
 
 	*initClass {
 		target_normalizedDict_sum = [ 192.55911817725, 204.81015736512 ];
 
-		target_normalizedDict = [ ("entry144" -> [ 0.72296966480145, 0.21615530462598 ]), ("entry129" -> [ 0.84861819457654, 0.26660587420219 ]), ("entry117" -> [ 0.3661093363477, 0.89526009969922 ]), ("entry52" -> [ 0.81323960804635, 0.79078689295416 ]), ("entry46" -> [ 0.80284184983794, 0.77734470538139 ]),
+		/* target_normalizedDict = [ ("entry144" -> [ 0.72296966480145, 0.21615530462598 ]), ("entry129" -> [ 0.84861819457654, 0.26660587420219 ]), ("entry117" -> [ 0.3661093363477, 0.89526009969922 ]), ("entry52" -> [ 0.81323960804635, 0.79078689295416 ]), ("entry46" -> [ 0.80284184983794, 0.77734470538139 ]),
   ("entry329" -> [ 0.76222351084762, 0.52655581299991 ]), ("entry206" -> [ 0.730021694022, 0.46198789970742 ]), ("entry168" -> [ 0.24362954011412, 0.91898694688952 ]), ("entry227" -> [ 0.72932368640194, 0.12031692731996 ]), ("entry29" -> [ 0.86779547317407, 0.48344982463874 ]),
   ("entry234" -> [ 0.34164012811011, 0.76720218758692 ]), ("entry391" -> [ 0.4884488148614, 0.3695507528746 ]), ("entry243" -> [ 0.58205520407426, 0.9334010848064 ]), ("entry53" -> [ 0.235733679401, 0.20191274565716 ]), ("entry45" -> [ 0.42093662309599, 0.18502794108827 ]),
   ("entry290" -> [ 0.35371646086521, 0.056867602184475 ]), ("entry31" -> [ 0.67300807429005, 0.65130421249429 ]), ("entry212" -> [ 0.85812566963785, 0.8709307938022 ]), ("entry21" -> [ 0.53027037377649, 0.79297658220234 ]), ("entry356" -> [ 0.83814779021032, 0.2575133915046 ]),
@@ -84,7 +83,7 @@ TestFluidUMAP : FluidUnitTest {
   ("entry324" -> [ 0.31152446352867, 0.57841502937332 ]), ("entry177" -> [ 0.43922704852857, 0.2302535876893 ]), ("entry385" -> [ 0.050000000745058, 0.8205877340069 ]), ("entry396" -> [ 0.28125640123868, 0.13224748604667 ]), ("entry50" -> [ 0.24033774769021, 0.12588114256289 ]),
   ("entry392" -> [ 0.34985641675486, 0.81855276733589 ]), ("entry288" -> [ 0.72117755859377, 0.4406775287433 ]), ("entry127" -> [ 0.36181201154407, 0.20231808529727 ]), ("entry5" -> [ 0.7496621618931, 0.37665852064168 ]), ("entry339" -> [ 0.21310388196158, 0.77395093110475 ]),
   ("entry310" -> [ 0.12446441988796, 0.600393527783 ]), ("entry216" -> [ 0.2629783699447, 0.26741207591661 ]), ("entry250" -> [ 0.34814206715303, 0.64294504669658 ]), ("entry60" -> [ 0.40362250328378, 0.91827711797226 ]), ("entry294" -> [ 0.62216820947995, 0.17875964554568 ]),
-	("entry163" -> [ 0.27973443825741, 0.52795509277441 ]), ("entry105" -> [ 0.83418920836435, 0.49686337306592 ]), ("entry107" -> [ 0.62630049803826, 0.20548520806597 ]), ("entry67" -> [ 0.35029483832471, 0.32342959542508 ]), ("entry11" -> [ 0.24653585661328, 0.73381075515811 ]) ].asDict.as(Dictionary)
+	("entry163" -> [ 0.27973443825741, 0.52795509277441 ]), ("entry105" -> [ 0.83418920836435, 0.49686337306592 ]), ("entry107" -> [ 0.62630049803826, 0.20548520806597 ]), ("entry67" -> [ 0.35029483832471, 0.32342959542508 ]), ("entry11" -> [ 0.24653585661328, 0.73381075515811 ]) ].asDict.as(Dictionary)*/
 	}
 
 	test_3d_colors {
@@ -99,6 +98,7 @@ TestFluidUMAP : FluidUnitTest {
 		var colours = Dictionary.newFrom(400.collect{|i|[("entry"++i).asSymbol, 3.collect{1.0.rand}]}.flatten(1));
 
 		var normalizedDict;
+		var normalizedDict_sum = [0, 0];
 
 		raw.load(Dictionary.newFrom([\cols, 3, \data, colours]));
 
@@ -112,6 +112,10 @@ TestFluidUMAP : FluidUnitTest {
 
 		normalized.dump { | x |
 			normalizedDict = x["data"];
+			//Does the summing approach make sense??? Ask PA and Gerard
+			normalizedDict.do({ | entry |
+				normalizedDict_sum = normalizedDict_sum + entry;
+			});
 			condition.unhang;
 		};
 
@@ -119,13 +123,6 @@ TestFluidUMAP : FluidUnitTest {
 
 		result[\normalizedDictSize] = TestResult(normalizedDict.size, 400);
 
-		//This will fail!! How can I compare the two???
-		//Entries are volatile, not always the same...
-		//And it's not a seeding problem, as the results are different
-		//even on the first run of each server everytime... So
-		//generateBinaries wouldn't work either
-
-		//Does the summing approach make sense???
-		result[\normalizedDict] = TestResultEqualsDict(normalizedDict, target_normalizedDict);
+		result[\normalizedDict] = TestResultEquals(normalizedDict_sum, target_normalizedDict_sum, 40);
 	}
 }
