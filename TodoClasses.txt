@@ -14,7 +14,8 @@ FluidManipulationJSON.sc
 FluidMDS.sc
 FluidMessageResponse.sc
 FluidMessageTest.sc
-FluidMLP.sc
+FluidMLPClassifier.sc
+FluidMLPRegressor.sc
 FluidNMFMorph.sc
 FluidNormalize.sc
 FluidNRTProcess.sc
