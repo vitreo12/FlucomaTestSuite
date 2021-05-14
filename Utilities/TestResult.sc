@@ -23,10 +23,9 @@ TestResultEquals {
 		}, {
 			var condition = (a - b).abs <= tolerance;
 			if(condition.isSequenceableCollection, {
-				// (a - b).abs.maxItem.postln;
 				condition.do({ | entry, i |
 					if(entry.not, {
-						^("failure: compared arrays first mismatch at index: " ++ i ++ ". Got " ++ a ++ " but expected " ++ b);
+						^("failure: compared arrays first mismatch at index: " ++ i ++ ". Got " ++ a ++ " but expected " ++ b ++ " +/- " ++ tolerance);
 					});
 				});
 				^("success");
@@ -38,5 +37,21 @@ TestResultEquals {
 				});
 			});
 		})
+	}
+}
+
+TestResultEqualsDict {
+	*new { | a, b, tolerance |
+		tolerance = tolerance ? 0;
+		b.keysValuesDo { | key, entry_b |
+			var result;
+			var entry_a = a[key];
+			if(entry_a == nil, { ^("failure: key '" ++ key ++ "' is not present in the test dictionary") });
+			("\nkey: " ++ key).postln;
+			("entry_a: " ++ entry_a).postln;
+			("entry_b: " ++ entry_b).postln;
+
+			^("failure: This approach doesn't work!");
+		}
 	}
 }
