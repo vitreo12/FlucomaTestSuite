@@ -122,7 +122,14 @@ TestFluidUMAP : FluidUnitTest {
 		condition.hang;
 
 		result[\normalizedDictSize] = TestResult(normalizedDict.size, 400);
-
 		result[\normalizedDict] = TestResultEquals(normalizedDict_sum, target_normalizedDict_sum, 40);
+
+		server.sync;
+		raw.free;
+		standardized.free;
+		reduced.free;
+		normalized.free;
+		standardizer.free;
+		normalizer.free;
 	}
 }
