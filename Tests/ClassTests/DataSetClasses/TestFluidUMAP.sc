@@ -1,7 +1,10 @@
 TestFluidUMAP : FluidUnitTest {
+	classvar target_normalizedDict_sum;
 	classvar target_normalizedDict;
 
 	*initClass {
+		target_normalizedDict_sum = [ 192.55911817725, 204.81015736512 ];
+
 		target_normalizedDict = [ ("entry144" -> [ 0.72296966480145, 0.21615530462598 ]), ("entry129" -> [ 0.84861819457654, 0.26660587420219 ]), ("entry117" -> [ 0.3661093363477, 0.89526009969922 ]), ("entry52" -> [ 0.81323960804635, 0.79078689295416 ]), ("entry46" -> [ 0.80284184983794, 0.77734470538139 ]),
   ("entry329" -> [ 0.76222351084762, 0.52655581299991 ]), ("entry206" -> [ 0.730021694022, 0.46198789970742 ]), ("entry168" -> [ 0.24362954011412, 0.91898694688952 ]), ("entry227" -> [ 0.72932368640194, 0.12031692731996 ]), ("entry29" -> [ 0.86779547317407, 0.48344982463874 ]),
   ("entry234" -> [ 0.34164012811011, 0.76720218758692 ]), ("entry391" -> [ 0.4884488148614, 0.3695507528746 ]), ("entry243" -> [ 0.58205520407426, 0.9334010848064 ]), ("entry53" -> [ 0.235733679401, 0.20191274565716 ]), ("entry45" -> [ 0.42093662309599, 0.18502794108827 ]),
@@ -121,6 +124,8 @@ TestFluidUMAP : FluidUnitTest {
 		//And it's not a seeding problem, as the results are different
 		//even on the first run of each server everytime... So
 		//generateBinaries wouldn't work either
+
+		//Does the summing approach make sense???
 		result[\normalizedDict] = TestResultEqualsDict(normalizedDict, target_normalizedDict);
 	}
 }

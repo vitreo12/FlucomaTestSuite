@@ -42,16 +42,24 @@ TestResultEquals {
 
 TestResultEqualsDict {
 	*new { | a, b, tolerance |
+		var sum_a = [0, 0];
+		var sum_b = [0, 0];
 		tolerance = tolerance ? 0;
 		b.keysValuesDo { | key, entry_b |
 			var result;
 			var entry_a = a[key];
 			if(entry_a == nil, { ^("failure: key '" ++ key ++ "' is not present in the test dictionary") });
-			("\nkey: " ++ key).postln;
-			("entry_a: " ++ entry_a).postln;
-			("entry_b: " ++ entry_b).postln;
 
-			^("failure: This approach doesn't work!");
-		}
+			/*("\nkey: " ++ key).postln;
+			("entry_a: " ++ entry_a).postln;
+			("entry_b: " ++ entry_b).postln;*/
+
+			sum_a = entry_a + sum_a;
+			sum_b = entry_b + sum_b;
+
+		};
+		("sum_a: " ++ sum_a).postln;
+		("sum_b: " ++ sum_b).postln;
+		^("failure: This approach doesn't work!");
 	}
 }
