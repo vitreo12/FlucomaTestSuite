@@ -2,3 +2,5 @@
 - MLP synth2 and synth3 do not work ... I don't know why ... Maybe they'd just need more training
 
 - UMAP: same problem...
+
+- Array.add should always replace the array assignment! Tell PA

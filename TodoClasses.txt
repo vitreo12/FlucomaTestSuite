@@ -7,8 +7,8 @@ FluidDataSetQuery.sc X
 FluidDataSetWr.sc X
 FluidKDTree.sc X
 FluidKMeans.sc
-FluidKNNClassifier.sc
-FluidKNNRegressor.sc
+FluidKNNClassifier.sc X
+FluidKNNRegressor.sc X
 FluidLabelSet.sc X
 FluidManipulationJSON.sc
 FluidMDS.sc
