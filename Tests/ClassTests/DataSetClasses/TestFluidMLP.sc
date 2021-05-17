@@ -209,6 +209,7 @@ TestFluidMLPRegressor : FluidUnitTest {
 		var testdata = 128.collect{|i|(i/128)**2};
 
 		var outputdata;
+		var outputdata_sum = 0;
 
 		var inbuf = Buffer.loadCollection(server,[0.5]);
 		var outbuf = Buffer.new(server);
@@ -235,12 +236,15 @@ TestFluidMLPRegressor : FluidUnitTest {
 
 		regressor.fit(source, target);
 
-		/*
 		outputdata = Array(128);
 		regressor.predict(test, output, action:{
 			output.dump{|x|
+				var data = x["data"];
+				result[\output_size] = TestResult(data.size, 128);
 				128.do{|i|
-					outputdata.add(x["data"][i.asString][0])
+					var entry = data[i.asString][0];
+					outputdata.add(entry);
+					outputdata_sum = outputdata_sum + entry.abs;
 				};
 				condition.unhang;
 			}
@@ -248,13 +252,7 @@ TestFluidMLPRegressor : FluidUnitTest {
 
 		condition.hang;
 
-		regressor.predictPoint(inbuf,outbuf,{|x|
-			x.getn(0,1,{|y|
-				y.postln;
-				condition.unhang;
-		};)});
-
-		condition.hang;
-		*/
+		// 75 +/- 10
+		result[\output_sum] = TestResultEquals(outputdata_sum, 75, 10);
 	}
 }
