@@ -22,6 +22,11 @@ TestFluidPCA : FluidUnitTest {
 
 		var reducedarray;
 
+		var inbuf = Buffer.loadCollection(server,0.5.dup(12));
+		var outbuf = Buffer.new(server);
+
+		var point;
+
 		server.sync;
 
 		//run mfcc
@@ -60,11 +65,9 @@ TestFluidPCA : FluidUnitTest {
 		reducedarray = Array.new(100);
 		standardizer.fitTransform(raw, standardized);
 		pca.fitTransform(standardized, reduced, action:{|x|
-			x.postln;
 			result[\variance] = TestResultEquals(x.asFloat, 0.56128084659576, 0.0001);
 			reduced.dump{|x|
 				var data = x["data"];
-				data.postln;
 				result[\pca_size] = TestResult(data.size, 100);
 				100.do{|i|
 					reducedarray = reducedarray.add(data[i.asString])
@@ -76,6 +79,12 @@ TestFluidPCA : FluidUnitTest {
 		condition.hang;
 
 		result[\reducedarray] = TestResultEquals(reducedarray, reducedarray_target, 0.0001);
+
+		pca.transformPoint(inbuf,outbuf,{|x| x.getn(0,1,{|y| point = y.asArray; condition.unhang})});
+
+		condition.hang;
+
+		result[\point] = TestResultEquals(point, [ 0.23524188995361 ], 0.0001);
 
 		server.sync;
 		raw.free;
