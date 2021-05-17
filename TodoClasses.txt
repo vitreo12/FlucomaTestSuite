@@ -14,16 +14,16 @@ FluidManipulationJSON.sc
 FluidMDS.sc
 FluidMessageResponse.sc
 FluidMessageTest.sc
-FluidMLPClassifier.sc
-FluidMLPRegressor.sc
+FluidMLPClassifier.sc X
+FluidMLPRegressor.sc X
 FluidNMFMorph.sc
 FluidNormalize.sc
 FluidNRTProcess.sc
-FluidPCA.sc
+FluidPCA.sc X
 FluidProviderTest.sc
 FluidRobustScale.sc
 FluidServerCache.sc
 FluidServerObject.sc
 FluidStandardize.sc
 FluidSubscriberTest.sc
-FluidUMAP.sc
+FluidUMAP.sc X
