@@ -6,7 +6,7 @@ FluidUnitTest : UnitTest {
 	classvar <>serverIPAddr = "127.0.0.1";
 	classvar <>serverStartingPort = 5000;
 
-	classvar <>maxWaitTime = 30;
+	classvar <>maxWaitTime = 60;
 
 	//These are used in Slicers
 	classvar <oneImpulseArray, <impulsesArray, <sharpSineArray, <smoothSineArray;

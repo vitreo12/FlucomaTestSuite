@@ -254,5 +254,12 @@ TestFluidMLPRegressor : FluidUnitTest {
 
 		// 75 +/- 10
 		result[\output_sum] = TestResultEquals(outputdata_sum, 75, 10);
+
+		server.sync;
+		source.free;
+		target.free;
+		test.free;
+		output.free;
+		regressor.free;
 	}
 }
