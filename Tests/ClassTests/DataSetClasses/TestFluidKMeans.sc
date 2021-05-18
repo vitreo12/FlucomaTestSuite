@@ -15,6 +15,8 @@ TestFluidKMeans : FluidUnitTest {
 			*[\cols -> 2,\data -> Dictionary.newFrom(
 				points.collect{|x, i| [i, x]}.flatten)]);
 
+		var inbuf = Buffer.loadCollection(server,0.5.dup);
+
 		server.sync;
 
 		dataSet.load(d);
@@ -32,7 +34,7 @@ TestFluidKMeans : FluidUnitTest {
 		condition.hang;
 
 		kmeans.dump { | x |
-			var means_sorted = x["means"].sort;
+			var means_sorted = x["means"].sort; //sort cause seeding screws the order
 			result[\cols] = TestResult(x["cols"].asInteger, 2);
 			result[\rows] = TestResult(x["rows"].asInteger, 4);
 			result[\means] = TestResultEquals(means_sorted, [ [ -0.52309581198746, -0.52779290468541 ], [ 0.46590930269756, 0.48694928284499 ], [ 0.50557697542176, -0.46780285342384 ], [ -0.45224895310928, 0.55111888801696 ] ], 0.0001);
@@ -47,14 +49,15 @@ TestFluidKMeans : FluidUnitTest {
 		clusters.dump { | x |
 			var indices = x["data"].keys.asArray.sort{|a,b| a.asInteger < b.asInteger};
 			var assignments = x["data"].atAll(indices).flatten;
-
 			assignments.postln;
-
 			condition.unhang;
 		};
-
 		condition.hang;
 		*/
+
+		//Same thing for single point, seeding screws the order
+		//kmeans.predictPoint(inbuf,{|x| x.postln; condition.unhang});
+		//condition.hang;
 
 		server.sync;
 		dataSet.free;
