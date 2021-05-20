@@ -10,12 +10,16 @@ TestFluidKMeans : FluidUnitTest {
 		var dataSet = FluidDataSet(server);
 		var clusters = FluidLabelSet(server);
 		var kmeans = FluidKMeans(server);
+		var centroids = FluidDataSet(server);
 
 		var d = Dictionary.with(
 			*[\cols -> 2,\data -> Dictionary.newFrom(
 				points.collect{|x, i| [i, x]}.flatten)]);
 
 		var inbuf = Buffer.loadCollection(server,0.5.dup);
+
+		var b = Buffer.sendCollection(server,[0.5,0.5]);
+		var c = Buffer(server);
 
 		server.sync;
 
@@ -43,9 +47,9 @@ TestFluidKMeans : FluidUnitTest {
 
 		condition.hang;
 
+		/*
 		// 0, 1, 2, 3 can shift across runs (due to seeding, I believe)...
 		// But the number of elements will always be 24 / 28 / 38 / 38
-		/*
 		clusters.dump { | x |
 			var indices = x["data"].keys.asArray.sort{|a,b| a.asInteger < b.asInteger};
 			var assignments = x["data"].atAll(indices).flatten;
@@ -59,9 +63,37 @@ TestFluidKMeans : FluidUnitTest {
 		//kmeans.predictPoint(inbuf,{|x| x.postln; condition.unhang});
 		//condition.hang;
 
+		centroids.load(Dictionary.newFrom([\cols, 2, \data, Dictionary.newFrom([\0, [0.5,0.5], \1, [-0.5,0.5], \2, [0.5,-0.5], \3, [-0.5,-0.5]])]));
+
+		server.sync;
+
+		kmeans.setMeans(centroids, {
+			kmeans.predict(dataSet,clusters,{
+				clusters.dump{|x|
+					var count = 0.dup(4);
+					x["data"].keysValuesDo{|k,v|count[v[0].asInteger] = count[v[0].asInteger] + 1;};
+					result[\count] = TestResult(count, [38, 28, 38, 24]);
+					condition.unhang
+				}
+			})
+		});
+
+		condition.hang;
+
+		kmeans.transformPoint(b,c,{|x|
+			result[\cluster_distance_size] = TestResult(x.numFrames, 4);
+			x.getn(0,x.numFrames,{|y|
+				result[\cluster_distance] = TestResult(y, [0.0, 1.0, 1.0, 2.0]);
+				condition.unhang
+			})
+		});
+
+		condition.hang;
+
 		server.sync;
 		dataSet.free;
 		clusters.free;
 		kmeans.free;
+		centroids.free;
 	}
 }

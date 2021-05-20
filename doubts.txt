@@ -4,3 +4,5 @@
 - UMAP: same problem...
 
 - Array.add should always replace the array assignment! Tell PA
+
+- Kmeans: seeding screws ordering
