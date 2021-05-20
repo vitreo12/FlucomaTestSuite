@@ -252,7 +252,7 @@ FluidUnitTest : UnitTest {
 		var t, tAvg = FlucomaTestSuite.averageRuns; //run 4 times to average execution time
 		var results;
 
-		if(FlucomaTestSuite.checkResultsMismatch == true, {
+		if(FlucomaTestSuite.checkResultsMismatch, {
 			results = Array.newClear(tAvg);
 		});
 
@@ -272,8 +272,8 @@ FluidUnitTest : UnitTest {
 				server.sync; //sync the last command from test
 				this.checkValidResult; //check result validity
 				if(i == 0, { firstResult = result });
-				if(FlucomaTestSuite.checkResultsMismatch == true, {
-					results[i] = result;
+				if(FlucomaTestSuite.checkResultsMismatch, {
+					results[i] = result.copy; //copy is essential here, or result will just be overwritten, leading to the same result taken from just the last run
 				});
 			});
 
@@ -283,7 +283,7 @@ FluidUnitTest : UnitTest {
 				execTime = execTime / tAvg;
 
 				//Compare every result with each other
-				if(FlucomaTestSuite.checkResultsMismatch == true, {
+				if(FlucomaTestSuite.checkResultsMismatch, {
 					results.do({ | tempResult |
 						results.do({ | compTempResult |
 							if(tempResult.class == Dictionary, {

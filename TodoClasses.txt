@@ -11,13 +11,13 @@ FluidKNNClassifier.sc X
 FluidKNNRegressor.sc X
 FluidLabelSet.sc X
 FluidManipulationJSON.sc
-FluidMDS.sc
+FluidMDS.sc X
 FluidMessageResponse.sc
 FluidMessageTest.sc
 FluidMLPClassifier.sc X
 FluidMLPRegressor.sc X
 FluidNMFMorph.sc
-FluidNormalize.sc
+FluidNormalize.sc X
 FluidNRTProcess.sc
 FluidPCA.sc X
 FluidProviderTest.sc
