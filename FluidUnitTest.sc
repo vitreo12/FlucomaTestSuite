@@ -290,8 +290,13 @@ FluidUnitTest : UnitTest {
 								tempResult.keysValuesDo({ | entry, tempResultVal |
 									var compTempResultVal = compTempResult[entry];
 									if(tempResultVal != compTempResultVal, {
-										//Invalidate firstResult's entry, which is what's taken in FlucomaTestSuite
-										firstResult[entry] = "failure: invalid result across runs on same server";
+										//If both are failures, take one of the two
+										if(tempResultVal.beginsWith("failure").and(compTempResultVal.beginsWith("failure")), {
+											firstResult[entry] = tempResultVal;
+										}, {
+											//success / failure pair
+											firstResult[entry] = "failure: invalid result across runs on same server";
+										});
 									});
 								});
 							}, {

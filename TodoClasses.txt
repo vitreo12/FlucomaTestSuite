@@ -24,6 +24,6 @@ FluidProviderTest.sc
 FluidRobustScale.sc
 FluidServerCache.sc
 FluidServerObject.sc
-FluidStandardize.sc
+FluidStandardize.sc X
 FluidSubscriberTest.sc
 FluidUMAP.sc X
