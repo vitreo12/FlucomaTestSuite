@@ -1,7 +1,9 @@
-FluidAudioTransport.sc
-FluidBufAudioTransport.sc
+FluidBufAudioTransport.sc X
 FluidBufNMFCross.sc
 FluidBufNNDSVD.sc
+FluidNMFMorph.sc
+
+
 FluidDataSet.sc X
 FluidDataSetQuery.sc X
 FluidDataSetWr.sc X
@@ -10,20 +12,11 @@ FluidKMeans.sc X
 FluidKNNClassifier.sc X
 FluidKNNRegressor.sc X
 FluidLabelSet.sc X
-FluidManipulationJSON.sc
 FluidMDS.sc X
-FluidMessageResponse.sc
-FluidMessageTest.sc
 FluidMLPClassifier.sc X
 FluidMLPRegressor.sc X
-FluidNMFMorph.sc
 FluidNormalize.sc X
-FluidNRTProcess.sc
 FluidPCA.sc X
-FluidProviderTest.sc
 FluidRobustScale.sc
-FluidServerCache.sc
-FluidServerObject.sc
 FluidStandardize.sc X
-FluidSubscriberTest.sc
 FluidUMAP.sc X
