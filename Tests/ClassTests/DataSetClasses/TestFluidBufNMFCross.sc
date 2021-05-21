@@ -38,7 +38,6 @@ TestFluidBufNMFCross : FluidUnitTest {
 
 		o.loadToFloatArray(action:{ | x |
 			var nmf_cross_array = x.as(Array);
-
 			result[\size] = TestResult(nmf_cross_array.size, expectedArray.size);
 			result[\nmf_cross_array] = TestResultEquals(nmf_cross_array, expectedArray, 0.0001);
 		});
