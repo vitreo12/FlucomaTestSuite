@@ -26,9 +26,11 @@ FlucomaTestSuite {
 
 	*port { ^serverStartingPort }
 
-	*averageRuns_ { | val, generateNMF = false |
+	*averageRuns_ { | val, generateBinaries = false |
 		averageRuns = val;
-		if(generateNMF == true, { FlucomaTestSuite.generateNMF(averageRunsRecompile:true) });
+		if(generateBinaries == true, {
+			FlucomaTestSuite.generateBinaries;
+		});
 	}
 
 	*maxWaitTime {
@@ -83,7 +85,9 @@ FlucomaTestSuite {
 			classString != "FluidBufFlatten").and(
 			classString != "FluidBufSelect").and(
 			classString != "FluidBufSelectEvery").and(
-			classString != "FluidBufSTFT"), {
+			classString != "FluidBufSTFT").and(
+			classString != "FluidBufNMFCross").and(
+			classString != "FluidBufNNDSVD"), {
 			classString = classString.replace("Buf", "");
 		});
 

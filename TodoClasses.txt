@@ -1,9 +1,9 @@
 FluidBufAudioTransport.sc X
-FluidBufNMFCross.sc
-FluidBufNNDSVD.sc
-FluidNMFMorph.sc
+FluidBufNMFCross.sc X
+FluidBufNNDSVD.sc X
+FluidNMFMorph.sc X
 
-
+FluidRobustScale.sc X
 FluidDataSet.sc X
 FluidDataSetQuery.sc X
 FluidDataSetWr.sc X
@@ -17,6 +17,5 @@ FluidMLPClassifier.sc X
 FluidMLPRegressor.sc X
 FluidNormalize.sc X
 FluidPCA.sc X
-FluidRobustScale.sc
 FluidStandardize.sc X
 FluidUMAP.sc X

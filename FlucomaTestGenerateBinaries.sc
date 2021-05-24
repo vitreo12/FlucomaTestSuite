@@ -1,41 +1,97 @@
 + FlucomaTestSuite {
 
+	*writeBinaryFile { | path, array |
+		File.use(path, "w", { | f |
+			array.do({ | sample, index |
+				var sampleOut;
+				if(index < (array.size - 1), {
+					sampleOut = sample.asString ++ ","
+				}, {
+					sampleOut = sample.asString
+				});
+
+				f.write(sampleOut);
+			});
+		});
+	}
+
 	*generateBinaries {
+		var serverCondition = Condition();
 		var server = Server.local;
 
-		server.waitForBoot({
-			var c = Condition();
+		server.options.sampleRate = FlucomaTestSuite.sampleRate;
 
-			this.generateMFCC(server, c);
-			c.hang;
-			"*** Generated MFCC ***".postln;
+		fork {
+			server.waitForBoot({
+				var c = Condition();
 
-			this.generateNMF(server, c);
-			c.hang;
-			"*** Generated NMF ***".postln;
+				"*** Generating MFCC... ***".postln;
+				this.generateMFCC(server, c);
+				c.hang;
 
-			this.generateBufStats(server, c);
-			c.hang;
-			"*** Generated BufStats ***".postln;
+				"*** Generating NMF... ***".postln;
+				this.generateNMF(server, c);
+				c.hang;
 
-			this.generateSpectralShape(server, c);
-			c.hang;
-			"*** Generated SpectralShape ***".postln;
+				"*** Generating BufStats... ***".postln;
+				this.generateBufStats(server, c);
+				c.hang;
 
-			this.generateMelBands(server, c);
-			c.hang;
-			"*** Generated MelBands ***".postln;
+				"*** Generating SpectralShape... ***".postln;
+				this.generateSpectralShape(server, c);
+				c.hang;
 
-			this.generateSines(server, c);
-			c.hang;
-			"*** Generated Sines ***".postln;
+				"*** Generating MelBands... ***".postln;
+				this.generateMelBands(server, c);
+				c.hang;
 
-			"*** Generated Flucoma Binaries ***".postln;
+				"*** Generating Sines... ***".postln;
+				this.generateSines(server, c);
+				c.hang;
 
-			server.quit;
+				server.quit({ serverCondition.unhang });
+			});
 
-			thisProcess.recompile();
-		});
+			serverCondition.hang;
+
+			//NMF functions share the same seed... They need to run on their own server
+			server.waitForBoot({
+				var c = Condition();
+
+				"*** Generating NMFCross... ***".postln;
+				this.generateNMFCross(server, c);
+				c.hang;
+
+				server.quit({ serverCondition.unhang });
+			});
+
+			serverCondition.hang;
+
+			server.waitForBoot({
+				var c = Condition();
+
+				"*** Generating NMFMorph... ***".postln;
+				this.generateNMFMorph(server, c);
+				c.hang;
+
+				server.quit({ serverCondition.unhang });
+			});
+
+			serverCondition.hang;
+
+			server.waitForBoot({
+				var c = Condition();
+
+				"*** Generating NNDSVD... ***".postln;
+				this.generateNNDSVD(server, c);
+				c.hang;
+
+				"*** Generated Flucoma Binaries ***".postln;
+
+				server.quit;
+				thisProcess.recompile;
+			});
+		}
 	}
 
 	*generateMFCC { | server, condition |
@@ -70,18 +126,10 @@
 
 			server.sync;
 
-			File.use(File.realpath(TestFluidMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "MFCC_stereo.flucoma", "w", { | f |
-				outArray.do({ | sample, index |
-					var sampleOut;
-					if(index < (outArray.size - 1), {
-						sampleOut = sample.asString ++ ","
-					}, {
-						sampleOut = sample.asString
-					});
-
-					f.write(sampleOut);
-				});
-			});
+			this.writeBinaryFile(
+				File.realpath(TestFluidMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "MFCC_stereo.flucoma",
+				outArray
+			);
 		};
 
 		mfcc_mono = {
@@ -108,18 +156,10 @@
 
 			server.sync;
 
-			File.use(File.realpath(TestFluidMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "MFCC_drums_mono.flucoma", "w", { | f |
-				outArray.do({ | sample, index |
-					var sampleOut;
-					if(index < (outArray.size - 1), {
-						sampleOut = sample.asString ++ ","
-					}, {
-						sampleOut = sample.asString
-					});
-
-					f.write(sampleOut);
-				});
-			});
+			this.writeBinaryFile(
+				File.realpath(TestFluidMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "MFCC_drums_mono.flucoma",
+				outArray
+			);
 		};
 
 		server.waitForBoot({
@@ -153,6 +193,8 @@
 
 			FlucomaTestSuite.averageRuns.do({ | i |
 
+				var nmf_condition = Condition();
+
 				var startFrame = i * 1000;
 
 				var c = Buffer.new(server);
@@ -183,44 +225,20 @@
 
 				server.sync;
 
-				File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Resynth" ++ (i+1) ++ ".flucoma", "w", { | f |
-					resynthArray.do({ | sample, index |
-						var sampleOut;
-						if(index < (resynthArray.size - 1), {
-							sampleOut = sample.asString ++ ","
-						}, {
-							sampleOut = sample.asString
-						});
+				this.writeBinaryFile(
+					File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Resynth" ++ (i+1) ++ ".flucoma",
+					resynthArray
+				);
 
-						f.write(sampleOut);
-					});
+				this.writeBinaryFile(
+					File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Bases" ++ (i+1) ++ ".flucoma",
+					basesArray,
+				);
 
-					File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Bases" ++ (i+1) ++ ".flucoma", "w", { | f |
-						basesArray.do({ | sample, index |
-							var sampleOut;
-							if(index < (basesArray.size - 1), {
-								sampleOut = sample.asString ++ ","
-							}, {
-								sampleOut = sample.asString
-							});
-
-							f.write(sampleOut);
-						});
-
-						File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Activations" ++ (i+1) ++ ".flucoma", "w", { | f |
-							activationsArray.do({ | sample, index |
-								var sampleOut;
-								if(index < (activationsArray.size - 1), {
-									sampleOut = sample.asString ++ ","
-								}, {
-									sampleOut = sample.asString
-								});
-
-								f.write(sampleOut);
-							});
-						});
-					});
-				});
+				this.writeBinaryFile(
+					File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Activations" ++ (i+1) ++ ".flucoma",
+					activationsArray
+				);
 
 				server.sync;
 			});
@@ -318,102 +336,46 @@
 			server.sync;
 
 			//Store bases used for process
-			File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Filter_Match_Bases.flucoma", "w", { | f |
-				bases_array.do({ | sample, index |
-					var sampleOut;
-					if(index < (bases_array.size - 1), {
-						sampleOut = sample.asString ++ ","
-					}, {
-						sampleOut = sample.asString
-					});
-
-					f.write(sampleOut);
-				});
-			});
+			this.writeBinaryFile(
+				File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Filter_Match_Bases.flucoma",
+				bases_array
+			);
 
 			//Store the 500 sine wave from NMFFilter
-			File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Filter_Sine500.flucoma", "w", { | f |
-				filter_first_sine_array.do({ | sample, index |
-					var sampleOut;
-					if(index < (filter_first_sine_array.size - 1), {
-						sampleOut = sample.asString ++ ","
-					}, {
-						sampleOut = sample.asString
-					});
-
-					f.write(sampleOut);
-				});
-			});
+			this.writeBinaryFile(
+				File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Filter_Sine500.flucoma",
+				filter_first_sine_array
+			);
 
 			//Store the 5000 sine wave from NMFFilter
-			File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Filter_Sine5000.flucoma", "w", { | f |
-				filter_second_sine_array.do({ | sample, index |
-					var sampleOut;
-					if(index < (filter_second_sine_array.size - 1), {
-						sampleOut = sample.asString ++ ","
-					}, {
-						sampleOut = sample.asString
-					});
-
-					f.write(sampleOut);
-				});
-			});
+			this.writeBinaryFile(
+				File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Filter_Sine5000.flucoma",
+				filter_second_sine_array
+			);
 
 			//Store both the sine waves retrieval
-			File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Filter_Sines.flucoma", "w", { | f |
-				filter_both_sines_array.do({ | sample, index |
-					var sampleOut;
-					if(index < (filter_both_sines_array.size - 1), {
-						sampleOut = sample.asString ++ ","
-					}, {
-						sampleOut = sample.asString
-					});
-
-					f.write(sampleOut);
-				});
-			});
+			this.writeBinaryFile(
+				File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Filter_Sines.flucoma",
+				filter_both_sines_array
+			);
 
 			//Store the 500 sine wave from NMFMatch
-			File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Match_Sine500.flucoma", "w", { | f |
-				match_first_sine_array.do({ | sample, index |
-					var sampleOut;
-					if(index < (match_first_sine_array.size - 1), {
-						sampleOut = sample.asString ++ ","
-					}, {
-						sampleOut = sample.asString
-					});
-
-					f.write(sampleOut);
-				});
-			});
+			this.writeBinaryFile(
+				File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Match_Sine500.flucoma",
+				match_first_sine_array
+			);
 
 			//Store the 5000 sine wave from NMFMatch
-			File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Match_Sine5000.flucoma", "w", { | f |
-				match_second_sine_array.do({ | sample, index |
-					var sampleOut;
-					if(index < (match_second_sine_array.size - 1), {
-						sampleOut = sample.asString ++ ","
-					}, {
-						sampleOut = sample.asString
-					});
-
-					f.write(sampleOut);
-				});
-			});
+			this.writeBinaryFile(
+				File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Match_Sine5000.flucoma",
+				match_second_sine_array
+			);
 
 			//Store both the sine waves retrieval
-			File.use(File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Match_Sines.flucoma", "w", { | f |
-				match_both_sines_array.do({ | sample, index |
-					var sampleOut;
-					if(index < (match_both_sines_array.size - 1), {
-						sampleOut = sample.asString ++ ","
-					}, {
-						sampleOut = sample.asString
-					});
-
-					f.write(sampleOut);
-				});
-			});
+			this.writeBinaryFile(
+				File.realpath(TestFluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "NMF_Match_Sines.flucoma",
+				match_both_sines_array
+			);
 		};
 
 		server.waitForBoot({
@@ -422,6 +384,162 @@
 			server.sync;
 
 			nmf_filter_match.value;
+
+			server.sync;
+
+			if(condition != nil, { condition.unhang });
+
+			if(averageRunsRecompile == true, {
+				server.quit;
+				thisProcess.recompile();
+			});
+		});
+	}
+
+	*generateNMFCross { | server, condition, averageRunsRecompile = false |
+		var generate_nmf_cross;
+
+		server = server ? Server.local;
+
+		generate_nmf_cross = {
+			var nmf_cross_condition = Condition();
+			var path = File.realpath(FluidBufNMFCross.class.filenameSymbol).dirname.withTrailingSlash +/+ "../AudioFiles/";
+
+			//Only read the first 22050 samples, in order not to create huge .flucoma binaries
+			var b = Buffer.read(server, path+/+"Nicol-LoopE-M.wav", 0, 22050);
+			var t = Buffer.read(server, path+/+"Tremblay-SA-UprightPianoPedalWide.wav", 0, 22050);
+
+			FlucomaTestSuite.averageRuns.do({ | i |
+				var o = Buffer(server);
+				var nmf_cross_array;
+
+				FluidBufNMFCross.process(server,t,b,o,windowSize: 2048).wait;
+
+				o.loadToFloatArray(action:{ | x | nmf_cross_array = x.as(Array) });
+
+				server.sync;
+
+				this.writeBinaryFile(
+					File.realpath(TestFluidBufNMFCross.class.filenameSymbol).dirname.withTrailingSlash ++ "NMFCross_Drums_Piano" ++ (i+1) ++ ".flucoma",
+					nmf_cross_array
+				);
+			});
+		};
+
+		server.waitForBoot({
+			generate_nmf_cross.value;
+
+			server.sync;
+
+			if(condition != nil, { condition.unhang });
+
+			if(averageRunsRecompile == true, {
+				server.quit;
+				thisProcess.recompile();
+			});
+		});
+	}
+
+	*generateNMFMorph { | server, condition, averageRunsRecompile = false |
+		var generate_nmf_morph;
+
+		server = server ? Server.local;
+
+		generate_nmf_morph = {
+			var nmf_morph_condition = Condition();
+			var audiopath = File.realpath(FluidMelBands.class.filenameSymbol).dirname;
+			var src1 = Buffer.readChannel(server,audiopath +/+ "../AudioFiles/Nicol-LoopE-M.wav",channels:[0]); //some drums
+			var src2 = Buffer.readChannel(server,audiopath +/+ "../AudioFiles/Tremblay-SA-UprightPianoPedalWide.wav",channels:[0]);//some piano
+
+			server.sync;
+
+			FlucomaTestSuite.averageRuns.do({ | i |
+				var src1Bases = Buffer(server);
+				var src2Bases = Buffer(server);
+				var src1Activations = Buffer(server);
+				var src2Activations = Buffer(server);
+
+				var morph;
+
+				FluidBufNMF.process(server,src1,bases:src1Bases,activations:src1Activations,components:5, action:{nmf_morph_condition.unhang});
+
+				nmf_morph_condition.hang;
+
+				FluidBufNMF.process(server,src2,bases:src2Bases,activations:src2Activations, components:5, action:{nmf_morph_condition.unhang});
+
+				nmf_morph_condition.hang;
+
+				morph = { FluidNMFMorph.ar(src1Bases.asUGenInput,src2Bases.asUGenInput,src2Activations.asUGenInput,1,0.5) * 80 };
+				morph.loadToFloatArray(0.02, server, { | x |
+					var nmf_morph_array = x.as(Array);
+
+					this.writeBinaryFile(
+						File.realpath(TestFluidNMFMorph.class.filenameSymbol).dirname.withTrailingSlash ++ "NMFMorph_Drums_Piano" ++ (i+1) ++ ".flucoma",
+						nmf_morph_array
+					);
+
+					nmf_morph_condition.unhang;
+				});
+
+				nmf_morph_condition.hang;
+			});
+		};
+
+		server.waitForBoot({
+			generate_nmf_morph.value;
+
+			server.sync;
+
+			if(condition != nil, { condition.unhang });
+
+			if(averageRunsRecompile == true, {
+				server.quit;
+				thisProcess.recompile();
+			});
+		});
+	}
+
+	*generateNNDSVD { | server, condition, averageRunsRecompile = false |
+		var generate_nndsvd;
+
+		server = server ? Server.local;
+
+		generate_nndsvd = {
+			var b = Buffer.read(server,File.realpath(FluidBufNNDSVD.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Nicol-LoopE-M.wav");
+
+			server.sync;
+
+			FlucomaTestSuite.averageRuns.do({ | i |
+				var bases = Buffer.new(server);
+				var activations = Buffer.new(server);
+				var resynth = Buffer.new(server);
+
+				server.sync;
+
+				FluidBufNNDSVD.process(server, b, bases, activations, coverage: 0.5).wait;
+
+				bases.loadToFloatArray(action: { | x |
+					var bases_array = x.as(Array);
+					this.writeBinaryFile(
+						File.realpath(TestFluidBufNNDSVD.class.filenameSymbol).dirname.withTrailingSlash ++ "NNDSVD_Bases" ++ (i+1) ++ ".flucoma",
+						bases_array
+					);
+				});
+
+				activations.loadToFloatArray(action: { | x |
+					var activations_array = x.as(Array);
+					this.writeBinaryFile(
+						File.realpath(TestFluidBufNNDSVD.class.filenameSymbol).dirname.withTrailingSlash ++ "NNDSVD_Activations" ++ (i+1) ++ ".flucoma",
+						activations_array
+					);
+				});
+
+				server.sync;
+			});
+		};
+
+		server.waitForBoot({
+			generate_nndsvd.value;
 
 			server.sync;
 
@@ -465,18 +583,10 @@
 
 			server.sync;
 
-			File.use(File.realpath(TestFluidBufStats.class.filenameSymbol).dirname.withTrailingSlash ++ "BufStats_stereo.flucoma", "w", { | f |
-				outArray.do({ | sample, index |
-					var sampleOut;
-					if(index < (outArray.size - 1), {
-						sampleOut = sample.asString ++ ","
-					}, {
-						sampleOut = sample.asString
-					});
-
-					f.write(sampleOut);
-				});
-			});
+			this.writeBinaryFile(
+				File.realpath(TestFluidBufStats.class.filenameSymbol).dirname.withTrailingSlash ++ "BufStats_stereo.flucoma",
+				outArray
+			);
 		};
 
 		buf_stats_mono = {
@@ -499,18 +609,10 @@
 
 			server.sync;
 
-			File.use(File.realpath(TestFluidBufStats.class.filenameSymbol).dirname.withTrailingSlash ++ "BufStats_mono.flucoma", "w", { | f |
-				outArray.do({ | sample, index |
-					var sampleOut;
-					if(index < (outArray.size - 1), {
-						sampleOut = sample.asString ++ ","
-					}, {
-						sampleOut = sample.asString
-					});
-
-					f.write(sampleOut);
-				});
-			});
+			this.writeBinaryFile(
+				File.realpath(TestFluidBufStats.class.filenameSymbol).dirname.withTrailingSlash ++ "BufStats_mono.flucoma",
+				outArray
+			);
 		};
 
 		server.waitForBoot({
@@ -552,18 +654,10 @@
 
 			server.sync;
 
-			File.use(File.realpath(TestFluidSpectralShape.class.filenameSymbol).dirname.withTrailingSlash ++ "SpectralShape.flucoma", "w", { | f |
-				outArray.do({ | sample, index |
-					var sampleOut;
-					if(index < (outArray.size - 1), {
-						sampleOut = sample.asString ++ ","
-					}, {
-						sampleOut = sample.asString
-					});
-
-					f.write(sampleOut);
-				});
-			});
+			this.writeBinaryFile(
+				File.realpath(TestFluidSpectralShape.class.filenameSymbol).dirname.withTrailingSlash ++ "SpectralShape.flucoma",
+				outArray
+			);
 
 			server.sync;
 
@@ -598,18 +692,10 @@
 
 			server.sync;
 
-			File.use(File.realpath(TestFluidMelBands.class.filenameSymbol).dirname.withTrailingSlash ++ "MelBands.flucoma", "w", { | f |
-				outArray.do({ | sample, index |
-					var sampleOut;
-					if(index < (outArray.size - 1), {
-						sampleOut = sample.asString ++ ","
-					}, {
-						sampleOut = sample.asString
-					});
-
-					f.write(sampleOut);
-				});
-			});
+			this.writeBinaryFile(
+				File.realpath(TestFluidMelBands.class.filenameSymbol).dirname.withTrailingSlash ++ "MelBands.flucoma",
+				outArray
+			);
 
 			server.sync;
 
@@ -651,31 +737,15 @@
 
 			server.sync;
 
-			File.use(File.realpath(TestFluidSines.class.filenameSymbol).dirname.withTrailingSlash ++ "Sines_sines.flucoma", "w", { | f |
-				sinesArray.do({ | sample, index |
-					var sampleOut;
-					if(index < (sinesArray.size - 1), {
-						sampleOut = sample.asString ++ ","
-					}, {
-						sampleOut = sample.asString
-					});
+			this.writeBinaryFile(
+				File.realpath(TestFluidSines.class.filenameSymbol).dirname.withTrailingSlash ++ "Sines_sines.flucoma",
+				sinesArray
+			);
 
-					f.write(sampleOut);
-				});
-
-				File.use(File.realpath(TestFluidSines.class.filenameSymbol).dirname.withTrailingSlash ++ "Sines_resid.flucoma", "w", { | f |
-					residArray.do({ | sample, index |
-						var sampleOut;
-						if(index < (residArray.size - 1), {
-							sampleOut = sample.asString ++ ","
-						}, {
-							sampleOut = sample.asString
-						});
-
-						f.write(sampleOut);
-					});
-				});
-			});
+			this.writeBinaryFile(
+				File.realpath(TestFluidSines.class.filenameSymbol).dirname.withTrailingSlash ++ "Sines_resid.flucoma",
+				residArray
+			);
 
 			server.sync;
 
