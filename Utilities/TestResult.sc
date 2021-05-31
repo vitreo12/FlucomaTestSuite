@@ -25,7 +25,7 @@ TestResultEquals {
 			if(condition.isSequenceableCollection, {
 				condition.do({ | entry, i |
 					if(entry.not, {
-						^("failure: compared arrays first mismatch at index: " ++ i ++ ". Got " ++ a ++ " but expected " ++ b ++ " +/- " ++ tolerance);
+						^("failure: compared arrays first mismatch at index: " ++ i ++ ". Got " ++ a[i] ++ " but expected " ++ b[i] ++ " +/- " ++ tolerance);
 					});
 				});
 				^("success");
