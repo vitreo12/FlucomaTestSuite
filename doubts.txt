@@ -1,8 +1,5 @@
-- How to test MLP? Being it a neural network, its results are varying ...
-- MLP synth2 and synth3 do not work ... I don't know why ... Maybe they'd just need more training
+- How to test MLPRegressor? Being it a neural network, its results are varying.
+  Current solution is to add all the points that create the Sine chirp and expect a common sum
+  value.
 
-- UMAP: same problem...
-
-- Array.add should always replace the array assignment! Tell PA
-
-- Kmeans: seeding screws ordering
+- UMAP: same problem issue as MLPRegressor.
