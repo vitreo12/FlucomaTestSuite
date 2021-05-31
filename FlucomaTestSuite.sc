@@ -204,9 +204,85 @@ FlucomaTestSuite {
 		}
 	}
 
+	//Run an Array of classes
+	*runTestClassList { | classList, txtFile |
+		var numClasses = classList.size;
+
+		if(running, {
+			"The FluCoMa test suite is already running. Run 'FlucomaTestSuite.stop' to interrupt it.".error;
+			^nil;
+		});
+
+		if(outToTxtFile == true, {
+			if(txtFile == nil, {
+				var date = Date.getDate;
+				txtFile = (
+					"/tmp/flucoma-test-" ++
+					date.day ++
+					date.month ++
+					date.year ++
+					"-" ++
+					date.hour ++
+					date.minute ++
+					date.second ++
+					".txt"
+				)
+			})
+		});
+
+		//reset vars
+		this.reset;
+
+		//Set running state
+		running = true;
+
+		//Run one class at the time, or the interpreter won't catch up with
+		//OSC messages to / from all servers
+		fork {
+			classList.do({ | class |
+				var classCondition = Condition.new;
+				this.runTestClass_inner(class, classCondition);
+				//Wait for completion of all methods before running a new Class
+				classCondition.hang;
+				classCounter = classCounter + 1;
+			});
+		};
+
+		SpinRoutine.waitFor( { classCounter >= numClasses }, {
+			var outTxtFile;
+
+			if(outToTxtFile == true, {
+				txtFile = txtFile.standardizePath;
+				outTxtFile = File(txtFile, "w+");
+				if(outTxtFile.isOpen == false, {
+					outTxtFile = nil;
+					("Could not open file " ++ txtFile ++ " to write results to").error;
+				});
+			});
+
+			//Wait just in order to print this thing last, as
+			//some of the servers are still quitting, and they will post in the console.
+			//the actual completion is already done
+			0.5.wait;
+
+			resultsDict.postFlucomaResultsDict(outTxtFile);
+			resultsDict.postFlucomaErrors(outTxtFile);
+			running = false;
+
+			if(outTxtFile != nil, {
+				outTxtFile.close;
+				Document.open(txtFile);
+			});
+		});
+	}
+
 	*runTestClass { | class, txtFile |
 		this.reset;
-		this.runTestClass_inner(class, nil, txtFile);
+		if(class.isSequenceableCollection, {
+			this.runTestClassList(class, txtFile);
+		}, {
+			this.runTestClass_inner(class, nil, txtFile);
+		});
 	}
 
 	*runTest { | class, txtFile |
