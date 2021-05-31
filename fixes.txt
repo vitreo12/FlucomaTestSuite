@@ -1,0 +1,9 @@
+don't run descriptors but load them
+
+FlucomaTestSuite.runAll with lists
+
+Kmeans: setmean sets the seed
+
+MLP... Use Classifiers
+
+Remove pitch stuff
