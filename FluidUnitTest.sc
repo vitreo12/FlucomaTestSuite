@@ -312,10 +312,12 @@ FluidUnitTest : UnitTest {
 					results.do({ | tempResult, index |
 						if(tempResult.class == Dictionary, {
 							tempResult.keysValuesDo({ | entry, tempResultVal |
-								if(index == 0, {
-									firstResult[entry] = firstResult[entry] ++ ": ";
+								if(firstResult[entry].beginsWith("failure: invalid result across"), {
+									if(index == 0, {
+										firstResult[entry] = firstResult[entry] ++ ": ";
+									});
+									firstResult[entry] = firstResult[entry] ++ "Run " ++ (index+1) ++ " = " ++ tempResultVal ++ ". ";
 								});
-								firstResult[entry] = firstResult[entry] ++ "Run " ++ (index+1) ++ " = " ++ tempResultVal ++ ". ";
 							})
 						})
 					});
