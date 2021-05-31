@@ -160,17 +160,17 @@ TestFluidNoveltySlice : FluidUnitTest {
 			feature: 2,
 			kernelSize: 9,
 			filterSize: 5,
-			threshold: 0.037767,
+			threshold: 0.2,
 			windowSize: 2048,
 			hopSize: 64,
 			minSliceLength: 50
 		).wait;
 
-		result[\numSlices] = TestResult(resultBuffer.numFrames, 25);
+		result[\numSlices] = TestResult(resultBuffer.numFrames, 26);
 		resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
 			result[\sampleIndex] = TestResultEquals(
 				samples,
-				[ 0, 88896, 118464, 180224, 206912, 230976, 256896, 264768, 268352, 349056, 352384, 355904, 359232, 362752, 366656, 369984, 373504, 403328, 406592, 410112, 413632, 416896, 420608, 424128, 454080 ],
+				[ 128, 34880, 47360, 145280, 181888, 186496, 191040, 195648, 200320, 204928, 230976, 266880, 349056, 354944, 358784, 362688, 367552, 371456, 375360, 414080, 425728, 465600, 471616, 481664, 487744, 492992 ],
 				1
 			);
 		});

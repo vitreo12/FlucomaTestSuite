@@ -255,16 +255,16 @@ TestFluidOnsetSlice : FluidUnitTest {
 			server,
 			drumsBuffer,
 			indices: resultBuffer,
-			metric: 5, threshold:0.07, windowSize: 1000, hopSize: 200, minSliceLength: 5
+			metric: 5, threshold:0.2, windowSize: 1000, hopSize: 200, minSliceLength: 5
 		).wait;
 
-		result[\numFrames] = TestResult(resultBuffer.numFrames, 19);
+		result[\numFrames] = TestResult(resultBuffer.numFrames, 24);
 
 		//Check if the returned index position is correct (middle of file)
 		resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
 			result[\sampleIndices] = TestResultEquals(
 				samples,
-				[ 11200, 39000, 93800, 114800, 159200, 160600, 178000, 179800, 242200, 281000, 284200, 287600, 290000, 297800, 299200, 301000, 303000, 393000, 397600 ],
+				[ 0, 1600, 38400, 51200, 69800, 88000, 146200, 151800, 157400, 176400, 202200, 240000, 243000, 252600, 276400, 280600, 289800, 302800, 326800, 353400, 390200, 417200, 449000, 453600 ],
 				1
 			);
 		});
@@ -419,16 +419,16 @@ TestFluidOnsetSlice : FluidUnitTest {
 			server,
 			drumsBuffer,
 			indices: resultBuffer,
-			metric: 5, threshold:0.06, windowSize: 1000, hopSize: 200, minSliceLength: 5, filterSize:7, frameDelta: 100
+			metric: 5, threshold:0.2, windowSize: 1000, hopSize: 200, minSliceLength: 5, filterSize:7, frameDelta: 100
 		).wait;
 
-		result[\numFrames] = TestResult(resultBuffer.numFrames, 24);
+		result[\numFrames] = TestResult(resultBuffer.numFrames, 27);
 
 		//Check if the returned index position is correct (middle of file)
 		resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
 			result[\sampleIndices] = TestResultEquals(
 				samples,
-				[ 39000, 41600, 91200, 114800, 151400, 160600, 176800, 179800, 181600, 182800, 200200, 242200, 278800, 281000, 284000, 290000, 298200, 299800, 301000, 302400, 353200, 393000, 396000, 417400 ],
+				[ 0, 1600, 38400, 51200, 69800, 88000, 114600, 146200, 151800, 157400, 176400, 202200, 240000, 243000, 252600, 276400, 278400, 280600, 289800, 302800, 326800, 353400, 390200, 404000, 417200, 449000, 453600 ],
 				1
 			);
 		});

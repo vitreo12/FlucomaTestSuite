@@ -26,7 +26,7 @@ FluidUnitTest : UnitTest {
 	//These are used in many place where the noise needs to be known.
 	classvar <positiveNoise;
 
-	//TAll their respective buffers
+	//All their respective buffers
 	var <oneImpulseBuffer, <impulsesBuffer, <sharpSineBuffer, <smoothSineBuffer;
 	var <multipleSinesBuffer, <multipleSinesNoiseBuffer;
 	var <sineBurstBuffer;
