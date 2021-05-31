@@ -9,6 +9,8 @@ FlucomaTestSuite {
 	classvar <>outToTxtFile = true;
 	classvar <>checkResultsMismatch = true;
 
+	classvar <>debugFailedRuns = true;
+
 	classvar <resultsDict;
 	classvar <classesDict, <totalNumClasses;
 

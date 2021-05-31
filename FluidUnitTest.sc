@@ -308,6 +308,19 @@ FluidUnitTest : UnitTest {
 					})
 				});
 
+				if(FlucomaTestSuite.debugFailedRuns, {
+					results.do({ | tempResult, index |
+						if(tempResult.class == Dictionary, {
+							tempResult.keysValuesDo({ | entry, tempResultVal |
+								if(index == 0, {
+									firstResult[entry] = firstResult[entry] ++ ": ";
+								});
+								firstResult[entry] = firstResult[entry] ++ "Run " ++ (index+1) ++ " = " ++ tempResultVal ++ ". ";
+							})
+						})
+					});
+				});
+
 				server.sync;
 				this.tearDown;
 			});
