@@ -47,22 +47,6 @@ TestFluidKMeans : FluidUnitTest {
 
 		condition.hang;
 
-		/*
-		// 0, 1, 2, 3 can shift across runs (due to seeding, I believe)...
-		// But the number of elements will always be 24 / 28 / 38 / 38
-		clusters.dump { | x |
-			var indices = x["data"].keys.asArray.sort{|a,b| a.asInteger < b.asInteger};
-			var assignments = x["data"].atAll(indices).flatten;
-			assignments.postln;
-			condition.unhang;
-		};
-		condition.hang;
-		*/
-
-		//Same thing for single point, seeding screws the order
-		//kmeans.predictPoint(inbuf,{|x| x.postln; condition.unhang});
-		//condition.hang;
-
 		centroids.load(Dictionary.newFrom([\cols, 2, \data, Dictionary.newFrom([\0, [0.5,0.5], \1, [-0.5,0.5], \2, [0.5,-0.5], \3, [-0.5,-0.5]])]));
 
 		server.sync;
