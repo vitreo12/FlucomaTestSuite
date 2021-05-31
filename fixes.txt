@@ -1,7 +1,3 @@
-don't run descriptors but load them
-
 Kmeans: setmean sets the seed
 
 MLP... Use Classifiers
-
-Remove pitch stuff
