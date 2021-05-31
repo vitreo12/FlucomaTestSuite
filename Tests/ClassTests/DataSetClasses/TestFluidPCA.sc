@@ -62,8 +62,6 @@ TestFluidPCA : FluidUnitTest {
 
 		condition.hang;
 
-		reducedarray.asCompileString.postln;
-
 		result[\reducedarray] = TestResultEquals(reducedarray, reducedarray_target, 0.0001);
 
 		pca.transformPoint(inbuf,outbuf,{|x| x.getn(0,1,{|y| point = y.asArray; condition.unhang})});
