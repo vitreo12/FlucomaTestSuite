@@ -74,12 +74,10 @@ TestFluidMLPClassifier : FluidUnitTest {
 		var labels_errors = 0;
 		var inbuf = Buffer.loadCollection(server,0.5.dup);
 
-		//This is for the rt test
+		//This is for the rt test ... test first and last clusters
 		var outCluster1 = Buffer.alloc(server, 1);
-		//var outCluster2 = Buffer.alloc(server, 1);
-		//var outCluster3 = Buffer.alloc(server, 1);
 		var outCluster4 = Buffer.alloc(server, 1);
-		var synth1, /*synth2, synth3,*/ synth4;
+		var synth1, synth4;
 		var synthFun = {
 			var trig = Impulse.kr(5);
 			var inputPoint = LocalBuf(2);
@@ -148,41 +146,25 @@ TestFluidMLPClassifier : FluidUnitTest {
 
 		condition.hang;
 
-		//Now test real-time synth querying for all clusters
+		//Now test real-time synth querying for first and last clusters
 
 		//First cluster
 		synth1 = synthFun.play(server, args:[\point, [0.5, 0.5], \outCluster, outCluster1.bufnum]);
-
-		//Second cluster
-		//synth2 = synthFun.play(server, args:[\point, [-0.5, 0.5], \outCluster, outCluster2.bufnum]);
-
-		//Third cluster
-		//synth3 = synthFun.play(server, args:[\point, [0.5, -0.5], \outCluster, outCluster3.bufnum]);
 
 		//Fourth cluster
 		synth4 = synthFun.play(server, args:[\point, [-0.5, -0.5], \outCluster, outCluster4.bufnum]);
 
 		//Let them run half a second
 		0.5.wait;
-		synth1.free; /*synth2.free; synth3.free;*/ synth4.free;
+		synth1.free; synth4.free;
 		server.sync;
 
 		outCluster1.loadToFloatArray(action: { | x |
-			result[\cluster1] = TestResult(x.as(Array), [0.0])
+			result[\cluster_first] = TestResult(x.as(Array), [0.0])
 		});
-
-		/*
-		outCluster2.loadToFloatArray(action: { | x |
-		result[\cluster2] = TestResult(x.as(Array), [1.0])
-		});
-
-		outCluster3.loadToFloatArray(action: { | x |
-		result[\cluster3] = TestResult(x.as(Array), [2.0])
-		});
-		*/
 
 		outCluster4.loadToFloatArray(action: { | x |
-			result[\cluster4] = TestResult(x.as(Array), [3.0])
+			result[\cluster_last] = TestResult(x.as(Array), [3.0])
 		});
 
 		server.sync;
