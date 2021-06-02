@@ -191,7 +191,8 @@ TestFluidMLPRegressor : FluidUnitTest {
 		var testdata = 128.collect{|i|(i/128)**2};
 
 		var outputdata;
-		var outputdata_sum = 0;
+		var outputdata_delta;
+		var outputdata_delta_sum;
 
 		var inbuf = Buffer.loadCollection(server,[0.5]);
 		var outbuf = Buffer.new(server);
@@ -225,8 +226,7 @@ TestFluidMLPRegressor : FluidUnitTest {
 				result[\output_size] = TestResult(data.size, 128);
 				128.do{|i|
 					var entry = data[i.asString][0];
-					outputdata.add(entry);
-					outputdata_sum = outputdata_sum + entry.abs;
+					outputdata = outputdata.add(entry);
 				};
 				condition.unhang;
 			}
@@ -234,10 +234,20 @@ TestFluidMLPRegressor : FluidUnitTest {
 
 		condition.hang;
 
-		// 75 +/- 10
-		result[\output_sum] = TestResultEquals(outputdata_sum, 75, 10);
+		//Calculate delta of consecutive points:
+		//this permits to get the "overall shape" of the result.
+		//Starting points can vary, but delta ensure that the distance between points is kept
+		outputdata_delta = Array(128);
+		outputdata.pairsDo({ | a, b | outputdata_delta = outputdata_delta.add((a - b).abs) });
+
+		//Then, calculate the sum of the deltas
+		outputdata_delta_sum = outputdata_delta.sum;
+
+		//Around 1.20 - 1.50
+		result[\outputdata_delta_sum] = TestResultEquals(outputdata_delta_sum, 1.35, 0.2);
 
 		server.sync;
+
 		source.free;
 		target.free;
 		test.free;
