@@ -105,7 +105,7 @@ FluidUnitTest : UnitTest {
 	}
 
 	//Individual method test run
-	*runTest { | method, serverIndex = -1 |
+	*runTest { | method, serverIndex = -1, argServer |
 		var class, classInstance;
 		# class, method = method.asString.split($:);
 		class = class.asSymbol.asClass;
@@ -114,7 +114,7 @@ FluidUnitTest : UnitTest {
 			Error(class.asString ++ ": test method not found: " ++ method).throw;
 		};
 		classInstance = class.new;
-		classInstance.runTestMethod(method, serverIndex);
+		classInstance.runTestMethod(method, serverIndex, argServer);
 		^classInstance;
 	}
 
@@ -202,10 +202,10 @@ FluidUnitTest : UnitTest {
 		this.initResultBuffer;
 	}
 
-	//per-method... server should perhaps be booted per-class.
 	//This is run in a Routine, so wait / sync can be used
-	setUp { | serverIndex = -1 |
+	setUp { | serverIndex = -1, argServer |
 		var serverOptions = Server.default.options;
+		var validArgServer = false;
 
 		//Generate a uniqueID if serverIndex is -1 or nil
 		if((serverIndex == -1).or(serverIndex.isNil), {
@@ -217,15 +217,38 @@ FluidUnitTest : UnitTest {
 		firstResult = nil;
 		execTime = 0;
 		serverOptions.sampleRate = serverSampleRate;
-		server = Server(
-			this.class.name ++ serverIndex,
-			NetAddr(serverIPAddr, serverStartingPort + serverIndex),
-			serverOptions
-		);
+
+		if(argServer.isNil, {
+			if(FlucomaTestSuite.useLocalServer, {
+				server = Server.local;
+			}, {
+				server = Server(
+					this.class.name ++ serverIndex,
+					NetAddr(serverIPAddr, serverStartingPort + serverIndex),
+					serverOptions
+				);
+			});
+		}, {
+			server = argServer;
+			validArgServer = true;
+			if(server.hasBooted.not, {
+				"argServer has not been booted yet. Creating a new one".error;
+				server = Server(
+					this.class.name ++ serverIndex,
+					NetAddr(serverIPAddr, serverStartingPort + serverIndex),
+					serverOptions
+				);
+				validArgServer = false;
+			});
+		});
 
 		//If boot fails, it should try again with a different addr until it finds one that works
-		server.bootSync;
-		server.initTree; //make sure to init the default group!
+		if(validArgServer.not, {
+			server.bootSync;
+			server.initTree; //make sure to init the default group!
+		});
+
+		^validArgServer;
 	}
 
 	//per-method
@@ -248,9 +271,10 @@ FluidUnitTest : UnitTest {
 		});
 	}
 
-	runTestMethod { | method, serverIndex = -1 |
+	runTestMethod { | method, serverIndex = -1, argServer |
 		var t, tAvg = FlucomaTestSuite.averageRuns; //run 4 times to average execution time
 		var results;
+		var validArgServer = false;
 
 		if(FlucomaTestSuite.checkResultsMismatch, {
 			results = Array.newClear(tAvg);
@@ -258,11 +282,13 @@ FluidUnitTest : UnitTest {
 
 		fork {
 			currentMethod = method;
-			this.setUp(serverIndex);
+			validArgServer = this.setUp(serverIndex, argServer);
+			if(validArgServer, {
+				(this.class.asString ++ ": running the '" ++ method.name.asString ++ "' test on custom server '" ++ server.name.asString ++ "'. Wait for its completion...").warn;
+			});
 			server.sync;
 			this.initBuffers;
 			server.sync;
-
 			tAvg.do({ | i |
 				this.checkSpeed; //each method run shouldn't take more than maxWaitTime (30 by default) secs
 				t = Main.elapsedTime;
@@ -325,7 +351,11 @@ FluidUnitTest : UnitTest {
 				});
 
 				server.sync;
-				this.tearDown;
+				if(validArgServer.not, {
+					this.tearDown;
+				}, {
+					completed = true;
+				});
 			});
 		};
 	}

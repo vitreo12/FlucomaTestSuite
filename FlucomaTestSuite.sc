@@ -2,12 +2,13 @@ FlucomaTestSuite {
 	classvar <serverSampleRate = 44100;
 	classvar <serverStartingPort = 5000;
 	classvar <classCounter = 0;
-	classvar <>parallelMethods = 5;
+	classvar <parallelMethods = 5;
 	classvar <running = false;
 	classvar <averageRuns = 4;
 
 	classvar <>outToTxtFile = true;
 	classvar <>checkResultsMismatch = true;
+	classvar <useLocalServer = false;
 
 	classvar <>debugFailedRuns = true;
 
@@ -43,6 +44,21 @@ FlucomaTestSuite {
 		FluidUnitTest.maxWaitTime = val;
 	}
 
+	//Also set parallel methods to 1
+	*useLocalServer_ { | val |
+		useLocalServer = val;
+		parallelMethods = 1;
+	}
+
+	*parallelMethods_ { | val |
+		if(useLocalServer, {
+			"Using a local server. parallelMethods can only be 1. Setting it to 1".warn;
+			parallelMethods = 1;
+		}, {
+			parallelMethods = val
+		})
+	}
+
 	*initClass {
 		this.reset;
 	}
@@ -72,12 +88,8 @@ FlucomaTestSuite {
 		thisProcess.recompile();
 	}
 
-	*runTestClass_inner { | class, classCondition, txtFile |
-		var classStringWithoutTest, classStringWithoutBuf, resultDict, methodsArray;
-		var countMethods = 0, totalMethods = 0;
-		var isStandaloneTest = false;
+	*findClassString { | class |
 		var classString = class.asString;
-
 		//Don't remove Buf for FluidBuf* only
 		if((classString != "FluidBufCompose").and(
 			classString != "FluidBufStats").and(
@@ -92,6 +104,14 @@ FlucomaTestSuite {
 			classString != "FluidBufNNDSVD"), {
 			classString = classString.replace("Buf", "");
 		});
+		^classString;
+	}
+
+	*runTestClass_inner { | class, classCondition, txtFile |
+		var classStringWithoutTest, resultDict, methodsArray;
+		var countMethods = 0, totalMethods = 0;
+		var isStandaloneTest = false;
+		var classString = this.findClassString(class);
 
 		//Accepts both TestFluidAmpGate and FluidAmpGate.
 		//Will return Class not found if error.
@@ -123,19 +143,21 @@ FlucomaTestSuite {
 
 		fork {
 			var methodCondition = Condition.new;
+			var oneParallelMethod = FlucomaTestSuite.parallelMethods == 1;
 
 			methodsArray.do({ | method, i |
 				//Run the method
 				var classInstance = class.runTest(method, i);
 
 				//Wait for the parallel methods to finish
-				if((i > 0).and(i % (parallelMethods-1) == 0), {
-					methodCondition.hang;
+				if(oneParallelMethod.not, {
+					if((i > 0).and(i % (parallelMethods-1) == 0), {
+						methodCondition.hang;
+					});
 				});
 
 				//Wait for completion, advance states
 				SpinRoutine.waitFor( { classInstance.completed }, {
-
 					var methodString = method.name.asString;
 
 					//Here there will be the return code from individual methods
@@ -148,8 +170,12 @@ FlucomaTestSuite {
 					countMethods = countMethods + 1;
 
 					//Wait for all the parallel methods to be finished before moving on
-					if((countMethods > 0).and(countMethods % (parallelMethods-1) == 0), {
-						methodCondition.unhang;
+					if(oneParallelMethod, {
+						methodCondition.unhang
+					}, {
+						if((countMethods > 0).and(countMethods % (parallelMethods-1) == 0), {
+							methodCondition.unhang;
+						});
 					});
 
 					//Last method for this class
@@ -201,6 +227,11 @@ FlucomaTestSuite {
 							});
 						});
 					});
+				});
+
+				//oneParallelMethod should hang here. It should not wait for all of the methods
+				if(oneParallelMethod, {
+					methodCondition.hang
 				});
 			});
 		}
@@ -293,6 +324,113 @@ FlucomaTestSuite {
 
 	*run { | class, txtFile |
 		this.runTestClass(class, txtFile);
+	}
+
+	//Run only one method. Optionally pass in an already booted server
+	*runTestMethod { | class, method, server, txtFile |
+		var classMethods, methodFunc;
+		var classString = this.findClassString(class);
+		var classStringWithoutTest;
+
+		if((method.class != String).and(method.class != Symbol), {
+			"method must be a String or Symbol".error;
+			^nil;
+		});
+
+		if(running, {
+			"The FluCoMa test suite is already running. Run 'FlucomaTestSuite.stop' to interrupt it.".error;
+			^nil;
+		});
+
+		//to index
+		method = method.asSymbol;
+
+		//Accepts both TestFluidAmpGate and FluidAmpGate.
+		//Will return Class not found if error.
+		if(classString.beginsWith("Test").not, {
+			classStringWithoutTest = classString;
+			class = ("Test" ++ classString).interpret;
+		}, {
+			classStringWithoutTest = classString[4..];
+		});
+
+		classMethods = class.findTestMethods;
+
+		classMethods.do { | classMethod |
+			if(method == classMethod.name, { methodFunc = classMethod });
+		};
+
+		if(method.isNil, {
+			("Invalid method name " ++ method ++ " for class " ++ class).error;
+			^nil
+		});
+
+		//running = true;
+
+		fork {
+			var classInstance = class.runTest(methodFunc, argServer:server); //note: methodFunc
+
+			//Wait for completion
+			SpinRoutine.waitFor( { classInstance.completed }, {
+				var outTxtFile;
+				var result;
+				var methodString = method.asString;
+				var tempResultsDict = Dictionary.new(1);
+				var resultDict = Dictionary.newFrom([
+					method,
+					[
+						("result" -> classInstance.firstResult),
+						("time" -> classInstance.execTime)
+					]
+				]);
+
+				tempResultsDict[classStringWithoutTest] = resultDict; //emulate global resultsDict to print errors
+
+				if(outToTxtFile == true, {
+					if(txtFile == nil, {
+						var date = Date.getDate;
+						txtFile = (
+							"/tmp/flucoma-test-" ++
+							classString ++
+							"-" ++
+							date.day ++
+							date.month ++
+							date.year ++
+							"-" ++
+							date.hour ++
+							date.minute ++
+							date.second ++
+							".txt"
+						)
+					});
+
+					txtFile = txtFile.standardizePath;
+					outTxtFile = File(txtFile, "w+");
+
+					if(outTxtFile.isOpen == false, {
+						outTxtFile = nil;
+						("Could not open file " ++ txtFile ++ " to write results to").error;
+					});
+				});
+
+				//No condition provided, simply output result and set running to false
+				0.5.wait;
+
+				resultDict.postFlucomaResultDict(classString, outTxtFile);
+				tempResultsDict.postFlucomaErrors(outTxtFile);
+
+				//running = false;
+
+				if(outTxtFile != nil, {
+					outTxtFile.close;
+					Document.open(txtFile);
+				});
+			});
+		};
+	}
+
+	*runMethod { | class, method, server, txtFile |
+		^this.runTestMethod(class, method, server, txtFile)
 	}
 
 	*runAllTests { | txtFile |
