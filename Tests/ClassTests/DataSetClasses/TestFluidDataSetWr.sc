@@ -35,8 +35,8 @@ TestFluidDataSetWr : FluidUnitTest {
 			var trig = Impulse.kr(ControlRate.ir / 8);
 			var idx = Stepper.kr(trig,min:-1, max:n);
 			4.collect{|i| BufWr.kr([(4 * idx) + i],b,i)};
-			FluidDataSetWr.kr(dataSet,idNumber:idx,buf:b,trig:trig);
-			FreeSelf.kr(idx >= (n-1));
+			FluidDataSetWr.kr(dataSet,idNumber:idx,buf:b,trig:trig * (idx < n));
+			FreeSelf.kr(idx >= n);
 		}.play(server, args:[n:100]);
 
 		synth.onFree({ condition.unhang });
@@ -52,6 +52,7 @@ TestFluidDataSetWr : FluidUnitTest {
 				var data = x["data"];
 				result[\rows] = TestResult(data.size, 100);
 				result[\first] = TestResult(data["0"], [0, 1, 2, 3]);
+				result[\mid] = TestResult(data["50"], [200, 201, 202, 203]);
 				result[\last] = TestResult(data["99"], [396, 397, 398, 399]);
 			});
 		};
@@ -65,13 +66,14 @@ TestFluidDataSetWr : FluidUnitTest {
 		var condition = Condition();
 
 		var synth = { | n |
+			var wr;
 			var b = LocalBuf.newFrom([0,1,2,3]);
 			var trig = LocalIn.kr(1,1);
 			var idx = Stepper.kr(trig,min:-1, max:n);
-			var wr = FluidDataSetWr.kr(dataSet,idNumber:idx,buf:b,trig:trig);
 			4.collect{|i| BufWr.kr([(4 * idx) + i],b,i)};
+			wr = FluidDataSetWr.kr(dataSet,idNumber:idx,buf:b,trig:trig * (idx < n));
 			LocalOut.kr(Done.kr(wr));
-			FreeSelf.kr(idx >= (n-1));
+			FreeSelf.kr(idx >= n);
 		}.play(server, args:[n:100]);
 
 		synth.onFree({ condition.unhang });
@@ -87,6 +89,7 @@ TestFluidDataSetWr : FluidUnitTest {
 				var data = x["data"];
 				result[\rows] = TestResult(data.size, 100);
 				result[\first] = TestResult(data["0"], [0, 1, 2, 3]);
+				result[\mid] = TestResult(data["50"], [200, 201, 202, 203]);
 				result[\last] = TestResult(data["99"], [396, 397, 398, 399]);
 			});
 		};

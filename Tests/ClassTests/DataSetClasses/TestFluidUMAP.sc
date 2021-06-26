@@ -39,7 +39,6 @@ TestFluidUMAP : FluidUnitTest {
 
 		condition.hang;
 
-		normalizedDict_sum.postln;
 		result[\normalizedDict_size] = TestResult(normalizedDict.size, 400);
 
 		//Results oscillate between [215 - 225, 170 - 180]
