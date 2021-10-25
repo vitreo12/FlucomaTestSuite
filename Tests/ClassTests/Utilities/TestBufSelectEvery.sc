@@ -28,7 +28,7 @@ TestFluidBufSelectEvery : FluidUnitTest {
 			server,
 			source: knownInput,
 			destination: resultBuffer,
-			startFrame: 1, numFrames: 3, startChan: 2, numChans: 3, frameHop: 1, channelHop: 2
+			startFrame: 1, numFrames: 3, startChan: 2, numChans: 3, frameHop: 1, chanHop: 2
 		).wait;
 
 		result[\channels] = TestResult(resultBuffer.numChannels, 2);
