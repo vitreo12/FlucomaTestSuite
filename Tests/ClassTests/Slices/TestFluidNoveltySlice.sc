@@ -135,11 +135,11 @@ TestFluidNoveltySlice : FluidUnitTest {
 			indices: resultBuffer,
 			feature: 1,
 			kernelSize: 17,
-			filterSize: 5,
-			threshold: 0.6,
+			filterSize: 7,
+			threshold: 0.5,
 			windowSize: 2048,
 			hopSize: 64,
-			minSliceLength: 50
+			minSliceLength: 100
 		).wait;
 
 		result[\numSlices] = TestResult(resultBuffer.numFrames, 40);
