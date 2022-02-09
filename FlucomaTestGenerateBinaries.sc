@@ -104,8 +104,8 @@
 
 			var numCoeffs = 5;
 
-			var b = Buffer.read(server, File.realpath(FluidBufMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Tremblay-SA-UprightPianoPedalWide.wav");
-			var b2 = Buffer.read(server, File.realpath(FluidBufMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Tremblay-AaS-AcousticStrums-M.wav");
+			var b = Buffer.read(server, FluidFilesPath.new("Tremblay-SA-UprightPianoPedalWide.wav"));
+			var b2 = Buffer.read(server, FluidFilesPath.new("Tremblay-AaS-AcousticStrums-M.wav"));
 
 			var c = Buffer.new(server);
 
@@ -138,7 +138,7 @@
 			var fftsize = 256;
 			var hopsize = fftsize / 2;
 
-			var b = Buffer.read(server, File.realpath(FluidBufMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Nicol-LoopE-M.wav");
+			var b = Buffer.read(server, FluidFilesPath.new("Nicol-LoopE-M.wav"));
 			var c = Buffer.new(server);
 
 			server.sync;
@@ -189,7 +189,7 @@
 			//only 5000 samples, or arrays would be huge to load at startup
 			var numFrames = 5000;
 
-			var b = Buffer.read(server, File.realpath(FluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Tremblay-AaS-SynthTwoVoices-M.wav");
+			var b = Buffer.read(server, FluidFilesPath.new("Tremblay-AaS-SynthTwoVoices-M.wav"));
 
 			FlucomaTestSuite.averageRuns.do({ | i |
 
@@ -403,11 +403,10 @@
 
 		generate_nmf_cross = {
 			var nmf_cross_condition = Condition();
-			var path = File.realpath(FluidBufNMFCross.class.filenameSymbol).dirname.withTrailingSlash +/+ "../AudioFiles/";
 
 			//Only read the first 22050 samples, in order not to create huge .flucoma binaries
-			var b = Buffer.read(server, path+/+"Nicol-LoopE-M.wav", 0, 22050);
-			var t = Buffer.read(server, path+/+"Tremblay-SA-UprightPianoPedalWide.wav", 0, 22050);
+			var b = Buffer.read(server, FluidFilesPath.new("Nicol-LoopE-M.wav"), 0, 22050);
+			var t = Buffer.read(server, FluidFilesPath.new("Tremblay-SA-UprightPianoPedalWide.wav"), 0, 22050);
 
 			FlucomaTestSuite.averageRuns.do({ | i |
 				var o = Buffer(server);
@@ -447,9 +446,8 @@
 
 		generate_nmf_morph = {
 			var nmf_morph_condition = Condition();
-			var audiopath = File.realpath(FluidMelBands.class.filenameSymbol).dirname;
-			var src1 = Buffer.readChannel(server,audiopath +/+ "../AudioFiles/Nicol-LoopE-M.wav",channels:[0]); //some drums
-			var src2 = Buffer.readChannel(server,audiopath +/+ "../AudioFiles/Tremblay-SA-UprightPianoPedalWide.wav",channels:[0]);//some piano
+			var src1 = Buffer.readChannel(server,FluidFilesPath.new("Nicol-LoopE-M.wav"),channels:[0]); //some drums
+			var src2 = Buffer.readChannel(server,FluidFilesPath.new("Tremblay-SA-UprightPianoPedalWide.wav"),channels:[0]);//some piano
 
 			server.sync;
 
@@ -505,7 +503,7 @@
 		server = server ? Server.local;
 
 		generate_nndsvd = {
-			var b = Buffer.read(server,File.realpath(FluidBufNNDSVD.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Nicol-LoopE-M.wav");
+			var b = Buffer.read(server, FluidFilesPath.new("AudioFiles/Nicol-LoopE-M.wav"));
 
 			server.sync;
 
@@ -561,8 +559,8 @@
 			var outArray;
 			var numDerivs = 1;
 
-			var b = Buffer.read(server, File.realpath(FluidBufMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Tremblay-SA-UprightPianoPedalWide.wav");
-			var b2 = Buffer.read(server, File.realpath(FluidBufMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Tremblay-AaS-AcousticStrums-M.wav");
+				var b = Buffer.read(server, FluidFilesPath.new("Tremblay-SA-UprightPianoPedalWide.wav"));
+				var b2 = Buffer.read(server, FluidFilesPath.new("Tremblay-AaS-AcousticStrums-M.wav"));
 
 			var c = Buffer.new(server);
 
@@ -593,7 +591,7 @@
 			var outArray;
 			var numDerivs = 1;
 
-			var b = Buffer.read(server, File.realpath(FluidBufMFCC.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Nicol-LoopE-M.wav");
+				var b = Buffer.read(server, FluidFilesPath.new("AudioFiles/Nicol-LoopE-M.wav"));
 			var c = Buffer.new(server);
 
 			server.sync;
@@ -636,10 +634,10 @@
 			var fftsize = 256;
 			var hopsize = fftsize / 2;
 
-			var b = Buffer.read(server, File.realpath(FluidBufSpectralShape.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Nicol-LoopE-M.wav");
+				var b = Buffer.read(server, FluidFilesPath.new("Nicol-LoopE-M.wav"));
 			var c = Buffer.new(server);
-			var d = Buffer.read(server, File.realpath(FluidBufSpectralShape.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Tremblay-SA-UprightPianoPedalWide.wav");
-			var e = Buffer.read(server, File.realpath(FluidBufTransients.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Tremblay-AaS-AcousticStrums-M.wav");
+				var d = Buffer.read(server, FluidFilesPath.new("Tremblay-SA-UprightPianoPedalWide.wav"));
+				var e = Buffer.read(server, FluidFilesPath.new("Tremblay-AaS-AcousticStrums-M.wav"));
 
 			server.sync;
 
@@ -705,7 +703,7 @@
 			var fftsize = 256;
 			var hopsize = fftsize / 2;
 
-			var b = Buffer.read(server, File.realpath(FluidBufMelBands.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Nicol-LoopE-M.wav");
+				var b = Buffer.read(server, FluidFilesPath.new("Nicol-LoopE-M.wav"));
 			var c = Buffer.new(server);
 
 			server.sync;
@@ -745,7 +743,7 @@
 
 			var numFrames = 22050;
 
-			var b = Buffer.read(server, File.realpath(FluidBufNMF.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Tremblay-AaS-SynthTwoVoices-M.wav");
+				var b = Buffer.read(server, FluidFilesPath.new("Tremblay-AaS-SynthTwoVoices-M.wav"));
 
 			var x = Buffer.new(server);
 			var y = Buffer.new(server);
