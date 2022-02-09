@@ -591,7 +591,7 @@
 			var outArray;
 			var numDerivs = 1;
 
-				var b = Buffer.read(server, FluidFilesPath.new("AudioFiles/Nicol-LoopE-M.wav"));
+				var b = Buffer.read(server, FluidFilesPath.new("Nicol-LoopE-M.wav"));
 			var c = Buffer.new(server);
 
 			server.sync;
