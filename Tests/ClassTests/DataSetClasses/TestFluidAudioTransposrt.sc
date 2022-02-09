@@ -16,7 +16,7 @@ TestFluidAudioTransport : FluidUnitTest {
 
 		server.sync;
 
-		FluidBufAudioTransport.process(server,b,source2:c,destination:d,interpolation:0.5).wait;
+		FluidBufAudioTransport.process(server,b,sourceB:c,destination:d,interpolation:0.5).wait;
 
 		d.loadToFloatArray(action:{ | x |
 			result[\sine_array] = TestResultEquals(x.as(Array), sine_target, 0.0001);
@@ -25,13 +25,13 @@ TestFluidAudioTransport : FluidUnitTest {
 	}
 
 	test_cardboxes {
-		var b = Buffer.read(server,File.realpath(FluidBufAudioTransport.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Green-Box641.wav");
-		var c = Buffer.read(server,File.realpath(FluidBufAudioTransport.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Green-Box639.wav");
+		var b = Buffer.read(server,FluidFilesPath.new("Green-Box641.wav"));
+		var c = Buffer.read(server,FluidFilesPath.new("../AudioFiles/Green-Box639.wav"));
 		var d = Buffer(server);
 
 		server.sync;
 
-		FluidBufAudioTransport.process(server,b,source2:c,destination:d,interpolation:0.5).wait;
+		FluidBufAudioTransport.process(server,b,sourceB:c,destination:d,interpolation:0.5).wait;
 
 		//Just tke first 1000 samples
 		d.loadToFloatArray(0, 1000, action:{ | x |
