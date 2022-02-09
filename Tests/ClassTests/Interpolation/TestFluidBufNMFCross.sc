@@ -17,10 +17,9 @@ TestFluidBufNMFCross : FluidUnitTest {
 
 	test_drums_piano { | averageRunsCounter |
 		var condition = Condition();
-		var path = File.realpath(FluidBufNMFCross.class.filenameSymbol).dirname.withTrailingSlash +/+ "../AudioFiles/";
 		//Only read the first 22050 samples, like the .flucoma binaries
-		var b = Buffer.read(server, path+/+"Nicol-LoopE-M.wav", 0, 22050);
-		var t = Buffer.read(server, path+/+"Tremblay-SA-UprightPianoPedalWide.wav", 0, 22050);
+		var b = Buffer.read(server, FluidFilesPath.new("Nicol-LoopE-M.wav"), 0, 22050);
+		var t = Buffer.read(server, FluidFilesPath.new("Tremblay-SA-UprightPianoPedalWide.wav"), 0, 22050);
 		var o = Buffer(server);
 
 		var expectedArray;

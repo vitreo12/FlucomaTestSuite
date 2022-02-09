@@ -23,7 +23,7 @@ TestFluidBufNNDSVD : FluidUnitTest {
 
 
 	test_binaries { | averageRunsCounter |
-		var b = Buffer.read(server,File.realpath(FluidBufNNDSVD.class.filenameSymbol).dirname.withTrailingSlash ++ "../AudioFiles/Nicol-LoopE-M.wav");
+		var b = Buffer.read(server,FluidFilesPath.new("Nicol-LoopE-M.wav"));
 		var bases = Buffer.new(server);
 		var activations = Buffer.new(server);
 		var resynth = Buffer.new(server);

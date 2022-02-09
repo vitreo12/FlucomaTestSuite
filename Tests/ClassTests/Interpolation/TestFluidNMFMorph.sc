@@ -17,9 +17,8 @@ TestFluidNMFMorph : FluidUnitTest {
 
 	test_drums_piano { | averageRunsCounter |
 		var condition = Condition();
-		var audiopath = File.realpath(FluidMelBands.class.filenameSymbol).dirname;
-		var src1 = Buffer.readChannel(server,audiopath +/+ "../AudioFiles/Nicol-LoopE-M.wav",channels:[0]); //some drums
-		var src2 = Buffer.readChannel(server,audiopath +/+ "../AudioFiles/Tremblay-SA-UprightPianoPedalWide.wav",channels:[0]);//some piano
+		var src1 = Buffer.readChannel(server,FluidFilesPath.new("Nicol-LoopE-M.wav"),channels:[0]); //some drums
+		var src2 = Buffer.readChannel(server,FluidFilesPath.new("Tremblay-SA-UprightPianoPedalWide.wav"),channels:[0]);//some piano
 
 		var src1Bases = Buffer(server);
 		var src2Bases = Buffer(server);
