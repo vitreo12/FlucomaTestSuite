@@ -13,7 +13,7 @@ TestFluidUMAP : FluidUnitTest {
 		var normalized = FluidDataSet(server);
 		var standardizer  = FluidStandardize(server);
 		var normalizer = FluidNormalize(server, 0.05, 0.95);
-		var umap = FluidUMAP(server).numDimensions_(2).numNeighbours_(5).minDist_(0.2).iterations_(50).learnRate_(0.2);
+		var umap = FluidUMAP(server).numDimensions_(2).numNeighbours_(5).minDist_(0.2).iterations_(100).learnRate_(0.2);
 		var colours = Dictionary.newFrom(colours_data);
 
 		var normalizedDict;
