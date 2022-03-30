@@ -68,7 +68,7 @@ TestFluidPCA : FluidUnitTest {
 
 		condition.hang;
 
-		result[\point] = TestResultEquals(point, [ -0.23524188995361 ], 0.0001);
+		result[\point] = TestResultEquals(point, [ -0.23524188995361 ].abs, 0.0001);
 
 		server.sync;
 		raw.free;
