@@ -49,7 +49,7 @@ TestFluidPCA : FluidUnitTest {
 		reducedarray = Array.new(100);
 		standardizer.fitTransform(raw, standardized);
 		pca.fitTransform(standardized, reduced, action:{|x|
-			result[\variance] = TestResultEquals(x.asFloat, 0.56128084659576, 0.0001);
+			result[\variance] = TestResultEquals(x.asFloat, 0.80506831407547, 0.0001);
 			reduced.dump{|x|
 				var data = x["data"];
 				result[\pca_size] = TestResult(data.size, 100);
