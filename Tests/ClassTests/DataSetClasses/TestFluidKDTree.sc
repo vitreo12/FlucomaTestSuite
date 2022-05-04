@@ -42,7 +42,7 @@ TestFluidKDTree : FluidUnitTest {
 
 		//Find nearest point
 		tmpBuf = Buffer.loadCollection(server, point, 1, {
-			tree.kNearest(tmpBuf, { | a | nearest = a; condition.unhang })
+			tree.kNearest(tmpBuf, action: { | a | nearest = a; condition.unhang })
 		});
 
 		condition.hang;
@@ -65,7 +65,7 @@ TestFluidKDTree : FluidUnitTest {
 		};
 
 		// Distances of the nearest points
-		tree.kNearestDist(tmpBuf, { | a | nearest_dist = a; condition.unhang });
+		tree.kNearestDist(tmpBuf, action:{ | a | nearest_dist = a; condition.unhang });
 
 		condition.hang;
 
@@ -74,14 +74,14 @@ TestFluidKDTree : FluidUnitTest {
 		//Test with 11
 		tree.numNeighbours = 11;
 		server.sync;
-		tree.kNearest(tmpBuf, { | a | nearest_11 = a; condition.unhang });
+		tree.kNearest(tmpBuf, action: { | a | nearest_11 = a; condition.unhang });
 		condition.hang;
 		result[\nearest_11] = TestResult(nearest_11, [ 36, 50, 22, 31, 21, 15, 94, 1, 28, 41, 91 ].collect({ | item | item.asSymbol }));
 
 		//Test with all
 		tree.numNeighbours = 0; // 0 will return all items in order of distance
 		server.sync;
-		tree.kNearest(tmpBuf, { | a | nearest_100 = a; condition.unhang });
+		tree.kNearest(tmpBuf, action: { | a | nearest_100 = a; condition.unhang });
 		condition.hang;
 		result[\nearest_100] = TestResult(nearest_100, [ 36, 50, 22, 31, 21, 15, 94, 1, 28, 41, 91, 93, 35, 68, 64, 55, 25, 97, 10, 90, 80, 19, 76, 2, 82, 84, 99, 46, 51, 54, 89, 88, 83, 24, 39, 69, 63, 4, 81, 87, 23, 29, 61, 5, 56, 58, 49, 73, 42, 26, 47, 8, 40, 9, 75, 72, 17, 52, 0, 92, 3, 33, 66, 95, 79, 45, 38, 86, 43, 59, 7, 74, 62, 16, 78, 71, 13, 37, 70, 53, 85, 18, 30, 12, 27, 14, 96, 65, 20, 6, 44, 11, 98, 67, 48, 60, 32, 57, 77, 34 ].collect({ | item | item.asSymbol }));
 
@@ -89,7 +89,7 @@ TestFluidKDTree : FluidUnitTest {
 		point = [0.4, 0.4];
 		tree.radius = 0.1;
 		tmpBuf = Buffer.loadCollection(server, point, 1, {
-			tree.kNearest(tmpBuf,{ | a | nearest_radius = a; condition.unhang});
+			tree.kNearest(tmpBuf, action: { | a | nearest_radius = a; condition.unhang});
 		});
 		condition.hang;
 		result[\nearest_radius] = TestResult(nearest_radius, [ 82, 76, 88, 5, 2 ].collect({ | item | item.asSymbol }));
