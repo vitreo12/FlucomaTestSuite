@@ -209,6 +209,7 @@
 					server,
 					source: b,
 					resynth: c,
+					resynthMode: 1,
 					startFrame: startFrame,
 					numFrames: numFrames,
 					bases: x,
@@ -503,7 +504,7 @@
 		server = server ? Server.local;
 
 		generate_nndsvd = {
-			var b = Buffer.read(server, FluidFilesPath.new("AudioFiles/Nicol-LoopE-M.wav"));
+			var b = Buffer.read(server, FluidFilesPath.new("Nicol-LoopE-M.wav"));
 
 			server.sync;
 
