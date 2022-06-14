@@ -101,7 +101,7 @@ FlucomaTestSuite {
 			classString != "FluidBufSelectEvery").and(
 			classString != "FluidBufSTFT").and(
 			classString != "FluidBufNMFCross").and(
-			classString != "FluidBufNNDSVD"), {
+			classString != "FluidBufNMFSeed"), {
 			classString = classString.replace("Buf", "");
 		});
 		^classString;

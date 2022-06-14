@@ -1,4 +1,4 @@
-TestFluidBufNNDSVD : FluidUnitTest {
+TestFluidBufNMFSeed : FluidUnitTest {
 	classvar expectedBasesArray, expectedActivationsArray;
 
 	*initClass {
@@ -9,11 +9,11 @@ TestFluidBufNNDSVD : FluidUnitTest {
 
 		averageRuns.do({ | i |
 			var bases = TextFileToArray(
-				File.realpath(TestFluidBufNNDSVD.class.filenameSymbol).dirname.withTrailingSlash ++ "NNDSVD_Bases" ++ (i+1) ++ ".flucoma"
+				File.realpath(TestFluidBufNMFSeed.class.filenameSymbol).dirname.withTrailingSlash ++ "NMFSeed_Bases" ++ (i+1) ++ ".flucoma"
 			);
 
 			var activations = TextFileToArray(
-				File.realpath(TestFluidBufNNDSVD.class.filenameSymbol).dirname.withTrailingSlash ++ "NNDSVD_Activations" ++ (i+1) ++ ".flucoma"
+				File.realpath(TestFluidBufNMFSeed.class.filenameSymbol).dirname.withTrailingSlash ++ "NMFSeed_Activations" ++ (i+1) ++ ".flucoma"
 			);
 
 			expectedBasesArray[i] = bases;
@@ -50,7 +50,7 @@ TestFluidBufNNDSVD : FluidUnitTest {
 			^nil
 		});
 
-		FluidBufNNDSVD.process(server, b, bases, activations, coverage: 0.5).wait;
+		FluidBufNMFSeed.process(server, b, bases, activations, coverage: 0.5).wait;
 
 		bases.loadToFloatArray(action: { | x |
 			var bases_array = x.as(Array);

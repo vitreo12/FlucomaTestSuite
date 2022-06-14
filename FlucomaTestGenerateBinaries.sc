@@ -82,8 +82,8 @@
 			server.waitForBoot({
 				var c = Condition();
 
-				"*** Generating NNDSVD... ***".postln;
-				this.generateNNDSVD(server, c);
+				"*** Generating NMFSeed... ***".postln;
+				this.generateNMFSeed(server, c);
 				c.hang;
 
 				"*** Generated Flucoma Binaries ***".postln;
@@ -497,7 +497,7 @@
 		});
 	}
 
-	*generateNNDSVD { | server, condition, averageRunsRecompile = false |
+	*generateNMFSeed { | server, condition, averageRunsRecompile = false |
 		var generate_nndsvd;
 
 		server = server ? Server.local;
@@ -514,12 +514,12 @@
 
 				server.sync;
 
-				FluidBufNNDSVD.process(server, b, bases, activations, coverage: 0.5).wait;
+				FluidBufNMFSeed.process(server, b, bases, activations, coverage: 0.5).wait;
 
 				bases.loadToFloatArray(action: { | x |
 					var bases_array = x.as(Array);
 					this.writeBinaryFile(
-						File.realpath(TestFluidBufNNDSVD.class.filenameSymbol).dirname.withTrailingSlash ++ "NNDSVD_Bases" ++ (i+1) ++ ".flucoma",
+						File.realpath(TestFluidBufNMFSeed.class.filenameSymbol).dirname.withTrailingSlash ++ "NMFSeed_Bases" ++ (i+1) ++ ".flucoma",
 						bases_array
 					);
 				});
@@ -527,7 +527,7 @@
 				activations.loadToFloatArray(action: { | x |
 					var activations_array = x.as(Array);
 					this.writeBinaryFile(
-						File.realpath(TestFluidBufNNDSVD.class.filenameSymbol).dirname.withTrailingSlash ++ "NNDSVD_Activations" ++ (i+1) ++ ".flucoma",
+						File.realpath(TestFluidBufNMFSeed.class.filenameSymbol).dirname.withTrailingSlash ++ "NMFSeed_Activations" ++ (i+1) ++ ".flucoma",
 						activations_array
 					);
 				});

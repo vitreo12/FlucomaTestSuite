@@ -1,6 +1,6 @@
 FluidBufAudioTransport.sc X
 FluidBufNMFCross.sc X
-FluidBufNNDSVD.sc X
+FluidBufNMFSeed.sc X
 FluidNMFMorph.sc X
 
 FluidRobustScale.sc X
