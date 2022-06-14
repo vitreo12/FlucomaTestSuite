@@ -58,7 +58,7 @@ TestFluidMLPClassifier : FluidUnitTest {
 
 	test_2d_points {
 		var condition = Condition();
-		var classifier = FluidMLPClassifier(server).hidden_([6]).activation_(FluidMLPClassifier.tanh).maxIter_(1000).learnRate_(0.1).momentum_(0.1).batchSize_(50).validation_(0);
+		var classifier = FluidMLPClassifier(server).hiddenLayers_([6]).activation_(FluidMLPClassifier.tanh).maxIter_(1000).learnRate_(0.1).momentum_(0.1).batchSize_(50).validation_(0);
 		var sourcedata = FluidDataSet(server);
 		var labels = FluidLabelSet(server);
 		var testdata = FluidDataSet(server);
@@ -184,7 +184,7 @@ TestFluidMLPRegressor : FluidUnitTest {
 		var test = FluidDataSet(server);
 		var output = FluidDataSet(server);
 		var tmpbuf = Buffer.alloc(server,1);
-		var regressor = FluidMLPRegressor(server).hidden_([2]).activation_(FluidMLPRegressor.tanh).outputActivation_(FluidMLPRegressor.tanh).maxIter_(1000).learnRate_(0.1).momentum_(0.1).batchSize_(1).validation_(0);
+		var regressor = FluidMLPRegressor(server).hiddenLayers_([2]).activation_(FluidMLPRegressor.tanh).outputActivation_(FluidMLPRegressor.tanh).maxIter_(1000).learnRate_(0.1).momentum_(0.1).batchSize_(1).validation_(0);
 
 		var sourcedata = 128.collect{|i|i/128};
 		var targetdata = 128.collect{|i| sin(2*pi*i/128) };
