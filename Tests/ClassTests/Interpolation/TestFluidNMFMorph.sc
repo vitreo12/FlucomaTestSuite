@@ -53,7 +53,7 @@ TestFluidNMFMorph : FluidUnitTest {
 		morph.loadToFloatArray(0.02, server, { | x |
 			var nmf_morph_array = x.as(Array);
 			result[\size] = TestResult(nmf_morph_array.size, expectedArray.size);
-			result[\nmf_morph_array] = TestResultEquals(nmf_morph_array, expectedArray, 0.0001);
+			result[\nmf_morph_array] = TestResultEquals(nmf_morph_array, expectedArray, 0.001);
 			condition.unhang;
 		});
 
