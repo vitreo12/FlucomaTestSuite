@@ -32,7 +32,7 @@ TestFluidDataSetWr : FluidUnitTest {
 
 		var synth = { | n |
 			var b = LocalBuf.newFrom([0,1,2,3]);
-			var trig = Impulse.kr(ControlRate.ir / 8);
+			var trig = Impulse.kr(ControlRate.ir / 16); //was 8 but needs 16 to work on windows and linux
 			var idx = Stepper.kr(trig,min:-1, max:n);
 			4.collect{|i| BufWr.kr([(4 * idx) + i],b,i)};
 			FluidDataSetWr.kr(dataSet,idNumber:idx,buf:b,trig:trig * (idx < n));
