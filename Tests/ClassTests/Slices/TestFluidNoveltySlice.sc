@@ -190,11 +190,11 @@ TestFluidNoveltySlice : FluidUnitTest {
 			minSliceLength: 50
 		).wait;
 
-		result[\numSlices] = TestResult(resultBuffer.numFrames, 24);
+		result[\numSlices] = TestResult(resultBuffer.numFrames, 21);
 		resultBuffer.getn(0, resultBuffer.numFrames, { | samples |
 			result[\sampleIndex] = TestResultEquals(
 				samples,
-				[ 0, 19008, 24640, 34624, 58240, 117696, 122048, 179392, 229376, 256832, 260288, 265536, 287488, 306752, 335616, 401280, 413888, 464896, 471936, 477184, 483456, 488064, 493376, 513664 ],
+				[ 0, 19072, 24640, 34624, 58176, 117696, 122048, 179392, 229376, 256896, 265536, 287552, 306752, 401280, 464896, 471936, 477184, 483456, 488064, 493376, 513664],
 				1
 			);
 		});
