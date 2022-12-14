@@ -42,7 +42,7 @@ TestFluidUMAP : FluidUnitTest {
 		result[\normalizedDict_size] = TestResult(normalizedDict.size, 400);
 
 		//Results oscillate between [215 - 225, 170 - 180]
-		result[\normalizedDict_sum] = TestResultEquals(normalizedDict_sum, [ 220.0, 175.0 ], 15.0);
+		result[\normalizedDict_sum] = TestResultEquals(normalizedDict_sum, [ 175.0, 210.0 ], 15.0);
 
 		server.sync;
 		raw.free;
