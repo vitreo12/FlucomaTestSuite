@@ -91,6 +91,7 @@ TestFluidKNNRegressor : FluidUnitTest {
 		var outputdata;
 
 		var inbuf = Buffer.loadCollection(server,[0.5]);
+		var outbuf = Buffer.alloc(server, 1);
 		var point_predict;
 
 		source.load(
@@ -129,7 +130,7 @@ TestFluidKNNRegressor : FluidUnitTest {
 
 		result[\outputdata] = TestResultEquals(outputdata, outputdata_target, 0.0001);
 
-		regressor.predictPoint(inbuf,{|x| point_predict = x; condition.unhang});
+		regressor.predictPoint(inbuf, outbuf, action:{outbuf.getn(0,1,{|x|point_predict = x; condition.unhang})});
 
 		condition.hang;
 
