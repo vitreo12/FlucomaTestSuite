@@ -126,7 +126,7 @@ TestFluidKDTree : FluidUnitTest {
 			var trig = Impulse.kr(4);
 			var point = [0.4, 0.4];
 			point.collect{| p, i | BufWr.kr([p], inputBuffer,i)};
-			tree.kr(trig, inputBuffer, outputBuffer, 5, nil);
+			tree.kr(trig, inputBuffer, outputBuffer, 5, 0, nil);
 			Silent.ar;
 		}.play(server);
 
@@ -181,7 +181,7 @@ TestFluidKDTree : FluidUnitTest {
 			var trig = Impulse.kr(4);
 			var point = [0.4, 0.4];
 			point.collect{| p, i | BufWr.kr([p],inputBuffer,i)};
-			tree.kr(trig, inputBuffer, outputBuffer, 5, ds_lookup);
+			tree.kr(trig, inputBuffer, outputBuffer, 5, 0, ds_lookup);
 			Silent.ar;
 		}.play(server);
 
